@@ -1,22 +1,43 @@
 
-#include <stdio.h>
+// #include <stdio.h>
+#include "disaster.h"
 
 
 int hello(int value)
 {
-	printf("[%s] got value %d", __func__, value);
-
+    printf("[%s] got value %d", __func__, value);
 }
 
 
 int main(void)
 {
-	int i;
-	int k;
+    //not initialized and not used variable
+    int i;
+    int k;
 
-	printf("[%s] hello\n", __func__);
+    int* p_to_nirvana = 0;
 
-	return 0;
+    int counter = 0;
+
+    printf("[%s] hello\n", __func__);
+
+
+    printf(" > enter...\n");
+    for(;;)
+    {
+        ;;;
+        counter++;
+//         printf("counter %d\n", counter);
+        if (counter > 100000)
+            break;
+    }
+
+    disaster(p_to_nirvana, 0);
+    disaster(p_to_nirvana, 0);
+    disaster(p_to_nirvana, 0);
+
+    printf(" > exit...\n");
+    return 0;
 
 }
 

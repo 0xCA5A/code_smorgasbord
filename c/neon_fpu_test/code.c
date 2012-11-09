@@ -19,7 +19,7 @@ void print_array(float array[])
 float do_work()
 {
 	printf("hello from %s!\n", __func__);
-	printf(" * sizeof(float): %d\n", sizeof(float));
+// 	printf(" * sizeof(float): %d\n", sizeof(float));
 	printf(" * array size: %d\n", ARRAY_SIZE);
 
 	float test_number_array[ARRAY_SIZE];
@@ -34,9 +34,15 @@ float do_work()
 
 	for (i = 0; i < ARRAY_SIZE; i++)
 	{
-		test_number_array[i] = test_number_array[i] * test_number_array[(ARRAY_SIZE - 1) - i];
+		test_number_array[i] = test_number_array[i] * test_number_array[i];
 	}
 //	print_array(test_number_array);
+
+    for (i = 0; i < ARRAY_SIZE; i++)
+    {
+        test_number_array[i] = test_number_array[i] * test_number_array[(ARRAY_SIZE - 1) - i];
+    }
+//  print_array(test_number_array);
 
 	for (i = 0; i < ARRAY_SIZE; i++)
 	{

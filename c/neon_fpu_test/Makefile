@@ -1,18 +1,36 @@
 SHELL := /bin/bash
 
 
+
+#CC=arm-linux-gnueabihf-gcc
+#FLOAT_ABI=hard
+
+
+CC=arm-linux-gnueabi-gcc
+#FLOAT_ABI=softfp
+FLOAT_ABI=soft
+
+
+
+COMMON_OPT_FLAGS=
+#-mthumb-interwork
+
+
 DEFAULT_OPT_FLAGS=
 
-SOFTFPU_OPT_FLAGS=
-# -mfloat-abi=soft -msoft-float
+
+
+#check for compiler multilib support... 
+SOFTFPU_OPT_FLAGS=-mfloat-abi=${FLOAT_ABI} \
+-msoft-float
 
 MEDIUM_OPT_FLAGS=-O2 -pipe\
- -mcpu=cortex-a8 -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard
+-mcpu=cortex-a8 -mtune=cortex-a8 -mfpu=neon -mfloat-abi=${FLOAT_ABI}
 
 FULL_OPT_FLAGS=-O3 -pipe\
 -mcpu=cortex-a8 -mtune=cortex-a8 -mfpu=neon \
--ftree-vectorize -mfloat-abi=hard \
--ffast-math -fsingle-precision-constant -funsafe-math-optimizations
+-ftree-vectorize -mfloat-abi=${FLOAT_ABI} \
+-ffast-math -fsingle-precision-constant -funsafe-math-optimizations 
 #-fno-inline-functions
 
 # http://gcc.gnu.org/onlinedocs/gcc/ARM-Options.html
@@ -34,19 +52,13 @@ FULL_OPT_FLAGS=-O3 -pipe\
 
 
 
-
-CC=arm-linux-gnueabihf-gcc-4.6
-# CC=arm-linux-gnueabi-gcc-4.4
-
-
-
 SOURCE=code.c
 
 
 
-all: default soft_fpu medium_optimized full_optimized
-	@echo -e "using compiler: ${CC}"
-
+all: info default soft_fpu medium_optimized full_optimized
+	@echo "** target: $@"
+	
 # 	strip *.o
 
 	@echo -e "\nfile info:"
@@ -64,22 +76,32 @@ all: default soft_fpu medium_optimized full_optimized
 		for obj in $$(ls *.o); do echo "run $${obj}:"; time ./$${obj} 1>/dev/null; echo -e "\n\n"; done; \
 	fi
 
+info:
+	@echo -e "using compiler: ${CC}"
+	@echo -e "multilib support:"
+	${CC} --print-multi-lib
+
 default: ${SOURCE}
-	${CC} ${SOURCE} -S -o $@.asm ${DEFAULT_OPT_FLAGS}
-	${CC} ${SOURCE} -o $@.o ${DEFAULT_OPT_FLAGS}
+	@echo "** target: $@"
+	${CC} ${SOURCE} -S -o $@.asm ${DEFAULT_OPT_FLAGS} ${COMMON_OPT_FLAGS}
+	${CC} ${SOURCE} -o $@.o ${DEFAULT_OPT_FLAGS} ${COMMON_OPT_FLAGS}
 
 soft_fpu: ${SOURCE}
-	${CC} ${SOURCE} -S -o $@.asm ${SOFTFPU_OPT_FLAGS}
-	${CC} ${SOURCE} -o $@.o ${SOFTFPU_OPT_FLAGS}
+	@echo "** target: $@"
+	${CC} ${SOURCE} -S -o $@.asm ${SOFTFPU_OPT_FLAGS} ${COMMON_OPT_FLAGS}
+	${CC} ${SOURCE} -o $@.o ${SOFTFPU_OPT_FLAGS} ${COMMON_OPT_FLAGS}
 	
 medium_optimized: ${SOURCE}
-	${CC} ${SOURCE} -S -o $@.asm ${MEDIUM_OPT_FLAGS}
-	${CC} ${SOURCE} -o $@.o ${MEDIUM_OPT_FLAGS}
+	@echo "** target: $@"
+	${CC} ${SOURCE} -S -o $@.asm ${MEDIUM_OPT_FLAGS} ${COMMON_OPT_FLAGS}
+	${CC} ${SOURCE} -o $@.o ${MEDIUM_OPT_FLAGS} ${COMMON_OPT_FLAGS}
 
 full_optimized:
-	${CC} ${SOURCE} -S -o $@.asm ${FULL_OPT_FLAGS}
-	${CC} ${SOURCE} -o $@.o ${FULL_OPT_FLAGS}
+	@echo "** target: $@"
+	${CC} ${SOURCE} -S -o $@.asm ${FULL_OPT_FLAGS} ${COMMON_OPT_FLAGS}
+	${CC} ${SOURCE} -o $@.o ${FULL_OPT_FLAGS} ${COMMON_OPT_FLAGS}
 
 clean:
+	@echo "** target: $@"
 	rm -f *.o *.asm
 

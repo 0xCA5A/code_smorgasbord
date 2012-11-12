@@ -1,0 +1,126 @@
+
+
+###############################################################################
+
+CC=arm-linux-gnueabihf-gcc
+FLOAT_ABI=hard
+#-msoft-float
+
+nr of lines in asm files:
+wc -l *.asm
+  301 default.asm
+  327 full_optimized.asm
+  207 medium_optimized.asm
+  301 soft_fpu.asm
+ 1136 total
+
+###############################################################################
+
+CC=arm-linux-gnueabi-gcc
+FLOAT_ABI=softfp
+-msoft-float
+
+nr of lines in asm files:
+wc -l *.asm
+  299 default.asm
+  329 full_optimized.asm
+  209 medium_optimized.asm
+  342 soft_fpu.asm
+ 1179 total
+
+###############################################################################
+
+CC=arm-linux-gnueabi-gcc
+FLOAT_ABI=soft
+-msoft-float
+
+nr of lines in asm files:
+wc -l *.asm
+  299 default.asm
+  204 full_optimized.asm
+  218 medium_optimized.asm
+  342 soft_fpu.asm
+ 1063 total
+
+###############################################################################
+
+
+
+root@beagleboardHF:~/sam_darkside/neon_fpu_test# make
+using compiler: gcc
+multilib support:
+gcc --print-multi-lib
+.;
+** target: default
+gcc code.c -S -o default.asm  
+gcc code.c -o default.o  
+** target: soft_fpu
+gcc code.c -S -o soft_fpu.asm -mfloat-abi=hard  
+gcc code.c -o soft_fpu.o -mfloat-abi=hard  
+** target: medium_optimized
+gcc code.c -S -o medium_optimized.asm -O2 -pipe -mcpu=cortex-a8 -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard 
+gcc code.c -o medium_optimized.o -O2 -pipe -mcpu=cortex-a8 -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard 
+** target: full_optimized
+gcc code.c -S -o full_optimized.asm -O3 -pipe -mcpu=cortex-a8 -mtune=cortex-a8 -mfpu=neon -ftree-vectorize -mfloat-abi=hard -ffast-math -fsingle-precision-constant -funsafe-math-optimizations  
+gcc code.c -o full_optimized.o -O3 -pipe -mcpu=cortex-a8 -mtune=cortex-a8 -mfpu=neon -ftree-vectorize -mfloat-abi=hard -ffast-math -fsingle-precision-constant -funsafe-math-optimizations  
+** target: all
+
+file info:
+file *.o
+default.o:          ELF 32-bit LSB executable, ARM, version 1 (SYSV), dynamically linked (uses shared libs), for GNU/Linux 2.6.26, BuildID[sha1]=0xf2fbea1dd489912a5fa98c9519c99807bc6c7d97, not stripped
+full_optimized.o:   ELF 32-bit LSB executable, ARM, version 1 (SYSV), dynamically linked (uses shared libs), for GNU/Linux 2.6.26, BuildID[sha1]=0xa3ff07b1fb173eff37ff6d237fb5d7c8e3159c95, not stripped
+medium_optimized.o: ELF 32-bit LSB executable, ARM, version 1 (SYSV), dynamically linked (uses shared libs), for GNU/Linux 2.6.26, BuildID[sha1]=0x8beb09dc3b78db739b3d0799b0df14105dacaf0c, not stripped
+soft_fpu.o:         ELF 32-bit LSB executable, ARM, version 1 (SYSV), dynamically linked (uses shared libs), for GNU/Linux 2.6.26, BuildID[sha1]=0xf2fbea1dd489912a5fa98c9519c99807bc6c7d97, not stripped
+
+nr of lines in asm files:
+wc -l *.asm
+  300 default.asm
+  264 full_optimized.asm
+  198 medium_optimized.asm
+  300 soft_fpu.asm
+ 1062 total
+
+object files:
+ls -alt *.o
+-rwxr-xr-x 1 root root 6021 Nov 12 08:14 full_optimized.o
+-rwxr-xr-x 1 root root 5705 Nov 12 08:14 medium_optimized.o
+-rwxr-xr-x 1 root root 5997 Nov 12 08:14 soft_fpu.o
+-rwxr-xr-x 1 root root 5997 Nov 12 08:14 default.o
+
+run time:
+if [ x != x$(uname -m | grep arm) ]; then \
+		for obj in $(ls *.o); do echo "run ${obj}:"; time ./${obj} 1>/dev/null; echo -e "\n\n"; done; \
+	fi
+run default.o:
+
+real	0m1.516s
+user	0m1.469s
+sys	0m0.008s
+
+
+
+run full_optimized.o:
+
+real	0m0.625s
+user	0m0.570s
+sys	0m0.000s
+
+
+
+run medium_optimized.o:
+
+real	0m1.005s
+user	0m0.945s
+sys	0m0.008s
+
+
+
+run soft_fpu.o:
+
+real	0m1.245s
+user	0m1.188s
+sys	0m0.000s
+
+
+
+

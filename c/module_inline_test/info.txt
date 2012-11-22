@@ -1,0 +1,5 @@
+* define inline function in header file
+* force compiler to optimize
+* use macro
+
+

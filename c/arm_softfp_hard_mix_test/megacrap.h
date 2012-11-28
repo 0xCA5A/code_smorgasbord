@@ -1,7 +1,7 @@
 #ifndef MEGACRAP_H
 #define MEGACRAP_H
 
-	int megacrap(int);
+	float megacrap(int);
 
 #endif
 

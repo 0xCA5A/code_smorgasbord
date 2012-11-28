@@ -2,16 +2,19 @@
 
 CC=arm-linux-gnueabihf-gcc
 AR=arm-linux-gnueabihf-ar
+LD=arm-linux-gnueabihf-ld
 FLOAT_ABI=-mfloat-abi=hard 
 
 
-#CC=arm-linux-gnueabi-gcc
-#AR=arm-linux-gnueabi-ar
-#FLOAT_ABI=-mfloat-abi=softfp
+CC=arm-linux-gnueabi-gcc
+AR=arm-linux-gnueabi-ar
+LD=arm-linux-gnueabihf-ld
+FLOAT_ABI=-mfloat-abi=softfp
 
 
+CFLAGS=-O3 -mcpu=cortex-a8 -mfpu=neon -ftree-vectorize -ffast-math -fsingle-precision-constant ${FLOAT_ABI}
+LDFLAGS=--no-warn-mismatch
 
-CFLAGS=--no-warn-mismatch -O3 -mcpu=cortex-a8 -mfpu=neon -ftree-vectorize -ffast-math -fsingle-precision-constant ${FLOAT_ABI}
 
 OBJ=main.o
 APP=main
@@ -29,7 +32,7 @@ app_default: ${OBJ} ${LIBOBJ}
 	${CC} ${CFLAGS} ${OBJ} ${LIBOBJ} -o ${APP}_default
 
 app_static_object: ${OBJ} static_object
-	${CC} ${CFLAGS} -o ${APP}_static_object ${OBJ} libcrap.a
+	${LD} ${LDFLAGS} -o ${APP}_static_object ${OBJ} libcrap.a -lc
 
 app_shared_object: ${OBJ} shared_object
 	${CC} ${CFLAGS} -o ${APP}_shared_object ${OBJ} -L. -lcrap

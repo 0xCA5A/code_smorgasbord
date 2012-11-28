@@ -1,10 +1,10 @@
 
-#include <stdio.h>
+//#include <stdio.h>
 #include "megacrap.h"
 
-int megacrap(int number)
+float megacrap(int number)
 {
-	printf("do megacrap!\n");
-	return number * 7;
+	//printf("do megacrap!\n");
+	return (float) number * 7;
 }
 

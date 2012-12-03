@@ -1,7 +1,12 @@
 
 
-# color source 
+# script generates a list of functions you can call
+# in this form: echoCOLOR "hello world $VAR"
+
+# color source
 #http://en.wikipedia.org/wiki/Tput
+
+TMP_DIR=/tmp
 
 
 txtgrey="$(tput setaf 0)"
@@ -9,7 +14,7 @@ txtdarkgrey="$(tput bold ; tput setaf 0)"
 txtred="$(tput setaf 1)"
 txtlightred="$(tput bold ; tput setaf 1)"
 txtgreen="$(tput setaf 2)"
-textlightgreen="$(tput bold ; tput setaf 2)"
+txtlightgreen="$(tput bold ; tput setaf 2)"
 txtbrown="$(tput setaf 3)"
 txtyellow="$(tput bold ; tput setaf 3)"
 txtblue="$(tput setaf 4)"
@@ -33,9 +38,12 @@ bgcyan="$(tput setab 6)"
 bglightgrey="$(tput setab 7)"
 
 
- for element in $(cat color_echo.sh | grep -E '^txt.*=' | grep -v txtrst | cut -d '=' -f 1 | sed 's/txt//g');
-    do echo -e "function echo$element() {\n    echo \${txt$element}\$1\${txtrst}\n}"; 
-done > /tmp/$$_echo_functions.sh
+for element in $(cat color_echo.sh | grep -E '^txt.*=' | grep -v txtrst | cut -d '=' -f 1 | sed 's/txt//g');
+    do echo -e "function echo$element() {\n    echo -e \"\${txt$element}\${1}\${txtrst}\"\n}"; 
+done > $TMP_DIR/$$_echo_functions.sh
 
-source /tmp/$$_echo_functions.sh
-rm /tmp/$$_echo_functions.sh
+source $TMP_DIR/$$_echo_functions.sh
+# cat $TMP_DIR/$$_echo_functions.sh | grep 'function echo' | cut -d  ' ' -f 2 | tr -d '()'
+# cat $TMP_DIR/$$_echo_functions.sh
+rm -f $TMP_DIR/$$_echo_functions.sh
+

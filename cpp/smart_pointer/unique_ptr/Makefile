@@ -3,15 +3,14 @@ CC = g++
 LDFLAGS =
 # DEFINES += -DDEBUG
 # DEFINES += -DFUNCTIONTRACE
-CPPFLAGS = -Wall -Werror -O2
+CPPFLAGS = -Wall -O2 -std=c++0x
 
 
-# OBJECTS = UDPSocketServer.o UnixDomainSocketServer.o UinputCommander.o JSONAnalyzer.o
 HEADERS = $(shell find . -name '*.h')
 SOURCES = $(shell find . -name '*.cpp' | grep -v main.cpp)
 OBJECTS = $(SOURCES:%.cpp=%.o)
 
-APPLICATION_NAME = raii_test
+APPLICATION_NAME = unique_ptr_test
 
 
 all: $(APPLICATION_NAME)

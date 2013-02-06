@@ -1,5 +1,10 @@
 
 
+//source:
+//http://www.cplusplus.com/reference/cassert/assert/
+
+
+
 //define this before assert.h include to disable the assert macro
 #define NDEBUG
 

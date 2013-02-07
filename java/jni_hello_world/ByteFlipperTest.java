@@ -47,7 +47,7 @@ class ByteFlipperTest
 
     public static void main(String[] args) {
 
-        System.out.println("################################################################################");
+        System.out.println("\n\n################################################################################");
         System.out.println("# [main] configuration");
         System.out.println("# * BYTE_ARRAY_SIZE: " + BYTE_ARRAY_SIZE);
         System.out.println("################################################################################");

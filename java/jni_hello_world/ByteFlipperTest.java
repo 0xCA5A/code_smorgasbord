@@ -3,7 +3,6 @@
 // http://192.9.162.55/docs/books/jni/html/start.html
 
 
-
 class ByteFlipperTest
 {
 
@@ -44,6 +43,7 @@ class ByteFlipperTest
             myByteArray[i+1] = tmp_value;
         }
     }
+
 
     public static void main(String[] args) {
 
@@ -149,9 +149,8 @@ class ByteFlipperTest
 //         System.out.println("[main] byte array content after flipBytesByteCopyJava()");
 //         myByteFlipperTest.printByteArray(myByteArray);
 
-
-
     }
+
 
     static {
        //load ByteFlipperTest.so

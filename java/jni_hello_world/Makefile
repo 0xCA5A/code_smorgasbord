@@ -3,13 +3,13 @@
 # http://en.gentoo-wiki.com/wiki/Safe_Cflags/Intel
 
 # guido
-CFLAGS = -Wall -Werror -march=core2 -O2 -pipe -fomit-frame-pointer
+# CFLAGS = -Wall -Werror -march=core2 -O2 -pipe -fomit-frame-pointer
 
-# target
-# CFLAGS = -Wall -Werror -march=pentium-m -O2 -pipe -fomit-frame-pointer
+# f14
+# CFLAGS = -Wall -Werror -march=pentium-m -O2 -pipe -fomit-frame-pointer -m32
 
 # nemo
-# CFLAGS = -Wall -Werror -march=corei7-avx -O2 -pipe -fomit-frame-pointer
+CFLAGS = -Wall -Werror -march=corei7-avx -O3 -pipe -fomit-frame-pointer
 
 
 all:

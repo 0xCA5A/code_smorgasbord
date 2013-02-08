@@ -35,7 +35,7 @@ from this ill extract the time values and do some graphical presentation.
 import pylab
 import sys
 import re
-
+#import collections
 
 
 
@@ -47,21 +47,26 @@ class LogFileParser(object):
         """LogFileParser constructor
         """
 
-        self.__open_log_file(log_file_name)
+        self.__byte_array_size = 0;
+        self.__function_name_value_tuple_list = []
+        self.__log_file_descriptor = None
+
+        self.log_file_name = log_file_name
+        self.__open_log_file(self.log_file_name)
         self.__parse_and_filter_log_file()
-        self.log_file_descriptor.close()
-        self.__print_stat_from_function_data()
-        self.__plot_function_data()
+        self.__log_file_descriptor.close()
 
 
     def __del__(self):
         """destructor
         """
-        self.__env.Destroy()
 
 
     def __open_log_file(self, file_name):
-        self.log_file_descriptor = open(file_name, "r")
+        """open log file
+        """
+
+        self.__log_file_descriptor = open(file_name, "r")
 
 
     def __parse_and_filter_log_file(self):
@@ -69,13 +74,12 @@ class LogFileParser(object):
         """
 
         #list of tuples store the time data values by function name
-        self.function_name_value_tuple_list = []
-        self.function_name_value_tuple_list.append(("emptyCallJNI", []))
-        self.function_name_value_tuple_list.append(("emptyCallGetAndReleaseByteArrayElementsJNI", []))
-        self.function_name_value_tuple_list.append(("emptyCallGetAndReleasePrimitiveArrayCriticalJNI", []))
-        self.function_name_value_tuple_list.append(("flipBytesByteCopyPointerJNI", []))
-        self.function_name_value_tuple_list.append(("flipBytesByteShiftPointerJNI", []))
-        self.function_name_value_tuple_list.append(("flipBytesByteCopyJava", []))
+        self.__function_name_value_tuple_list.append(("emptyCallJNI", []))
+        self.__function_name_value_tuple_list.append(("emptyCallGetAndReleaseByteArrayElementsJNI", []))
+        self.__function_name_value_tuple_list.append(("emptyCallGetAndReleasePrimitiveArrayCriticalJNI", []))
+        self.__function_name_value_tuple_list.append(("flipBytesByteCopyPointerJNI", []))
+        self.__function_name_value_tuple_list.append(("flipBytesByteShiftPointerJNI", []))
+        self.__function_name_value_tuple_list.append(("flipBytesByteCopyJava", []))
 
         empty_line_regex = re.compile('^\s*$')
         comment_line_regex = re.compile('\s*#')
@@ -83,7 +87,7 @@ class LogFileParser(object):
 
         self.__byte_array_size = -1
 
-        for line in self.log_file_descriptor:
+        for line in self.__log_file_descriptor:
 
             #get byte array size
             if byte_array_size_regex.match(line):
@@ -103,7 +107,7 @@ class LogFileParser(object):
             line = line.strip()
 
             #get time values by function names from raw input lines
-            for function_name in self.function_name_value_tuple_list:
+            for function_name in self.__function_name_value_tuple_list:
                 if not function_name[0] in line:
                     continue
                 else:
@@ -118,12 +122,12 @@ class LogFileParser(object):
                     break
 
 
-    def __print_stat_from_function_data(self):
+    def print_stat_from_function_data(self):
         """print stats of the collected data
         """
         print '[main] print statistics'
 
-        for element in self.function_name_value_tuple_list:
+        for element in self.__function_name_value_tuple_list:
             print 'function: %s' % element[0]
             print ' * nr of values: %d' % len(element[1])
             print ' * avg: %dns' % (int(sum(element[1])) / len(element[1]))
@@ -131,36 +135,74 @@ class LogFileParser(object):
             print ' * min: %dns' % min(element[1])
 
 
-    def __plot_function_data(self):
-        """plot the crap!
+    def plot_function_data_simple(self):
+        """plot the crap in a simple way!
            more information here:
            http://matplotlib.sourceforge.net/api/pyplot_api.html#matplotlib.pyplot.plot
         """
 
-        print '[main] print statistics'
+        print '[main] plot data'
 
-        function_name_to_plot_regex = re.compile('^.*flip.*$')
+        function_name_to_plot_regex = re.compile('^.*(flip|Critical).*$')
 
-        for element in self.function_name_value_tuple_list:
+        #size in inches, come on...
+        pylab.figure(figsize = (32, 18))
 
+        #plot data
+        for element in self.__function_name_value_tuple_list:
             if function_name_to_plot_regex.match(element[0]):
                 pylab.plot(element[1], label = element[0])
 
+        #decorate plot
         pylab.xlabel('test run index')
         pylab.ylabel('used time in function [ns]')
         pylab.title('JNI ByteFlipper Performance Test (size of byte array: %d)' % (self.__byte_array_size))
         pylab.grid(True)
         pylab.legend(loc = 'best')
 
-        #pylab.savefig(self.__default_figure_filename)
-        pylab.show()
+        plot_file_name = self.log_file_name.strip('.log') + '_simple.png'
+        print '[main] write simple plot to image (%s)' % plot_file_name
+        pylab.savefig(plot_file_name)
+        #pylab.show()
 
+
+    def plot_function_data_scientific(self):
+        """plot the crap in a more scientific way!
+           more information here:
+           http://matplotlib.sourceforge.net/api/pyplot_api.html#matplotlib.pyplot.plot
+        """
+
+        print '[main] plot data'
+
+        function_name_to_plot_regex = re.compile('^.*(flip|Critical).*$')
+
+        #size in inches, come on...
+        pylab.figure(figsize = (32, 18))
+
+        #plot data
+        for element in self.__function_name_value_tuple_list:
+            if function_name_to_plot_regex.match(element[0]):
+                #for time_value in element[1]:
+                    #counter_dict = collections.Counter(element[1])
+
+                pylab.hist(element[1], label = element[0], histtype = 'bar')
+                #pylab.plot(counter_dict.keys(), counter_dict.values(), 'O', label = element[0])
+
+        #decorate plot
+        pylab.xlabel('used time in function [ns]')
+        pylab.ylabel('value count')
+        pylab.title('JNI ByteFlipper Performance Test (size of byte array: %d)' % (self.__byte_array_size))
+        pylab.grid(True)
+        pylab.legend(loc = 'best')
+
+        plot_file_name = self.log_file_name.strip('.log') + '_scientific.png'
+        print '[main] write simple plot to image (%s)' % plot_file_name
+        pylab.savefig(plot_file_name)
+        #pylab.show()
 
 
 
 if __name__ == "__main__":
-    """
-    """
 
     #check command line arguments
     if len(sys.argv) != 2:
@@ -168,9 +210,11 @@ if __name__ == "__main__":
         sys.exit(-1)
 
 
-    log_file_name = sys.argv[1]
-    my_log_file_parser = LogFileParser(log_file_name)
-
+    LOG_FILE_NAME = sys.argv[1]
+    LOG_FILE_PARSER = LogFileParser(LOG_FILE_NAME)
+    LOG_FILE_PARSER.print_stat_from_function_data()
+    LOG_FILE_PARSER.plot_function_data_simple()
+    LOG_FILE_PARSER.plot_function_data_scientific()
 
 
 

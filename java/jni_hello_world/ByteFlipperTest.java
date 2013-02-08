@@ -39,9 +39,9 @@ class ByteFlipperTest
         byte tmp_value;
         for(int i = 0; i < myByteArray.length; i = i+2)
         {
-        tmp_value = myByteArray[i];
-        myByteArray[i] = myByteArray[i+1];
-        myByteArray[i+1] = tmp_value;
+            tmp_value = myByteArray[i];
+            myByteArray[i] = myByteArray[i+1];
+            myByteArray[i+1] = tmp_value;
         }
     }
 

@@ -17,10 +17,15 @@ third line evaluates the log file and prints some stats.
  * implement byte shift function in java
  * check jna
  * integrate shell script in python (subprocess)
+ * check if the algs work with odd nr of bytes...
 
 # my test system
- * intel core 2 duo (guido)
+ * Intel(R) Core(TM)2 CPU         T5600  @ 1.83GHz
  * ubuntu 12.04.2 64bit
+ * java version 1.6.0_24
+  * OpenJDK Runtime Environment (IcedTea6 1.11.5) (6b24-1.11.5-0ubuntu1~12.04.1)
+  * OpenJDK 64-Bit Server VM (build 20.0-b12, mixed mode)
+
 
 ## links
  * http://192.9.162.55/docs/books/jni/html/objtypes.html, 3.3.2 Accessing Arrays of Primitive Types

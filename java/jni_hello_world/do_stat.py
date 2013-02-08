@@ -50,6 +50,7 @@ class LogFileParser(object):
         self.__open_log_file(log_file_name)
         self.__parse_and_filter_log_file()
         self.log_file_descriptor.close()
+        self.__print_stat_from_function_data()
         self.__plot_function_data()
 
 
@@ -117,16 +118,33 @@ class LogFileParser(object):
                     break
 
 
+    def __print_stat_from_function_data(self):
+        """print stats of the collected data
+        """
+        print '[main] print statistics'
+
+        for element in self.function_name_value_tuple_list:
+            print 'function: %s' % element[0]
+            print ' * nr of values: %d' % len(element[1])
+            print ' * avg: %dns' % (int(sum(element[1])) / len(element[1]))
+            print ' * max: %dns' % max(element[1])
+            print ' * min: %dns' % min(element[1])
+
+
     def __plot_function_data(self):
         """plot the crap!
            more information here:
            http://matplotlib.sourceforge.net/api/pyplot_api.html#matplotlib.pyplot.plot
         """
 
-        element_index = 0
+        print '[main] print statistics'
+
+        function_name_to_plot_regex = re.compile('^.*flip.*$')
+
         for element in self.function_name_value_tuple_list:
-            pylab.plot(element[1], label = element[0])
-            element_index += 1
+
+            if function_name_to_plot_regex.match(element[0]):
+                pylab.plot(element[1], label = element[0])
 
         pylab.xlabel('test run index')
         pylab.ylabel('used time in function [ns]')

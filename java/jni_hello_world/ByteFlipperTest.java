@@ -1,13 +1,16 @@
 
-// source
+// for excellent jni examples, check here:
 // http://192.9.162.55/docs/books/jni/html/start.html
 
+
+import java.util.Random;
 
 
 class ByteFlipperTest
 {
 
-    private static final int BYTE_ARRAY_SIZE = 4 * 1024;
+    private static final int BYTE_ARRAY_SIZE        = 1024 * 1024;
+    private static final int NR_OF_FUNCTION_CALLS   = 2048;
 
 
     public void printByteArray(byte[] myByteArray)
@@ -45,6 +48,29 @@ class ByteFlipperTest
         }
     }
 
+    private byte[] getNewByteArrayRandom(int byteArrayLength)
+    {
+        Random randomGenerator = new Random();
+        byte[] newByteArray = new byte[byteArrayLength];
+        for(int i = 0; i < newByteArray.length; i++)
+        {
+            newByteArray[i] = (byte) randomGenerator.nextInt(0xff);
+        }
+
+        return newByteArray;
+    }
+
+    private byte[] getNewByteArrayAsc(int byteArrayLength)
+    {
+        byte[] newByteArray = new byte[byteArrayLength];
+        for(int i = 0; i < newByteArray.length; i++)
+        {
+            newByteArray[i] = (byte) (i % 0xff);
+        }
+
+        return newByteArray;
+    }
+
     public static void main(String[] args) {
 
         System.out.println("\n\n################################################################################");
@@ -52,12 +78,9 @@ class ByteFlipperTest
         System.out.println("# * BYTE_ARRAY_SIZE: " + BYTE_ARRAY_SIZE);
         System.out.println("################################################################################");
 
-        //declare and init byte array
-        byte[] myByteArray = new byte[BYTE_ARRAY_SIZE];
-        for(int i = 0; i < myByteArray.length; i++)
-        {
-            myByteArray[i] = (byte) (i % 0xff);
-        }
+        //byte array reference
+        byte[] myByteArray;
+
 
         long startTimeInNs;
         long stopTimeInNs;
@@ -72,29 +95,44 @@ class ByteFlipperTest
         System.out.println("################################################################################");
 
 
+        //clean up
+//         myByteArray = myByteFlipperTest.getNewByteArrayRandom(BYTE_ARRAY_SIZE);
+        System.gc();
+        System.out.flush();
+        for(int i = 0; i < NR_OF_FUNCTION_CALLS; i++)
+        {
+            startTimeInNs = System.nanoTime();
+            myByteFlipperTest.emptyCallJNI();
+            stopTimeInNs = System.nanoTime();
+            deltaTimeInNs = stopTimeInNs - startTimeInNs;
+            System.out.println("[main] time used in function emptyCallJNI(): " + deltaTimeInNs + "ns");
+        }
 
-        startTimeInNs = System.nanoTime();
-        myByteFlipperTest.emptyCallJNI();
-        stopTimeInNs = System.nanoTime();
-        deltaTimeInNs = stopTimeInNs - startTimeInNs;
-        System.out.println("[main] time used in function emptyCallJNI(): " + deltaTimeInNs + "ns");
+        //clean up
+        myByteArray = myByteFlipperTest.getNewByteArrayRandom(BYTE_ARRAY_SIZE);
+        System.gc();
+        System.out.flush();
+        for(int i = 0; i < NR_OF_FUNCTION_CALLS; i++)
+        {
+            startTimeInNs = System.nanoTime();
+            myByteFlipperTest.emptyCallGetAndReleaseByteArrayElementsJNI(myByteArray);
+            stopTimeInNs = System.nanoTime();
+            deltaTimeInNs = stopTimeInNs - startTimeInNs;
+            System.out.println("[main] time used in function emptyCallGetAndReleaseByteArrayElementsJNI(): " + deltaTimeInNs + "ns");
+        }
 
-
-
-        startTimeInNs = System.nanoTime();
-        myByteFlipperTest.emptyCallGetAndReleaseByteArrayElementsJNI(myByteArray);
-        stopTimeInNs = System.nanoTime();
-        deltaTimeInNs = stopTimeInNs - startTimeInNs;
-        System.out.println("[main] time used in function emptyCallGetAndReleaseByteArrayElementsJNI(): " + deltaTimeInNs + "ns");
-
-
-
-        startTimeInNs = System.nanoTime();
-        myByteFlipperTest.emptyCallGetAndReleasePrimitiveArrayCriticalJNI(myByteArray);
-        stopTimeInNs = System.nanoTime();
-        deltaTimeInNs = stopTimeInNs - startTimeInNs;
-        System.out.println("[main] time used in function emptyCallGetAndReleasePrimitiveArrayCriticalJNI(): " + deltaTimeInNs + "ns");
-
+        //clean up
+        myByteArray = myByteFlipperTest.getNewByteArrayRandom(BYTE_ARRAY_SIZE);
+        System.gc();
+        System.out.flush();
+        for(int i = 0; i < NR_OF_FUNCTION_CALLS; i++)
+        {
+            startTimeInNs = System.nanoTime();
+            myByteFlipperTest.emptyCallGetAndReleasePrimitiveArrayCriticalJNI(myByteArray);
+            stopTimeInNs = System.nanoTime();
+            deltaTimeInNs = stopTimeInNs - startTimeInNs;
+            System.out.println("[main] time used in function emptyCallGetAndReleasePrimitiveArrayCriticalJNI(): " + deltaTimeInNs + "ns");
+        }
 
 
         System.out.println("\n################################################################################");
@@ -103,32 +141,40 @@ class ByteFlipperTest
 
 
 
+        //clean up
+        myByteArray = myByteFlipperTest.getNewByteArrayRandom(BYTE_ARRAY_SIZE);
+        System.gc();
+        System.out.flush();
+        for(int i = 0; i < NR_OF_FUNCTION_CALLS; i++)
+        {
 //         System.out.println("[main] byte array content before flipBytesByteCopyPointerJNI()");
 //         myByteFlipperTest.printByteArray(myByteArray);
-
-        startTimeInNs = System.nanoTime();
-        myByteFlipperTest.flipBytesByteCopyPointerJNI(myByteArray);
-        stopTimeInNs = System.nanoTime();
-        deltaTimeInNs = stopTimeInNs - startTimeInNs;
-        System.out.println("[main] time used in function flipBytesByteCopyPointerJNI(): " + deltaTimeInNs + "ns");
-
+            startTimeInNs = System.nanoTime();
+            myByteFlipperTest.flipBytesByteCopyPointerJNI(myByteArray);
+            stopTimeInNs = System.nanoTime();
+            deltaTimeInNs = stopTimeInNs - startTimeInNs;
+            System.out.println("[main] time used in function flipBytesByteCopyPointerJNI(): " + deltaTimeInNs + "ns");
 //         System.out.println("[main] byte array content after flipBytesByteCopyPointerJNI()");
 //         myByteFlipperTest.printByteArray(myByteArray);
+        }
 
 
-
+        //clean up
+        myByteArray = myByteFlipperTest.getNewByteArrayRandom(BYTE_ARRAY_SIZE);
+        System.gc();
+        System.out.flush();
+        for(int i = 0; i < NR_OF_FUNCTION_CALLS; i++)
+        {
 //         System.out.println("[main] byte array content before flipBytesByteShiftPointerJNI()");
 //         myByteFlipperTest.printByteArray(myByteArray);
-
-        startTimeInNs = System.nanoTime();
-        myByteFlipperTest.flipBytesByteShiftPointerJNI(myByteArray);
-        stopTimeInNs = System.nanoTime();
-        deltaTimeInNs = stopTimeInNs - startTimeInNs;
-        System.out.println("[main] time used in function flipBytesByteShiftPointerJNI(): " + deltaTimeInNs + "ns");
-
+            startTimeInNs = System.nanoTime();
+            myByteFlipperTest.flipBytesByteShiftPointerJNI(myByteArray);
+            stopTimeInNs = System.nanoTime();
+            deltaTimeInNs = stopTimeInNs - startTimeInNs;
+            System.out.println("[main] time used in function flipBytesByteShiftPointerJNI(): " + deltaTimeInNs + "ns");
 //         System.out.println("[main] byte array content after flipBytesByteShiftPointerJNI()");
 //         myByteFlipperTest.printByteArray(myByteArray);
-
+        }
 
 
         System.out.println("\n################################################################################");
@@ -137,19 +183,22 @@ class ByteFlipperTest
 
 
 
+        //clean up
+        myByteArray = myByteFlipperTest.getNewByteArrayRandom(BYTE_ARRAY_SIZE);
+        System.gc();
+        System.out.flush();
+        for(int i = 0; i < NR_OF_FUNCTION_CALLS; i++)
+        {
 //         System.out.println("[main] byte array content before flipBytesByteCopyJava()");
 //         myByteFlipperTest.printByteArray(myByteArray);
-
-        startTimeInNs = System.nanoTime();
-        myByteFlipperTest.flipBytesByteCopyJava(myByteArray);
-        stopTimeInNs = System.nanoTime();
-        deltaTimeInNs = stopTimeInNs - startTimeInNs;
-        System.out.println("[main] time used in function flipBytesByteCopyJava(): " + deltaTimeInNs + "ns");
-
+            startTimeInNs = System.nanoTime();
+            myByteFlipperTest.flipBytesByteCopyJava(myByteArray);
+            stopTimeInNs = System.nanoTime();
+            deltaTimeInNs = stopTimeInNs - startTimeInNs;
+            System.out.println("[main] time used in function flipBytesByteCopyJava(): " + deltaTimeInNs + "ns");
 //         System.out.println("[main] byte array content after flipBytesByteCopyJava()");
 //         myByteFlipperTest.printByteArray(myByteArray);
-
-
+        }
 
     }
 

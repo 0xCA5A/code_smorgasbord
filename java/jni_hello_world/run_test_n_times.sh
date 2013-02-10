@@ -39,7 +39,7 @@ export LD_LIBRARY_PATH=.
 
 for LOOP_COUNTER in $(seq 1 $1)
 do
-    java ByteFlipperTest >> $LOG_FILE_NAME
+    taskset -c 0 java ByteFlipperTest >> $LOG_FILE_NAME
 done
 
 echo "[main] done! check log file in $LOG_FILE_NAME"

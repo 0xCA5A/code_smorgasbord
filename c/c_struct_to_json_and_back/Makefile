@@ -1,12 +1,29 @@
 
-
 CFLAGS += $(shell pkg-config --cflags json) -std=c99 -Wall
 LDFLAGS += $(shell pkg-config --libs json)
 
-all:
-	cc main.c -o main.o $(CFLAGS) $(LDFLAGS)
+CFLAGS += -I/home/sam/projects/github/audiocore-dsp/jack/clients/lib_hard/
+CFLAGS += -Dgnu_targets_arm_GCArmv7A
 
+APPLICATION_NAME = hello
+
+HEADERS = $(shell find . -name '*.h')
+SOURCES = $(shell find . -name '*.c' | grep -v main.c)
+OBJECTS = $(SOURCES:%.c=%.o)
+
+
+all: $(APPLICATION_NAME)
+
+%.o: %.c %.h
+	$(CC) -c $(CFLAGS) $(DEFINES) $<
+
+$(APPLICATION_NAME): main.c $(OBJECTS) $(HEADERS)
+	$(CC) $(CFLAGS) main.c $(OBJECTS) -o $(APPLICATION_NAME) $(LDFLAGS) $(DEFINES)
+
+
+	
+.PHONY: clean
 clean:
-	rm -f *.o
-
-
+	rm -fv *.o
+	rm -fv $(APPLICATION_NAME)
+	rm -fv *~

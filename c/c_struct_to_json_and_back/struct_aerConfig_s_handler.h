@@ -59,7 +59,7 @@ typedef struct struct_field
 
 
 void print_struct_aerConfig_s(struct aerConfig_s* aerConfig);
-struct struct_field* set_struct_aerConfig_s_data(void* aerConfig, const char* key, int value);
+int set_struct_aerConfig_s_int_data(void* aerConfig, const char* key, int value);
 
 #endif
 

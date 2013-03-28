@@ -2,12 +2,12 @@
     "struct_identifier":    "aerConfig_s",
     "type_identifier":      "aerConfig_t",
     "reset_bitfield":       "0xABCDEF12",
-    "valid_bitfield":       "0x1234",
+    "valid_bitfield":       "0x0892",
     "y2x_delay":            312,
     "srate_bitfield":       "0x67",
     "tail_length":          77,
-    "delay_tx_ag_chg":      89,
-    "delay_rx_ag_chg":      66,
+    "delay_tx_ag_chg":      123,
+    "delay_rx_ag_chg":      123123123,
     "num_samp_interp":      11,
-    "phone_mode":           777
+    "phone_mode":           787
 }

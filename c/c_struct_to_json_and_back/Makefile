@@ -9,7 +9,7 @@ CFLAGS += -Dgnu_targets_arm_GCArmv7A
 APPLICATION_NAME = c_struct_to_json_and_back
 
 HEADERS = $(shell find . -name '*.h')
-SOURCES = $(shell find . -name '*.c' | grep -v main.c)
+SOURCES = $(shell find . -name '*.c' | grep -v main.c | grep -v cunit_hexutils_test.c)
 OBJECTS = $(SOURCES:%.c=%.o)
 
 
@@ -29,4 +29,17 @@ $(APPLICATION_NAME): main.c $(OBJECTS) $(HEADERS)
 clean:
 	rm -fv *.o
 	rm -fv $(APPLICATION_NAME)
+	rm cunit_*_test
 	rm -fv *~
+
+
+.PHONY: build_tests
+build_tests:
+	$(CC) $(CFLAGS) $(DEFINES) cunit_hexutils_test.c hexutils.c -o cunit_hexutils_test -lcunit
+
+.PHONY: tests
+tests: build_tests
+	./cunit_hexutils_test
+
+
+	

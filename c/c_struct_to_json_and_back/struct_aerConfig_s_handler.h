@@ -49,7 +49,6 @@ typedef struct aerConfig_s {
 
 
 
-#define MAX_SPACE_IN_BYTE 32
 
 typedef struct struct_field
 {

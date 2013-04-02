@@ -2,23 +2,9 @@
 #include <stddef.h>
 #include <string.h>
 
+#include "struct_default_handler.h"
 #include "struct_aerConfig_s_handler.h"
 
-
-
-
-void print_struct_header(const void* p_structure, const char* struct_name)
-{
-    printf("################################################################################\n");
-    printf("# structure %s @ 0x%p\n", struct_name, p_structure);
-    printf("################################################################################\n");
-}
-
-
-void print_struct_footer(void)
-{
-    printf("################################################################################\n");
-}
 
 
 //aerConfig_s "reflection" or mapping
@@ -62,12 +48,6 @@ struct_field m_struct_aerConfig_s_field_reflection[] = {
 };
 
 
-// struct struct_field* get_struct_pointer()
-// {
-//     return &struct_field_list;
-// }
-
-
 /**
  * @brief function to set integer data to all the struct fields
  * assume that the key string is \0 terminated, don't check the boundaries!
@@ -75,8 +55,8 @@ struct_field m_struct_aerConfig_s_field_reflection[] = {
  * @param key key as string
  * @param value value as int32_t interger
  * @return int
- * 0: ok
- * !0: not ok
+ * value 0: ok
+ * value !0: not ok
  **/
 int set_struct_aerConfig_s_int_data(void* p_aerConfig, const char* key, int32_t value)
 {
@@ -108,22 +88,6 @@ int set_struct_aerConfig_s_int_data(void* p_aerConfig, const char* key, int32_t 
 
 
 /**
- * @brief helper function to print n spaces
- *
- * @param n number of spaces to print
- * @return void
- **/
-void print_n_spaces(int n)
-{
-    int i = 0;
-    for (i = 0; i < n; i++)
-    {
-        printf(" ");
-    }
-}
-
-
-/**
  * @brief function to print the aerConfig_s structure
  *
  * @param p_aerConfig pointer to the struct
@@ -131,7 +95,7 @@ void print_n_spaces(int n)
  **/
 void print_struct_aerConfig_s(struct aerConfig_s* p_aerConfig)
 {
-    print_struct_header(p_aerConfig, "aerConfig_s");
+    print_default_struct_header(p_aerConfig, "aerConfig_s");
 
     void* struct_address = (void*) p_aerConfig;
     int32_t int_value;
@@ -139,11 +103,11 @@ void print_struct_aerConfig_s(struct aerConfig_s* p_aerConfig)
     for (int i = 0; i < sizeof(m_struct_aerConfig_s_field_reflection) / sizeof(struct_field); i++)
     {
         int_value = *((int32_t *)(((uint8_t*) struct_address) + m_struct_aerConfig_s_field_reflection[i].field_offset));
-        printf("* %s:", m_struct_aerConfig_s_field_reflection[i].field_name);
-        print_n_spaces(MAX_SPACE_IN_BYTE - strlen(m_struct_aerConfig_s_field_reflection[i].field_name));
+
+        printf("# * %s:", m_struct_aerConfig_s_field_reflection[i].field_name);
+        print_n_spaces(MAX_SPACES_PER_LINE - strlen(m_struct_aerConfig_s_field_reflection[i].field_name));
         printf("0x%08x, %d\n", int_value, int_value);
     }
 
-    print_struct_footer();
+    print_default_struct_footer();
 }
-

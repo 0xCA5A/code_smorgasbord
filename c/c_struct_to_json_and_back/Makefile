@@ -29,7 +29,7 @@ $(APPLICATION_NAME): main.c $(OBJECTS) $(HEADERS)
 clean:
 	rm -fv *.o
 	rm -fv $(APPLICATION_NAME)
-	rm cunit_*_test
+	rm -fv cunit_*_test
 	rm -fv *~
 
 

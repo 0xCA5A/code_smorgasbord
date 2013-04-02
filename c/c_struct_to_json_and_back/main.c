@@ -100,15 +100,17 @@ int check_json_data_type_identifier(char* key, struct json_object* value, const 
 
 
 /**
- * @brief function to init a structure with data from a json object
+ * @brief function to init a structure with data from json objects
  * note: in my case there are only int values in the structures.
  * if you have other types, you have to rewrite this!
  *
  * @param jobj_root root element of a JSON object tree
- * @param structure ...
- * @param struct_identifier ...
- * @param type_identifier ...
+ * @param structure structure to init
+ * @param struct_identifier structure identifier string (struct name)
+ * @param type_identifier type identifier string (typedef name)
  * @return int
+ * values != 0: error case
+ * value == 0: everything is ok
  **/
 int init_struct_with_json_data(json_object* jobj_root,
                                void* structure,

@@ -1,8 +1,8 @@
 {
     "struct_identifier":    "aerConfig_s",
     "type_identifier":      "aerConfig_t",
-    "reset_bitfield":       "0xABCDEF12",
-    "valid_bitfield":       "0xA",
+    "reset_bitfield":       "0x0ABCDEF2",
+    "valid_bitfield":       "0x00C07D0",
     "y2x_delay":            312,
     "srate_bitfield":       "0x0AB0067",
     "tail_length":          77,

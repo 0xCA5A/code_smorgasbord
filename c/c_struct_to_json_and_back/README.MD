@@ -1,9 +1,14 @@
-# makefile #
+# makefile
 * add clean test integration
 * use autotools...
 
-# project #
+# project
 * separate test and python stuff from source
 
+# c struct to json
+* python script not jet ready
+
+# json to c struct
+* functionality for int elements ready
 
 

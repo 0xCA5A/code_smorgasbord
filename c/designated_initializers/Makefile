@@ -1,13 +1,7 @@
-
-
-# compile: source1.c source2.c
-# 	gcc -c source1.c
-# 	gcc -c source2.c
-
-
 HEADERS = $(shell find . -name '*.h')
 SOURCES = $(shell find . -name '*.c' | grep -v main.c)
 OBJECTS = $(SOURCES:%.c=%.o)
+CFLAGS = -O2
 
 APPLICATION_NAME = application
 
@@ -16,7 +10,7 @@ APPLICATION_NAME = application
 	$(CC) -c $(CFLAGS) $(DEFINES) $<
 
 link: $(OBJECTS)
-	gcc main.c source1.o source2.o -o $(APPLICATION_NAME)
+	gcc $(CFLAGS) main.c -o $(APPLICATION_NAME)
 
 
 clean:

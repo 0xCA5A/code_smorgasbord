@@ -10,26 +10,6 @@
 pthread_mutex_t g_lock;
 int g_shared_data[NR_OF_VALUES];
 
-// static inline void inline_hang_on(long value)
-// {
-//     for (long i = 0; i < value; i++)
-//     {
-//         ;;;
-//     }
-// }
-
-
-// static inline void inline_hang_on_random()
-// {
-//     srand(time(NULL));
-//     unsigned int random_value = rand();
-// 
-// //     printf("[%s] value: %d\n", __func__, random_value);
-// 
-//     random_value = random_value % 3200000;
-//     inline_hang_on(random_value);
-// }
-
 
 void* thread_function(void* argument)
 {

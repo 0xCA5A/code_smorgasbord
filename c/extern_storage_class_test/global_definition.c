@@ -1,4 +1,4 @@
 
 
 
-int global_value = 0;
+// int global_value = 0;

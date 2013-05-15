@@ -45,6 +45,9 @@ unsigned char hexchar_to_bin(const char *s)
  * expect the first two chars of the string to be 0x.
  * string has to be \0 terminated, string length is checked with strlen function.
  *
+ * replace this with stdlib function strtol
+ *     value = strtol(hex_string, p_hex_string_end, 16);
+ * 
  * @param hex_string input string, not modified
  * @param integer_value parsed 32bit bit hex string. first 32bit are converted.
  * @return returns 0 if everything was ok, in the other case a negative integer value.

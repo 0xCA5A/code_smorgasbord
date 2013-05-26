@@ -18,12 +18,10 @@ typedef struct aerConfig_s {
 
 
 // {
-//     "struct_identifier":    "aerConfig_s",
-//     "type_identifier":      "aerConfig_t",
-//     "reset_bitfield":       0x0000,
-//     "valid_bitfield":       0x0000,
+//     "reset_bitfield":       0x00000000,
+//     "valid_bitfield":       0x00000000,
 //     "y2x_delay":            0,
-//     "srate_bitfield":       0x0000,
+//     "srate_bitfield":       0x00000000,
 //     "tail_length":          0,
 //     "delay_tx_ag_chg":      0,
 //     "delay_rx_ag_chg":      0,

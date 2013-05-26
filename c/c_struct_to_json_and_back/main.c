@@ -14,106 +14,20 @@
 #include "debug.h"
 
 
-//TODO: remove this if possible
-int check_json_data_structure_identifier(char* key, struct json_object* value, const char* struct_identifier)
-{
-    enum json_type type = json_object_get_type(value);
-
-    //check key
-    if (!strcmp(key, "struct_identifier"))
-    {
-        DEBUG_PRINT("[%s] key is struct_identifier as expected...\n", __func__);
-    }
-    else
-    {
-        printf("[ERROR @ %s] key is _not_ struct_identifier...\n", __func__);
-        return -1;
-    }
-
-    //check type
-    if (type == json_type_string)
-    {
-        DEBUG_PRINT("[%s] type is json_type_string as expected...\n",__func__);
-    }
-    else
-    {
-        printf("[ERROR @ %s] type of struct_identifier is not string\n", __func__);
-        return -2;
-    }
-
-    //check value
-    if (!strncmp(struct_identifier, json_object_get_string(value), MAX_JSON_FIELD_LENGTH))
-    {
-        DEBUG_PRINT("[%s] value is %s as expected...\n",__func__, struct_identifier);
-    }
-    else
-    {
-        printf("[ERROR @ %s] value is _not_ %s...\n", __func__, struct_identifier);
-        return -3;
-    }
-
-    return 0;
-}
-
-
-//TODO: remove this if possible
-//TODO: this is the same crap as check_json_data_structure_identifier, fix this!!!
-int check_json_data_type_identifier(char* key, struct json_object* value, const char* type_identifier)
-{
-    enum json_type type = json_object_get_type(value);
-
-    //check key
-    if (!strcmp(key, "type_identifier"))
-    {
-        DEBUG_PRINT("[%s] key is type_identifier as expected...\n", __func__);
-    }
-    else
-    {
-        printf("[ERROR @ %s] key is _not_ type_identifier...\n", __func__);
-        return -1;
-    }
-
-    //check type
-    if (type == json_type_string)
-    {
-        DEBUG_PRINT("[%s] type is json_type_string as expected...\n",__func__);
-    }
-    else
-    {
-        printf("[ERROR @ %s] type of type_identifier is not string\n", __func__);
-        return -2;
-    }
-
-    //check value
-    if (!strncmp(type_identifier, json_object_get_string(value), MAX_JSON_FIELD_LENGTH))
-    {
-        DEBUG_PRINT("[%s] value is %s as expected...\n",__func__, type_identifier);
-    }
-    else
-    {
-        printf("[ERROR @ %s] value is _not_ %s...\n", __func__, type_identifier);
-        return -3;
-    }
-
-    return 0;
-}
-
 
 /**
- * @brief function to init a structure with data from a json object
+ * @brief function to init a structure with data from json objects
  * note: in my case there are only int values in the structures.
  * if you have other types, you have to rewrite this!
  *
  * @param jobj_root root element of a JSON object tree
- * @param structure ...
- * @param struct_identifier ...
- * @param type_identifier ...
+ * @param structure structure to init
  * @return int
+ * values != 0: error case
+ * value == 0: everything is ok
  **/
 int init_struct_with_json_data(json_object* jobj_root,
                                void* structure,
-                               const char* struct_identifier,
-                               const char* type_identifier,
                                int (*p_set_struct_int_data)(void* structure, const char* key, int value)
                               )
 {
@@ -121,28 +35,9 @@ int init_struct_with_json_data(json_object* jobj_root,
     int32_t integer_value = 0;
     const char* string_value;
 
-    int json_object_index = -1;
     json_object_object_foreach(jobj_root, key, val)
     {
-        json_object_index++;
-
-        //first element is structure identifier, decide if we need that...
-        //TODO: remove this
-        if (json_object_index == 0)
-        {
-            check_json_data_structure_identifier(key, val, struct_identifier);
-            continue;
-        }
-
-        //second element is type identifier, decide if we need that...
-        //TODO: remove this
-        if (json_object_index == 1)
-        {
-            check_json_data_type_identifier(key, val, type_identifier);
-            continue;
-        }
-
-        //all the other elements...
+        //NOTE: all elements are integers in the end!
         type = json_object_get_type(val);
         switch (type) {
             case json_type_int:
@@ -176,16 +71,15 @@ int main(void)
 {
     struct aerConfig_s aerConfig;
 
-    json_object* jobj_from_file = json_object_from_file("aerConfig_t.json");
-    if(jobj_from_file == NULL || is_error(jobj_from_file))
+    json_object* aerConfig_t_jobj_from_file = json_object_from_file("aerConfig_t.json");
+    if(aerConfig_t_jobj_from_file == NULL || is_error(aerConfig_t_jobj_from_file))
     {
         printf("[ERROR @ %s] json parser failed to parse data...\n", __func__);
         return -1;
     }
 
-    //int values only in this struct
     int (*p_set_struct_data)(void*, const char*, int) = &set_struct_aerConfig_s_int_data;
-    init_struct_with_json_data(jobj_from_file, &aerConfig, "aerConfig_s", "aerConfig_t", p_set_struct_data);
+    init_struct_with_json_data(aerConfig_t_jobj_from_file, &aerConfig, p_set_struct_data);
     print_struct_aerConfig_s(&aerConfig);
 
     return 0;

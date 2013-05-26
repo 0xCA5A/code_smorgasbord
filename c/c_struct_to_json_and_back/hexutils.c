@@ -39,11 +39,15 @@ unsigned char hexchar_to_bin(const char *s)
     return ret;
 }
 
+
 /**
  * @brief convert hex string to signed 32 bit integer (int32_t)
  * expect the first two chars of the string to be 0x.
  * string has to be \0 terminated, string length is checked with strlen function.
  *
+ * replace this with stdlib function strtol
+ *     value = strtol(hex_string, p_hex_string_end, 16);
+ * 
  * @param hex_string input string, not modified
  * @param integer_value parsed 32bit bit hex string. first 32bit are converted.
  * @return returns 0 if everything was ok, in the other case a negative integer value.
@@ -80,26 +84,15 @@ int convert_hex_string_to_bin(const char *hex_string, int32_t* integer_value)
         //have to provide a even number of characters to get a clean conversion
         my_string_buffer[1] = '0';
     }
-    
+
     *integer_value = 0x00000000;
     int shift = 0;
     for (int i = string_length - 1; i > 1 ; i--)
     {
-            i--;
-//             printf("> index: %d\n", i);
-//             printf("value converted: 0x%x\n", hexchar_to_bin(&my_string_buffer[i]));
-
-            shift = (string_length - 2 - i) / 2 * 8;
-//             printf("shift! : %d\n", shift);
-            *integer_value |= hexchar_to_bin(&my_string_buffer[i]) << shift;
-//             printf("> integer_value: %x\n", *integer_value);
-        }
-
-        
-
-    
-//     printf(">> string value: %s\n", my_string_buffer);
-//     printf(">> hex value: 0x%x\n", *integer_value);
+        i--;
+        shift = (string_length - 2 - i) / 2 * 8;
+        *integer_value |= hexchar_to_bin(&my_string_buffer[i]) << shift;
+    }
 
     return 0;
 }

@@ -17,5 +17,6 @@ c struct to json
 json to c struct
 ----------------
 * functionality for int elements ready
+* remove the identifier and type in json object
 
 

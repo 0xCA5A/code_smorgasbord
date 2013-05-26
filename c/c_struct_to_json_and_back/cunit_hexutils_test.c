@@ -1,12 +1,9 @@
 #include <stdio.h>
+#include <CUnit/Basic.h>
 
 #include "hexutils.h"
 
-#include "CUnit/Basic.h"
 
-
-/* Pointer to the file used by the tests. */
-static FILE* temp_file = NULL;
 
 /* The suite initialization function.
  * Opens the temporary file used by the tests.
@@ -17,6 +14,7 @@ int init_suite_hexutils(void)
     return 0;
 }
 
+
 /* The suite cleanup function.
  * Closes the temporary file used by the tests.
  * Returns zero on success, non-zero otherwise.
@@ -25,6 +23,7 @@ int clean_suite_hexutils(void)
 {
     return 0;
 }
+
 
 /* Simple test of fprintf().
  * Writes test data to the temporary file and checks
@@ -83,6 +82,7 @@ void test__hexchar_to_bin(void)
     CU_ASSERT(hexchar_to_bin("E1") == 0xE1);
     CU_ASSERT(hexchar_to_bin("F0") == 0xF0);
 }
+
 
 /* Simple test of fread().
  * Reads the data previously written by testFPRINTF()
@@ -175,6 +175,7 @@ void test__convert_hex_string_to_bin(void)
         CU_ASSERT(integer_value < 0);
 }
 
+
 /* The main() function for setting up and running the tests.
  * Returns a CUE_SUCCESS on successful running, another
  * CUnit error code on failure.
@@ -207,5 +208,6 @@ int main()
     CU_basic_set_mode(CU_BRM_VERBOSE);
     CU_basic_run_tests();
     CU_cleanup_registry();
+
     return CU_get_error();
 }

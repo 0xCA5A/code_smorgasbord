@@ -106,7 +106,7 @@ void print_struct_aerConfig_s(struct aerConfig_s* p_aerConfig)
 
         printf("# * %s:", m_struct_aerConfig_s_field_reflection[i].field_name);
         print_n_spaces(MAX_SPACES_PER_LINE - strlen(m_struct_aerConfig_s_field_reflection[i].field_name));
-        printf("0x%08x, %d\n", int_value, int_value);
+        printf("0X%08X, %d\n", int_value, int_value);
     }
 
     print_default_struct_footer();

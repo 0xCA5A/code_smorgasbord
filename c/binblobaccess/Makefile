@@ -8,7 +8,7 @@ OBJECT_DATA_NAME = my_data.obj
 DATA_SIZE_IN_BYTE = 42
 
 #check the objcopy output parameter (elf32-i386)
-CFLAGS = -m32
+CFLAGS = -Wall
 
 
 %.o: %.c %.h
@@ -37,7 +37,8 @@ blob_obj: blob
 	@echo "################################################################################"
 	@echo "# $@"
 	@echo "################################################################################"
-	objcopy --input binary --output elf32-i386 --binary-architecture i386 $(BIN_DATA_NAME) $(OBJECT_DATA_NAME)
+# 	objcopy --input binary --output elf32-i386 --binary-architecture i386 $(BIN_DATA_NAME) $(OBJECT_DATA_NAME)
+	ld -r -b binary -o $(OBJECT_DATA_NAME) $(BIN_DATA_NAME)
 	nm $(OBJECT_DATA_NAME)
 
 

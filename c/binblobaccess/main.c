@@ -12,10 +12,13 @@ int main()
     printf("[%s] hello world!\n", __func__);
 
     char* p_binary_data = &_binary_my_data_bin_start;
-    unsigned int binary_data_size_in_byte = (unsigned int) &_binary_my_data_bin_size;
-//     unsigned int binary_data_size_in_byte = (unsigned int) &_binary_my_data_bin_end - (unsigned int) &_binary_my_data_bin_start;
 
-    printf("[%s] data size: %d byte\n", __func__, binary_data_size_in_byte);
+    //had to switch to long because of the 32 / 64 bit portability...
+    //check sizeof values of different platforms / types for further information
+    unsigned long binary_data_size_in_byte = (unsigned long) &_binary_my_data_bin_size;
+//     unsigned long binary_data_size_in_byte = (unsigned long) &_binary_my_data_bin_end - (unsigned long) &_binary_my_data_bin_start;
+
+    printf("[%s] data size: %lu byte\n", __func__, binary_data_size_in_byte);
     printf("[%s] data start address: %p\n", __func__, (void*) &_binary_my_data_bin_start);
     printf("[%s] data end address: %p\n", __func__, (void*) &_binary_my_data_bin_end);
 

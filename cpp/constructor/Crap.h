@@ -7,7 +7,7 @@ class Crap
     public:
         //default constructor
         Crap(void);
-        //specific constructor
+        //specified constructor
         Crap(int value);
         //copy constructor
         Crap(const Crap& other);
@@ -15,11 +15,10 @@ class Crap
         ~Crap(void);
         //assignment operator
         Crap& operator = (const Crap& other);
+
         //member accessor stuff
         bool setValue(int value);
         bool getValue(int& value) const;
-
-    private:
 
     private:
         int m_value;

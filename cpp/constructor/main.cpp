@@ -43,7 +43,7 @@ int main()
         crap.setValue(77);
         crap.getValue(value);
     }
-    
+
     printf("[main] call Crap crap = dummy\n");
     {
         Crap crap = dummy;
@@ -67,6 +67,18 @@ int main()
         crap.setValue(77);
         crap.getValue(value);
     }
-    
+
+    printf("[main] assignment operator)\n");
+    {
+        Crap smallCrap(123);
+        Crap hugeCrap = smallCrap;
+        smallCrap = hugeCrap;
+
+        hugeCrap.getValue(value);
+        hugeCrap.setValue(77);
+        hugeCrap.getValue(value);
+    }
+
+
     return 0;
 }

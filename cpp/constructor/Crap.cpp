@@ -2,47 +2,56 @@
 #include "Crap.h"
 
 
+//default constructor
 Crap::Crap(void)
 {
-    printf("\t[i] %s: default constructor\n", __func__);
+    printf("\t[%s:%s:%d] default constructor (object: %p)\n", __FILE__, __func__, __LINE__, this);
 }
 
+//specific constructor
 Crap::Crap(int value)
 {
-    printf("\t[i] %s: constructor with int value\n", __func__);
-    m_value = value;
-}
-
-Crap::~Crap(void)
-{
-    printf("\t[i] %s: default destructor\n", __func__);
-}
-
-Crap::Crap(const Crap& other)
-{
-    other.getValue(m_value);
-    printf("\t[i] %s: copy constructor\n", __func__);
-}
-
-Crap& Crap::operator = (const Crap& other)
-{
-    printf("\t[i] %s: assignment operator\n", __func__);
-    int value;
-    other.getValue(value);
+    printf("\t[%s:%s:%d] specific constructor with int value (object: %p)\n", __FILE__, __func__, __LINE__, this);
     this->setValue(value);
 }
 
+//destructor
+Crap::~Crap(void)
+{
+    printf("\t[%s:%s:%d] default destructor (object: %p)\n", __FILE__, __func__, __LINE__, this);
+}
+
+//copy constructor
+Crap::Crap(const Crap& other)
+{
+    printf("\t[%s:%s:%d] copy constructor (object: %p)\n", __FILE__, __func__, __LINE__, this);
+    other.getValue(m_value);
+}
+
+//assignment operator
+Crap& Crap::operator = (const Crap& other)
+{
+    printf("\t[%s:%s:%d] assignment operator (object: %p)\n", __FILE__, __func__, __LINE__, this);
+    int value;
+    other.getValue(value);
+    this->setValue(value);
+
+    return *this;
+}
+
+//member value accessor method
 bool Crap::setValue(int value)
 {
-    printf("\t[i] %s: set value to the member\n", __func__);
+    printf("\t[%s:%s:%d] set value to the member (object: %p)\n", __FILE__, __func__, __LINE__, this);
     m_value = value;
 
     return true;
 }
 
+//member value accessor method
 bool Crap::getValue(int& value) const
 {
-    printf("\t[i] %s: get value from the member\n", __func__);
+    printf("\t[%s:%s:%d] get value from the member (object: %p)\n", __FILE__, __func__, __LINE__, this);
     value = m_value;
 
     return true;

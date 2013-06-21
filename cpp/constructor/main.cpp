@@ -4,81 +4,110 @@
 
 int main()
 {
-    int value;
 
-    printf("[main] Crap dummy variable\n");
-    Crap dummy(12);
+    printf("[%s:%s:%d] create Crap globalDummyCrap(21) variable\n", __FILE__, __func__, __LINE__);
+    Crap globalDummyCrap(21);
 
-    printf("[main] call Crap crap\n");
+    printf("\n[%s:%s:%d] start\n\n", __FILE__, __func__, __LINE__);
+
+    printf("\n[%s:%s:%d] call default constructor, Crap crap\n", __FILE__, __func__, __LINE__);
     {
         Crap crap;
-        crap.getValue(value);
-        crap.setValue(77);
-        crap.getValue(value);
-    }
 
-    printf("[main] call Crap crap()\n");
-    {
-        Crap crap();
-        printf("\t[i] does not work, compiler complains!\n");
-        //main.cpp:22:14: error: request for member ‘getValue’ in ‘crap’, which is of non-class type ‘Crap()’
-
+//         int value;
 //         crap.getValue(value);
 //         crap.setValue(77);
 //         crap.getValue(value);
     }
 
-    printf("[main] call Crap crap(42)\n");
+    printf("\n[%s:%s:%d] call 'default' constructor, Crap crap()\n", __FILE__, __func__, __LINE__);
+    {
+        Crap crap();
+        printf("\t[!] does not work, compiler complains non-class type Crap()!\n");
+        //main.cpp:22:14: error: request for member ‘getValue’ in ‘crap’, which is of non-class type ‘Crap()’
+
+//         int value;
+//         crap.getValue(value);
+//         crap.setValue(77);
+//         crap.getValue(value);
+    }
+
+    printf("\n[%s:%s:%d] call specified constructor, Crap crap(42)\n", __FILE__, __func__, __LINE__);
     {
         Crap crap(42);
-        crap.getValue(value);
-        crap.setValue(77);
-        crap.getValue(value);
+
+//         int value;
+//         crap.getValue(value);
+//         crap.setValue(77);
+//         crap.getValue(value);
     }
 
-    printf("[main] call Crap crap = Crap(14)\n");
+    printf("\n[%s:%s:%d] call specified constructor with assignment, Crap crap = Crap(14)\n", __FILE__, __func__, __LINE__);
     {
         Crap crap = Crap(14);
-        crap.getValue(value);
-        crap.setValue(77);
-        crap.getValue(value);
+
+//         int value;
+//         crap.getValue(value);
+//         crap.setValue(77);
+//         crap.getValue(value);
     }
 
-    printf("[main] call Crap crap = dummy\n");
-    {
-        Crap crap = dummy;
-        crap.getValue(value);
-        crap.setValue(77);
-        crap.getValue(value);
-    }
-
-    printf("[main] call Crap crap(dummy)\n");
-    {
-        Crap crap(dummy);
-        crap.getValue(value);
-        crap.setValue(77);
-        crap.getValue(value);
-    }
-
-    printf("[main] call Crap crap(Crap(123))\n");
+    printf("\n[%s:%s:%d] call copy constructor with new object, Crap crap(Crap(123))\n", __FILE__, __func__, __LINE__);
     {
         Crap crap(Crap(123));
-        crap.getValue(value);
-        crap.setValue(77);
-        crap.getValue(value);
+
+//         int value;
+//         crap.getValue(value);
+//         crap.setValue(77);
+//         crap.getValue(value);
     }
 
-    printf("[main] assignment operator)\n");
+    printf("\n[%s:%s:%d] call copy constructor with existing object, Crap crap(globalDummyCrap)\n", __FILE__, __func__, __LINE__);
+    {
+        Crap crap(globalDummyCrap);
+
+//         int value;
+//         crap.getValue(value);
+//         crap.setValue(77);
+//         crap.getValue(value);
+    }
+
+    printf("\n[%s:%s:%d] simple assignment, Crap crap = globalDummyCrap\n", __FILE__, __func__, __LINE__);
+    {
+        Crap crap = globalDummyCrap;
+
+//         int value;
+//         crap.getValue(value);
+//         crap.setValue(77);
+//         crap.getValue(value);
+    }
+
+    printf("\n[%s:%s:%d] assignment, globalDummyCrap = hugeCrap\n", __FILE__, __func__, __LINE__);
     {
         Crap smallCrap(123);
         Crap hugeCrap = smallCrap;
-        smallCrap = hugeCrap;
+        globalDummyCrap = hugeCrap;
 
-        hugeCrap.getValue(value);
-        hugeCrap.setValue(77);
-        hugeCrap.getValue(value);
+//         int value;
+//         hugeCrap.getValue(value);
+//         hugeCrap.setValue(77);
+//         hugeCrap.getValue(value);
     }
 
+    printf("\n[%s:%s:%d] assignment, smallCrap = globalDummyCrap\n", __FILE__, __func__, __LINE__);
+    {
+        Crap smallCrap(123);
+        //huge crap is not used at all...
+        Crap hugeCrap = smallCrap;
+        smallCrap = globalDummyCrap;
+
+//         int value;
+//         smallCrap.getValue(value);
+//         smallCrap.setValue(77);
+//         smallCrap.getValue(value);
+    }
+
+    printf("\n[%s:%s:%d] done\n\n", __FILE__, __func__, __LINE__);
 
     return 0;
 }

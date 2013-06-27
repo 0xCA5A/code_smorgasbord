@@ -1,7 +1,15 @@
 the output looks on my machine [0] like this [1].
 
 lesson learned:
- * even unused objects are created
+ * even unused objects are created. 
+   object creation can cause side effects, this is why the compiler can not optimize this away
+ * in code like this, default constructor is called first and then the specific one
+   
+    Crap crap;
+    crap = Crap(123);
+
+    two objects are created here, but in general you just want one...
+
 
 same same, but different:
 

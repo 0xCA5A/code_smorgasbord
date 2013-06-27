@@ -8,7 +8,7 @@ same same, but different:
 constructor calls:
 * Crap crap(42)
 * Crap crap = Crap(14)
-* Crap crap(Crap(123)
+* Crap crap(Crap(123))
 
 copy constructor:
 * Crap crap(globalDummyCrap)

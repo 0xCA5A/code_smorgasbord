@@ -11,7 +11,8 @@
 
 int main()
 {
-    uint32_t sum;
+    const unsigned int n = std::thread::hardware_concurrency();
+    std::cout << n << " concurrent threads are supported.\n";
 
     std::cout << "[main] create calculator objects" << std::endl;
     Calculator* myCalculatorList[NR_OF_CALCULATORS];
@@ -21,6 +22,7 @@ int main()
     }
 
     std::cout << "[main] get results from calculator objects and sum up" << std::endl;
+    uint32_t sum;
     for (int i = 0; i < NR_OF_CALCULATORS; i++)
     {
         sum += myCalculatorList[i]->getResult();

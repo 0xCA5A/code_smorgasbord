@@ -11,13 +11,11 @@ class Calculator
         uint32_t getResult(void);
 
     private:
-        static void calculateResult(std::promise<uint32_t> intPromise);
+        static uint32_t calculateResult(uint32_t index);
 
     private:
         uint32_t m_index;
         std::future<uint32_t> m_future;
-        std::promise<uint32_t> m_promise;
-        std::thread m_workerThread;
 };
 
 

@@ -2,10 +2,33 @@ in the beginning i just wanted to check why the XOR byte swap [1] is slower in m
 then it overshoot a little bit to this stuff here.
 
 [1] http://en.wikipedia.org/wiki/XOR_swap_algorithm
+
 [2] https://github.com/0xCA5A/code_smorgasbord/tree/master/java/jni_hello_world
 
 
 lesson learned
 --------------
 * http://stackoverflow.com/questions/495021/why-can-templates-only-be-implemented-in-the-header-file
+
+be careful with static stuff and templates!
+
+my algorithm register code did not work at all, the algorithms are registered by type.
+this makes sense wen you understand how templates work.
+the compiler creates a class for each type, the static stuff is contatined in each class.
+
+code:
+```
+MemoryFlipperAlgorithm<uint32_t>::printRegisteredAlgorithms();
+MemoryFlipperAlgorithm<uint8_t>::printRegisteredAlgorithms();
+```
+
+stdout:
+```
+sam@guido:~/projects/github/code_smorgasbord/cplusplus/native_memory_flipper$ ./memoryFlipperApplication
+static void MemoryFlipperAlgorithm<T>::printRegisteredAlgorithms() [with T = unsigned int][INFO]: registered algorithms:
+static void MemoryFlipperAlgorithm<T>::printRegisteredAlgorithms() [with T = unsigned char][INFO]: registered algorithms:
+ * memoryFlipperAlgorithmXOR
+```
+
+
 

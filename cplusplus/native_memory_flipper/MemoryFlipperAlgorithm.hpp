@@ -18,12 +18,11 @@ public:
     MemoryFlipperAlgorithm(const std::string& algorithmIdentifierString, void (*fp)(T* const, T* const));
     void flipMemory(const uint32_t memoryBufferSizeInElements);
     inline const std::string& getAlgorithmIdentifier() const {return m_algorithmIdentifierString;};
-    void printRegisteredAlgorithms(void) const;
+    static void printRegisteredAlgorithms(void);
     uint32_t getNumberOfRegisteredAlgorithms(void) const;
-//     inline uint32_t getMemoryBlockSizeInByte() const {return s_memoryBlockSizeInByte;};
-//     inline uint32_t getNumberOfFlipsPerChunk();
     T* const getMemoryBuffer(const uint32_t memoryBufferSizeInElements);
     void freeMemoryBuffer(const T* memoryBufferHandler);
+    void initMemoryBuffer(T* const memoryBufferHandler, uint32_t memoryBufferSizeInElements);
 
 private:
     MemoryFlipperAlgorithm(const MemoryFlipperAlgorithm&);

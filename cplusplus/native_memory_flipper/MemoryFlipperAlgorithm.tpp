@@ -1,15 +1,14 @@
-#include "MemoryFlipperAlgorithm.hpp"
 #include <iostream>
 #include <stdlib.h>
 #include <ctime>
+#include <cstring>
 
+#include "MemoryFlipperAlgorithm.hpp"
 #include "PrintMacros.hpp"
-
 
 
 template<typename T>
 std::list<std::string> MemoryFlipperAlgorithm<T>::s_algorithmIdentifierList;
-
 
 
 template<typename T>
@@ -29,11 +28,12 @@ inline void MemoryFlipperAlgorithm<T>::registerAlgorithm(const std::string& algo
 
 
 template<typename T>
-void MemoryFlipperAlgorithm<T>::printRegisteredAlgorithms(void) const
+void MemoryFlipperAlgorithm<T>::printRegisteredAlgorithms(void)
 {
+    PRINT_FORMATTED_INFO("registered algorithms:");
     std::list<std::string>::iterator iterator;
     for (iterator = MemoryFlipperAlgorithm::s_algorithmIdentifierList.begin(); iterator != MemoryFlipperAlgorithm::s_algorithmIdentifierList.end(); ++iterator) {
-        std::cout << " * " << *iterator;
+        PRINT_FORMATTED_LIST_ELEMENT(*iterator);
     }
 }
 
@@ -48,7 +48,7 @@ uint32_t MemoryFlipperAlgorithm<T>::getNumberOfRegisteredAlgorithms(void) const
 template<typename T>
 T* const MemoryFlipperAlgorithm<T>::getMemoryBuffer(const uint32_t memoryBufferSizeInElements)
 {
-    PRINT_FORMATTED_INFO("get memory buffer, " << memoryBufferSizeInElements << " elements, " << memoryBufferSizeInElements * sizeof(T) << "byte...");
+    PRINT_FORMATTED_INFO("get memory buffer, " << memoryBufferSizeInElements << " elements, " << memoryBufferSizeInElements * sizeof(T) << " byte...");
     return new T[memoryBufferSizeInElements];
 }
 
@@ -60,45 +60,43 @@ void MemoryFlipperAlgorithm<T>::freeMemoryBuffer(const T* memoryBufferHandler)
     delete memoryBufferHandler;
 }
 
+
+template<typename T>
+void MemoryFlipperAlgorithm<T>::initMemoryBuffer(T* const memoryBufferHandler, uint32_t memoryBufferSizeInElements)
+{
+    PRINT_FORMATTED_INFO("init memory buffer");
+
+//     for (uint32_t i = 0; i < memoryBufferSizeInElements; ++i) {
+//         memoryBufferHandler[i] = i;
+//     }
+
+    memset(memoryBufferHandler, 0x42, memoryBufferSizeInElements * sizeof(T));
+}
+
+
 template<typename T>
 void MemoryFlipperAlgorithm<T>::flipMemory(const uint32_t memoryBufferSizeInElements)
 {
-
-    
     //check if function pointer was set properly...
     if (m_functionPointer2FlipFunctionImplementation == NULL) {
-
         PRINT_FORMATTED_ERROR("m_pointer2FlipFunction was NULL, bad algorithm implementation...");
         exit(EXIT_FAILURE);
     }
 
-    //get memory here
+    //get memory
     T* const memoryBuffer = getMemoryBuffer(memoryBufferSizeInElements);
+    initMemoryBuffer(memoryBuffer, memoryBufferSizeInElements);
 
-    std::clock_t startTime;
+    PRINT_FORMATTED_INFO(memoryBufferSizeInElements / 2 << " flips todo, go!");
 
-    const uint32_t numberOfFlips = memoryBufferSizeInElements / 2;
-
-
-    startTime = std::clock();
-    for (uint32_t flipCount = 0; flipCount < numberOfFlips; ++flipCount) {
-        
-        //         pointer2FlipFunction();
-//         (*fp)(12, memoryBuffer, memoryBuffer)
-//         
-//         
-        
-        (*m_functionPointer2FlipFunctionImplementation)(memoryBuffer, memoryBuffer);
-
-        
+    std::clock_t startTime = std::clock();
+    for (uint32_t flipIndex = 0; flipIndex < memoryBufferSizeInElements; flipIndex += 2) {
+        (*m_functionPointer2FlipFunctionImplementation)(memoryBuffer + flipIndex, (memoryBuffer + 1) + flipIndex);
     }
-
     double swapDuration = ( std::clock() - startTime);
     PRINT_FORMATTED_INFO("total swap duration in clocks: " << swapDuration);
     PRINT_FORMATTED_INFO("total swap duration in seconds: " << swapDuration / (double) CLOCKS_PER_SEC);
 
-
     //clean up
     freeMemoryBuffer(memoryBuffer);
-    
 }

@@ -1,21 +1,12 @@
 #include "MemoryFlipperAlgorithmXOR.hpp"
 
 
-// template<typename T>
-// void MemoryFlipperAlgorithmXOR<T>::flipMemory(T* const memoryBuffer, const uint32_t memoryBufferSizeInByte)
-// {
-//     const uint32_t numberOfFlips = memoryBufferSizeInByte / sizeof(T);
-// 
-//     for (uint32_t flipCount = 0; flipCount < numberOfFlips; ++flipCount) {
-// 
-// //         pointer2FlipFunction();
-//     }
-//     
-//     
-// }
+template<typename T>
+inline void MemoryFlipperAlgorithmXOR<T>::xorMemoryFlip(T* const dataElement0, T* const dataElement1)
+{
+        *dataElement0 ^= *dataElement1;
+        *dataElement1 ^= *dataElement0;
+        *dataElement0 ^= *dataElement1;
+};
 
 
-
-
-
-// {};

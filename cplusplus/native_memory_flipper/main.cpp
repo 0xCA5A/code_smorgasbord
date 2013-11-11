@@ -7,6 +7,8 @@
 
 
 
+
+
 int main(int argc, char* argv[])
 {
     std::string algorithmName;
@@ -14,6 +16,10 @@ int main(int argc, char* argv[])
 
     algorithmName = "memoryFlipperAlgorithmXOR";
     MemoryFlipperAlgorithmXOR<uint8_t> memoryFlipperAlgorithmXOR(algorithmName);
+
+    MemoryFlipperAlgorithm<uint32_t>::printRegisteredAlgorithms();
+    MemoryFlipperAlgorithm<uint8_t>::printRegisteredAlgorithms();
+
     memoryFlipperAlgorithmXOR.flipMemory(memoryBufferSizeInByte);
 
     return 0;

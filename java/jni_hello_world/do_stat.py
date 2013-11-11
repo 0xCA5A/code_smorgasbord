@@ -79,6 +79,7 @@ class LogFileParser(object):
         self.__function_name_value_tuple_list.append(("emptyCallGetAndReleasePrimitiveArrayCriticalJNI", []))
         self.__function_name_value_tuple_list.append(("flipBytesByteCopyPointerJNI", []))
         self.__function_name_value_tuple_list.append(("flipBytesByteShiftPointerJNI", []))
+        self.__function_name_value_tuple_list.append(("flipBytesByteXORPointerJNI", []))
         self.__function_name_value_tuple_list.append(("flipBytesByteCopyJava", []))
 
         empty_line_regex = re.compile('^\s*$')

@@ -1,10 +1,8 @@
-
-
-OBJ_FILES := MemoryFlipperApplication.o main.o
+OBJ_FILES := main.o
 HEADER_FILES := $(wildcard *.hpp)
 TEMPLATE_FILES := $(wildcard *.tpp)
 CPPFLAGS += -Wall
-APP_BINARY := memoryFlipperApplication
+APP_BINARY := memoryFlipper
 COMPILER := g++
 
 

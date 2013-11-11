@@ -15,7 +15,7 @@ template<typename T>
 class MemoryFlipperAlgorithm
 {
 public:
-    MemoryFlipperAlgorithm(const std::string& algorithmIdentifierString, void (*fp)(T* const, T* const));
+    MemoryFlipperAlgorithm(const std::string& algorithmIdentifierString, void (*functionPointer)(T* const, T* const));
     void flipMemory(const uint32_t memoryBufferSizeInElements);
     inline const std::string& getAlgorithmIdentifier() const {return m_algorithmIdentifierString;};
     static void printRegisteredAlgorithms(void);
@@ -31,7 +31,6 @@ private:
 
 private:
     const std::string m_algorithmIdentifierString;
-    //i want them const!
     static std::list<std::string> s_algorithmIdentifierList;
     void (*m_functionPointer2FlipFunctionImplementation)(T* const, T* const);
 };

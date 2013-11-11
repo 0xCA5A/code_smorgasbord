@@ -12,9 +12,9 @@ std::list<std::string> MemoryFlipperAlgorithm<T>::s_algorithmIdentifierList;
 
 
 template<typename T>
-MemoryFlipperAlgorithm<T>::MemoryFlipperAlgorithm(const std::string& algorithmIdentifierString, void (*fp)(T* const,T* const))
+MemoryFlipperAlgorithm<T>::MemoryFlipperAlgorithm(const std::string& algorithmIdentifierString, void (*functionPointer)(T* const,T* const))
     : m_algorithmIdentifierString(algorithmIdentifierString)
-    , m_functionPointer2FlipFunctionImplementation(fp)
+    , m_functionPointer2FlipFunctionImplementation(functionPointer)
 {
     registerAlgorithm(m_algorithmIdentifierString);
 }
@@ -30,7 +30,7 @@ inline void MemoryFlipperAlgorithm<T>::registerAlgorithm(const std::string& algo
 template<typename T>
 void MemoryFlipperAlgorithm<T>::printRegisteredAlgorithms(void)
 {
-    PRINT_FORMATTED_INFO("registered algorithms:");
+    PRINT_FORMATTED_INFO("registered algorithms for " << sizeof(T) << "byte type:");
     std::list<std::string>::iterator iterator;
     for (iterator = MemoryFlipperAlgorithm::s_algorithmIdentifierList.begin(); iterator != MemoryFlipperAlgorithm::s_algorithmIdentifierList.end(); ++iterator) {
         PRINT_FORMATTED_LIST_ELEMENT(*iterator);
@@ -66,11 +66,11 @@ void MemoryFlipperAlgorithm<T>::initMemoryBuffer(T* const memoryBufferHandler, u
 {
     PRINT_FORMATTED_INFO("init memory buffer");
 
-//     for (uint32_t i = 0; i < memoryBufferSizeInElements; ++i) {
-//         memoryBufferHandler[i] = i;
-//     }
+    for (uint32_t i = 0; i < memoryBufferSizeInElements; ++i) {
+        memoryBufferHandler[i] = i;
+    }
 
-    memset(memoryBufferHandler, 0x42, memoryBufferSizeInElements * sizeof(T));
+//     memset(memoryBufferHandler, 0x42, memoryBufferSizeInElements * sizeof(T));
 }
 
 
@@ -83,7 +83,7 @@ void MemoryFlipperAlgorithm<T>::flipMemory(const uint32_t memoryBufferSizeInElem
         exit(EXIT_FAILURE);
     }
 
-    //get memory
+    //get memory buffer
     T* const memoryBuffer = getMemoryBuffer(memoryBufferSizeInElements);
     initMemoryBuffer(memoryBuffer, memoryBufferSizeInElements);
 
@@ -93,9 +93,8 @@ void MemoryFlipperAlgorithm<T>::flipMemory(const uint32_t memoryBufferSizeInElem
     for (uint32_t flipIndex = 0; flipIndex < memoryBufferSizeInElements; flipIndex += 2) {
         (*m_functionPointer2FlipFunctionImplementation)(memoryBuffer + flipIndex, (memoryBuffer + 1) + flipIndex);
     }
-    double swapDuration = ( std::clock() - startTime);
-    PRINT_FORMATTED_INFO("total swap duration in clocks: " << swapDuration);
-    PRINT_FORMATTED_INFO("total swap duration in seconds: " << swapDuration / (double) CLOCKS_PER_SEC);
+    double flipDuration = ( std::clock() - startTime);
+    PRINT_FORMATTED_INFO(m_algorithmIdentifierString << " total flip duration in clocks: " << flipDuration << ", " << flipDuration / (double) CLOCKS_PER_SEC * 1000 << "ms");
 
     //clean up
     freeMemoryBuffer(memoryBuffer);

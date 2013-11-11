@@ -7,18 +7,22 @@
 
 int main(int argc, char* argv[])
 {
-    MemoryFlipperApplication memoryFlipperApplication;
+//     MemoryFlipperApplication memoryFlipperApplication;
 
     std::string algorithmName;
 
-    const uint32_t memoryBufferSizeInByte = 1024 * 1024 * 1024;
+    const uint32_t memoryBufferSizeInByte = 1024 * 1024;
     void* memoryBuffer = malloc(memoryBufferSizeInByte);
 
     //get the algorithms
     algorithmName = "memoryFlipperAlgorithmXOR";
-    MemoryFlipperAlgorithmXOR<uint8_t, 123> memoryFlipperAlgorithmXOR(algorithmName);
+    MemoryFlipperAlgorithmXOR<uint8_t> memoryFlipperAlgorithmXOR(algorithmName);
     memoryFlipperAlgorithmXOR.flipMemory((uint8_t*) memoryBuffer, memoryBufferSizeInByte);
 
+//     MemoryFlipperAlgorithmXOR<uint32_t, 123> memoryFlipperAlgorithmXOR(algorithmName);
+//     memoryFlipperAlgorithmXOR.flipMemory((uint8_t*) memoryBuffer, memoryBufferSizeInByte);
+
+    
 //     algorithmName = "mixerAlgorithmSimpleAddWithNormalization";
 //     MixerAlgorithmSimpleAddWithNormalization mixerAlgorithmSimpleAddWithNormalization(algorithmName);
 // 

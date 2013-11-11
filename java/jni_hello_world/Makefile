@@ -11,13 +11,13 @@ COMMON_FLAGS = -Wall -Werror
 
 
 # guido
-CFLAGS = -march=core2 -O2 -pipe -fomit-frame-pointer
+#CFLAGS = -march=core2 -O2 -pipe -fomit-frame-pointer
 
 # f14
 # CFLAGS = -march=pentium-m -O2 -pipe -fomit-frame-pointer
 
 # nemo
-# CFLAGS = -march=corei7-avx -O2 -pipe -fomit-frame-pointer
+CFLAGS = -march=corei7-avx -O2 -pipe -fomit-frame-pointer
 
 
 

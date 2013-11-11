@@ -11,16 +11,17 @@
 /**
  * @brief abstract class for memory flipper algorithms
  */
-template<typename T, const uint32_t memoryBlockSizeInByte>
+template<typename T>
 class MemoryFlipperAlgorithm
 {
 public:
-    MemoryFlipperAlgorithm(const std::string& algorithmIdentifierString);
-    virtual void flipMemory(T* const memoryBuffer, const uint32_t bufferSize) = 0;
+    MemoryFlipperAlgorithm(const std::string& algorithmIdentifierString, void (*fp)(T*, T*));
+    void flipMemory(T* const memoryBuffer, const uint32_t memoryBufferSizeInByte);
     inline const std::string& getAlgorithmIdentifier() const {return m_algorithmIdentifierString;};
     void printRegisteredAlgorithms(void) const;
     uint32_t getNumberOfRegisteredAlgorithms(void) const;
-    inline uint32_t getMemoryBlockSizeInByte() const {return s_memoryBlockSizeInByte;};
+//     inline uint32_t getMemoryBlockSizeInByte() const {return s_memoryBlockSizeInByte;};
+//     inline uint32_t getNumberOfFlipsPerChunk();
 
 private:
     MemoryFlipperAlgorithm(const MemoryFlipperAlgorithm&);
@@ -30,10 +31,13 @@ private:
 private:
     const std::string m_algorithmIdentifierString;
 
+
     //i want them const!
     static std::list<std::string> s_algorithmIdentifierList;
-    static const uint32_t s_memoryBlockSizeInByte = memoryBlockSizeInByte;
+//     static const uint32_t s_memoryBlockSizeInByte = memoryBlockSizeInByte;
     static const uint32_t s_dataWordLengthInByte = sizeof(T);
+
+    void (*m_functionPointer2FlipFunctionImplementation)(T*, T*);
 };
 
 

@@ -76,6 +76,44 @@ JNIEXPORT void JNICALL Java_ByteFlipperTest_flipBytesByteCopyPointerJNI(JNIEnv* 
 }
 
 
+JNIEXPORT void JNICALL Java_ByteFlipperTest_flipBytesByteXORPointerJNI(JNIEnv* env, jobject obj, jbyteArray byte_array)
+{
+    //check here
+    //http://192.9.162.55/docs/books/jni/html/objtypes.html, 3.3.2 Accessing Arrays of Primitive Types
+
+//     printf("[%s] hello from function\n", __func__);
+
+    int i;
+
+    //get direct pointer to the elements
+    jbyte* p_byte_array = (jbyte*) (*env)->GetPrimitiveArrayCritical(env, byte_array, NULL);
+
+    //exception occured?
+//     if (p_byte_array == NULL) {
+//         printf("[!] CANT ACCESS ARRAY, GOT NULL POINTER!\n");
+//         exit(-1);
+//     }
+
+    for(i = 0; i < (ByteFlipperTest_BYTE_ARRAY_SIZE - 1) / sizeof(char); i = i+2)
+    {
+        //source: http://en.wikipedia.org/wiki/XOR_swap_algorithm
+
+        //x' = x xor y
+        p_byte_array[i] = p_byte_array[i] ^ p_byte_array[i+1];
+
+        //y' = x' xor y
+        p_byte_array[i+1] = p_byte_array[i] ^ p_byte_array[i+1];
+
+        //x'' = x' xor y'
+        p_byte_array[i] = p_byte_array[i] ^ p_byte_array[i+1];
+
+    }
+    //release pointer
+    (*env)->ReleasePrimitiveArrayCritical(env, byte_array, p_byte_array, 0);
+
+}
+
+
 JNIEXPORT void JNICALL Java_ByteFlipperTest_flipBytesByteShiftPointerJNI(JNIEnv* env, jobject obj, jbyteArray byte_array)
 {
     //check here

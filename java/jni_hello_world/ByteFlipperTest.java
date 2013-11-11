@@ -40,6 +40,7 @@ class ByteFlipperTest
     private native void emptyCallGetAndReleaseByteArrayElementsJNI(byte[] myByteArray);
     private native void emptyCallGetAndReleasePrimitiveArrayCriticalJNI(byte[] myByteArray);
     private native void flipBytesByteCopyPointerJNI(byte[] myByteArray);
+    private native void flipBytesByteXORPointerJNI(byte[] myByteArray);
     private native void flipBytesByteShiftPointerJNI(byte[] myByteArray);
 
 
@@ -167,6 +168,7 @@ class ByteFlipperTest
         System.out.println("################################################################################");
 
         myByteFlipperTest.invokeTestMethodByName(myByteFlipperTest, "flipBytesByteCopyPointerJNI", NR_OF_FUNCTION_CALLS);
+        myByteFlipperTest.invokeTestMethodByName(myByteFlipperTest, "flipBytesByteXORPointerJNI", NR_OF_FUNCTION_CALLS);
         myByteFlipperTest.invokeTestMethodByName(myByteFlipperTest, "flipBytesByteShiftPointerJNI", NR_OF_FUNCTION_CALLS);
 
 

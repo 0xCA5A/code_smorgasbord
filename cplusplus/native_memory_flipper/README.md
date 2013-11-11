@@ -31,4 +31,10 @@ static void MemoryFlipperAlgorithm<T>::printRegisteredAlgorithms() [with T = uns
 ```
 
 
+with optimization, the flipper runs factor 4 faster.
+choosen approach with only one portion of data per function call not optimal.
+a better (optimizable) solution is to pass wider buffers to the flip function.
+the compiler can then optimize if possible (simd stuff).
+i think it is as well not optimal to use a function pointer for the algorithm here.
+as far as i know the compile can not fully optimize this (inline).
 

@@ -13,7 +13,7 @@ public:
         : MemoryFlipperAlgorithm<T>(algorithmIdentifierString, &xorMemoryFlip)
     {};
 
-    inline static void xorMemoryFlip(T* dataElement0, T* dataElement1) {
+    inline static void xorMemoryFlip(T* const dataElement0, T* const dataElement1) {
         *dataElement0 ^= *dataElement1;
         *dataElement1 ^= *dataElement0;
         *dataElement0 ^= *dataElement1;

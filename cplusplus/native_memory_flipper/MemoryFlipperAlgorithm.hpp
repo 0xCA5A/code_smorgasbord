@@ -15,14 +15,15 @@ template<typename T>
 class MemoryFlipperAlgorithm
 {
 public:
-    MemoryFlipperAlgorithm(const std::string& algorithmIdentifierString, void (*fp)(T*, T*));
-    void flipMemory(const uint32_t memoryBufferSizeInByte);
+    MemoryFlipperAlgorithm(const std::string& algorithmIdentifierString, void (*fp)(T* const, T* const));
+    void flipMemory(const uint32_t memoryBufferSizeInElements);
     inline const std::string& getAlgorithmIdentifier() const {return m_algorithmIdentifierString;};
     void printRegisteredAlgorithms(void) const;
     uint32_t getNumberOfRegisteredAlgorithms(void) const;
 //     inline uint32_t getMemoryBlockSizeInByte() const {return s_memoryBlockSizeInByte;};
 //     inline uint32_t getNumberOfFlipsPerChunk();
-    T* getMemoryBuffer(const uint32_t memoryBufferSizeInByte);
+    T* const getMemoryBuffer(const uint32_t memoryBufferSizeInElements);
+    void freeMemoryBuffer(const T* memoryBufferHandler);
 
 private:
     MemoryFlipperAlgorithm(const MemoryFlipperAlgorithm&);
@@ -31,14 +32,9 @@ private:
 
 private:
     const std::string m_algorithmIdentifierString;
-
-
     //i want them const!
     static std::list<std::string> s_algorithmIdentifierList;
-//     static const uint32_t s_memoryBlockSizeInByte = memoryBlockSizeInByte;
-    static const uint32_t s_dataWordLengthInByte = sizeof(T);
-
-    void (*m_functionPointer2FlipFunctionImplementation)(T*, T*);
+    void (*m_functionPointer2FlipFunctionImplementation)(T* const, T* const);
 };
 
 

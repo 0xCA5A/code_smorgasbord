@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdlib>
+#include <ctime>
 
 #include "MemoryFlipperApplication.hpp"
 #include "MemoryFlipperAlgorithmXOR.hpp"
@@ -11,13 +12,24 @@ int main(int argc, char* argv[])
 
     std::string algorithmName;
 
-    const uint32_t memoryBufferSizeInByte = 1024 * 1024;
-    void* memoryBuffer = malloc(memoryBufferSizeInByte);
+    std::clock_t startTime;
+
+    const uint32_t memoryBufferSizeInByte = 1024 * 1024 * 512;
+//     void* memoryBuffer = malloc(memoryBufferSizeInByte);
 
     //get the algorithms
     algorithmName = "memoryFlipperAlgorithmXOR";
     MemoryFlipperAlgorithmXOR<uint8_t> memoryFlipperAlgorithmXOR(algorithmName);
-    memoryFlipperAlgorithmXOR.flipMemory((uint8_t*) memoryBuffer, memoryBufferSizeInByte);
+
+
+
+    startTime = std::clock();
+    memoryFlipperAlgorithmXOR.flipMemory(memoryBufferSizeInByte);
+    double swapDuration = ( std::clock() - startTime);
+    PRINT_FORMATTED_INFO("total swap duration in clocks: " << swapDuration);
+    PRINT_FORMATTED_INFO("total swap duration in seconds: " << swapDuration / (double) CLOCKS_PER_SEC);
+
+
 
 //     MemoryFlipperAlgorithmXOR<uint32_t, 123> memoryFlipperAlgorithmXOR(algorithmName);
 //     memoryFlipperAlgorithmXOR.flipMemory((uint8_t*) memoryBuffer, memoryBufferSizeInByte);
@@ -64,5 +76,8 @@ int main(int argc, char* argv[])
 //     const std::string mixerAlgorithmRMSGainAfterSumMixFileName(mixerAlgorithmRMSGainAfterSum.getAlgorithmIdentifier() + "MixResultData.wav");
 //     mixerApplication.mixRIFFWAVEFiles(mixerAlgorithmRMSGainAfterSumMixFileName);
 
+//         free memoryBuffer;
+
+    
     return 0;
 }

@@ -10,28 +10,14 @@ class MemoryFlipperAlgorithmXOR : public MemoryFlipperAlgorithm<T>
 {
 public:
     MemoryFlipperAlgorithmXOR(std::string& algorithmIdentifierString)
-        : MemoryFlipperAlgorithm<T>(algorithmIdentifierString, xorMemorzFlip)
-    {
+        : MemoryFlipperAlgorithm<T>(algorithmIdentifierString, &xorMemoryFlip)
+    {};
 
-//         pointer2FlipFunction
-//         m_functionPointer2FlipFunctionImplementation = &this->xorMemorzFlip;
+    inline static void xorMemoryFlip(T* dataElement0, T* dataElement1) {
+        *dataElement0 ^= *dataElement1;
+        *dataElement1 ^= *dataElement0;
+        *dataElement0 ^= *dataElement1;
     };
-    
-    
-//     virtual void flipMemory(T* const memoryBuffer, const uint32_t memoryBufferSizeInByte);
-//         : MemoryFlipperAlgorithm(algorithmIdentifierString) {}
-
-// private:
-//     static const MixerAlgorithmDataElement s_mixerAlgorithmDataElement;
-//     static const uint32_t s_nrOfSamplesPerChunk = 1;
-
-    static void xorMemorzFlip(T*, T*) {
-
-        std::cout << "hello from function" << std::endl;
-        
-    };
-    
-
 };
 
 

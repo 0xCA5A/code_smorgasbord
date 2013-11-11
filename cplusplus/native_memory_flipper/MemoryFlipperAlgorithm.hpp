@@ -16,12 +16,13 @@ class MemoryFlipperAlgorithm
 {
 public:
     MemoryFlipperAlgorithm(const std::string& algorithmIdentifierString, void (*fp)(T*, T*));
-    void flipMemory(T* const memoryBuffer, const uint32_t memoryBufferSizeInByte);
+    void flipMemory(const uint32_t memoryBufferSizeInByte);
     inline const std::string& getAlgorithmIdentifier() const {return m_algorithmIdentifierString;};
     void printRegisteredAlgorithms(void) const;
     uint32_t getNumberOfRegisteredAlgorithms(void) const;
 //     inline uint32_t getMemoryBlockSizeInByte() const {return s_memoryBlockSizeInByte;};
 //     inline uint32_t getNumberOfFlipsPerChunk();
+    T* getMemoryBuffer(const uint32_t memoryBufferSizeInByte);
 
 private:
     MemoryFlipperAlgorithm(const MemoryFlipperAlgorithm&);

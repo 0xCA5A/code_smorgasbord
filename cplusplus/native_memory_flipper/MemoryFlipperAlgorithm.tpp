@@ -46,18 +46,29 @@ uint32_t MemoryFlipperAlgorithm<T>::getNumberOfRegisteredAlgorithms(void) const
 
 
 template<typename T>
-void MemoryFlipperAlgorithm<T>::flipMemory(T* const memoryBuffer, const uint32_t memoryBufferSizeInByte)
+T* getMemoryBuffer(const uint32_t memoryBufferSizeInByte)
+{
+    return new T[memoryBufferSizeInByte / sizeof(T)];
+}
+
+
+template<typename T>
+void MemoryFlipperAlgorithm<T>::flipMemory(const uint32_t memoryBufferSizeInByte)
 {
 
+    
     //check if function pointer was set properly...
     if (m_functionPointer2FlipFunctionImplementation == NULL) {
 
         PRINT_FORMATTED_ERROR("m_pointer2FlipFunction was NULL, bad algorithm implementation...");
         exit(EXIT_FAILURE);
-        
     }
-        
-    
+
+    //get memory here
+    T* memoryBuffer = getMemoryBuffer(memoryBufferSizeInByte);
+
+
+
     const uint32_t numberOfFlips = memoryBufferSizeInByte / sizeof(T);
     
     for (uint32_t flipCount = 0; flipCount < numberOfFlips; ++flipCount) {

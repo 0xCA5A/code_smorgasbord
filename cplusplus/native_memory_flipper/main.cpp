@@ -1,12 +1,9 @@
 #include <iostream>
 #include <cstdlib>
 
-#include "MemoryFlipperApplication.hpp"
-#include "MemoryFlipperAlgorithmXOR.hpp"
 #include "PrintMacros.hpp"
-
-
-
+#include "MemoryFlipperAlgorithmShift.hpp"
+#include "MemoryFlipperAlgorithmXOR.hpp"
 
 
 int main(int argc, char* argv[])

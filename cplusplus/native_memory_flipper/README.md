@@ -12,9 +12,9 @@ lesson learned
 
 be careful with static stuff and templates!
 
-my algorithm register code did not work at all, the algorithms are registered by type.
-this makes sense wen you understand how templates work.
-the compiler creates a class for each type, the static stuff is contatined in each class.
+my algorithm register code did not work at all, the algorithms are registered by template type.
+this makes sense, the compiler creates a class for each type.
+the static stuff is contatined in each class.
 
 code:
 ```
@@ -29,6 +29,9 @@ static void MemoryFlipperAlgorithm<T>::printRegisteredAlgorithms() [with T = uns
 static void MemoryFlipperAlgorithm<T>::printRegisteredAlgorithms() [with T = unsigned char][INFO]: registered algorithms:
  * memoryFlipperAlgorithmXOR
 ```
+
+in java, it is possible to have static members in generic classes.
+https://github.com/0xCA5A/code_smorgasbord/tree/master/java/hello_java_generics
 
 
 with optimization, the flipper runs factor 4 faster.

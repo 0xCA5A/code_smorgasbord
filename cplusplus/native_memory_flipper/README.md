@@ -34,7 +34,7 @@ in java, it is possible to have static members in generic classes.
 https://github.com/0xCA5A/code_smorgasbord/tree/master/java/hello_java_generics
 
 
-with optimization, the flipper runs factor 4 faster.
+with optimization, the flipper runs faster by a factor 4.
 choosen approach with only one portion of data per function call not optimal.
 a better (optimizable) solution is to pass wider buffers to the flip function.
 the compiler can then optimize if possible (simd stuff).

@@ -1,0 +1,49 @@
+<?xml version="1.0" ?>
+
+  <project name="ant_findbugs" default="package">
+
+
+    <property file="project.properties"/>
+
+
+    <ant antfile="bootstrap_findbugs.xml" />
+
+
+    <target name="init" description="init env">
+      <mkdir dir="build/classes" />
+      <mkdir dir="dist" />
+    </target>
+
+    <target name="clean" description="clean env">
+      <delete dir="build/classes" />
+      <delete dir="dist" />
+    </target>   
+
+    <target name="compile" depends="init" description="compile java code">
+      <javac srcdir="src" destdir="build/classes" includeantruntime="true"/>
+    </target>
+
+    <target name="package" depends="compile" description="generate jar file">
+      <jar destfile="dist/ant_findbugs.jar" basedir="build/classes"/>
+    </target>
+
+    <taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask">
+      <classpath>
+        <fileset dir="${findbugs.home}/lib">
+          <include name="**/*.jar" />
+        </fileset>
+      </classpath>
+    </taskdef>
+
+    <target name="findbugs" depends="compile" description="run findbugs">
+      <findbugs home="${findbugs.home}" output="html" failOnError="true" outputFile="findbugs-report.html" jvmArgs="-Xms256m -Xmx768m">
+        <class location="build/classes" />
+<!--         <auxClasspath refId="compile.classpath" /> -->
+        <sourcePath path="src" />
+<!--         <reportLevel>low</reportLevel> -->
+<!--         <threshold>normal</threshold> -->
+<!--         <effort>max</effort>         -->
+      </findbugs>
+    </target>
+
+</project>

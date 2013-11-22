@@ -4,7 +4,9 @@ package mypackage;
 public class Foo
 {
 
-  String name;
+
+  private String name;
+
 
   public Foo(String name)
   {

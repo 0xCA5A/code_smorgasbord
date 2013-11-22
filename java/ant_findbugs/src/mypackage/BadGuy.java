@@ -38,6 +38,8 @@ public class BadGuy
   }
 
 
+  //this is for nothing...
+  private double[] crap = new double[1324123];
   public int[] array = new int[12312312];
   String name;
   int globalInt = 42;
@@ -49,6 +51,15 @@ public class BadGuy
   public BadGuy(String name)
   {
     this.name = name;
+
+    //crap init
+    for(int i = 0; i < crap.length; ++i)
+    {
+        crap[i] = i;
+    }
+
+    crap = new double[0];
+
     badThreadA = new BadThread("badThreadA");
     badThreadB = new BadThread("badThreadB");
   }
@@ -70,7 +81,6 @@ public class BadGuy
     int i = 0;
     while (true)
     {
-
       i += 1000;
 
       if (i > 0xBEEF)

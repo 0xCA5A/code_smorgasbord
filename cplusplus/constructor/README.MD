@@ -31,66 +31,71 @@ Linux nemo 3.2.0-48-generic #74-Ubuntu SMP Thu Jun 6 19:43:26 UTC 2013 x86_64 x8
 [1] main std out
 
 [main.cpp:main:8] create Crap globalDummyCrap(21) variable
-	[Crap.cpp:Crap:14] specific constructor with int value (object: 0x7fff9ed0f310)
-	[Crap.cpp:setValue:45] set value to the member (object: 0x7fff9ed0f310)
+    [Crap.cpp:Crap:14] specific constructor with int value (object: 0x7fff559feee0)
+    [Crap.cpp:setValue:45] set value to the member (object: 0x7fff559feee0)
 
 [main.cpp:main:11] start
 
 
 [main.cpp:main:13] call default constructor, Crap crap
-	[Crap.cpp:Crap:8] default constructor (object: 0x7fff9ed0f320)
-	[Crap.cpp:~Crap:21] default destructor (object: 0x7fff9ed0f320)
+    [Crap.cpp:Crap:8] default constructor (object: 0x7fff559fef00)
+    [Crap.cpp:~Crap:21] default destructor (object: 0x7fff559fef00)
 
 [main.cpp:main:23] call 'default' constructor, Crap crap()
-	[!] does not work, compiler complains non-class type Crap()!
+    [!] does not work, compiler complains non-class type Crap()!
 
 [main.cpp:main:35] call specified constructor, Crap crap(42)
-	[Crap.cpp:Crap:14] specific constructor with int value (object: 0x7fff9ed0f320)
-	[Crap.cpp:setValue:45] set value to the member (object: 0x7fff9ed0f320)
-	[Crap.cpp:~Crap:21] default destructor (object: 0x7fff9ed0f320)
+    [Crap.cpp:Crap:14] specific constructor with int value (object: 0x7fff559fef00)
+    [Crap.cpp:setValue:45] set value to the member (object: 0x7fff559fef00)
+    [Crap.cpp:~Crap:21] default destructor (object: 0x7fff559fef00)
 
 [main.cpp:main:45] call specified constructor with assignment, Crap crap = Crap(14)
-	[Crap.cpp:Crap:14] specific constructor with int value (object: 0x7fff9ed0f320)
-	[Crap.cpp:setValue:45] set value to the member (object: 0x7fff9ed0f320)
-	[Crap.cpp:~Crap:21] default destructor (object: 0x7fff9ed0f320)
+    [Crap.cpp:Crap:14] specific constructor with int value (object: 0x7fff559fef00)
+    [Crap.cpp:setValue:45] set value to the member (object: 0x7fff559fef00)
+    [Crap.cpp:~Crap:21] default destructor (object: 0x7fff559fef00)
 
 [main.cpp:main:55] call copy constructor with new object, Crap crap(Crap(123))
-	[Crap.cpp:Crap:14] specific constructor with int value (object: 0x7fff9ed0f320)
-	[Crap.cpp:setValue:45] set value to the member (object: 0x7fff9ed0f320)
-	[Crap.cpp:~Crap:21] default destructor (object: 0x7fff9ed0f320)
+    [Crap.cpp:Crap:14] specific constructor with int value (object: 0x7fff559fef00)
+    [Crap.cpp:setValue:45] set value to the member (object: 0x7fff559fef00)
+    [Crap.cpp:~Crap:21] default destructor (object: 0x7fff559fef00)
 
 [main.cpp:main:65] call copy constructor with existing object, Crap crap(globalDummyCrap)
-	[Crap.cpp:Crap:27] copy constructor (object: 0x7fff9ed0f320)
-	[Crap.cpp:getValue:54] get value from the member (object: 0x7fff9ed0f310)
-	[Crap.cpp:~Crap:21] default destructor (object: 0x7fff9ed0f320)
+    [Crap.cpp:Crap:27] copy constructor (object: 0x7fff559fef00)
+    [Crap.cpp:getValue:54] get value from the member (object: 0x7fff559feee0)
+    [Crap.cpp:~Crap:21] default destructor (object: 0x7fff559fef00)
 
 [main.cpp:main:75] simple assignment, Crap crap = globalDummyCrap
-	[Crap.cpp:Crap:27] copy constructor (object: 0x7fff9ed0f320)
-	[Crap.cpp:getValue:54] get value from the member (object: 0x7fff9ed0f310)
-	[Crap.cpp:~Crap:21] default destructor (object: 0x7fff9ed0f320)
+    [Crap.cpp:Crap:27] copy constructor (object: 0x7fff559fef00)
+    [Crap.cpp:getValue:54] get value from the member (object: 0x7fff559feee0)
+    [Crap.cpp:~Crap:21] default destructor (object: 0x7fff559fef00)
 
 [main.cpp:main:85] assignment, globalDummyCrap = hugeCrap
-	[Crap.cpp:Crap:14] specific constructor with int value (object: 0x7fff9ed0f320)
-	[Crap.cpp:setValue:45] set value to the member (object: 0x7fff9ed0f320)
-	[Crap.cpp:Crap:27] copy constructor (object: 0x7fff9ed0f330)
-	[Crap.cpp:getValue:54] get value from the member (object: 0x7fff9ed0f320)
-	[Crap.cpp:operator=:34] assignment operator (object: 0x7fff9ed0f310)
-	[Crap.cpp:getValue:54] get value from the member (object: 0x7fff9ed0f330)
-	[Crap.cpp:setValue:45] set value to the member (object: 0x7fff9ed0f310)
-	[Crap.cpp:~Crap:21] default destructor (object: 0x7fff9ed0f330)
-	[Crap.cpp:~Crap:21] default destructor (object: 0x7fff9ed0f320)
+    [Crap.cpp:Crap:14] specific constructor with int value (object: 0x7fff559feef0)
+    [Crap.cpp:setValue:45] set value to the member (object: 0x7fff559feef0)
+    [Crap.cpp:Crap:27] copy constructor (object: 0x7fff559fef00)
+    [Crap.cpp:getValue:54] get value from the member (object: 0x7fff559feef0)
+    [Crap.cpp:operator=:34] assignment operator (object: 0x7fff559feee0)
+    [Crap.cpp:getValue:54] get value from the member (object: 0x7fff559fef00)
+    [Crap.cpp:setValue:45] set value to the member (object: 0x7fff559feee0)
+    [Crap.cpp:~Crap:21] default destructor (object: 0x7fff559fef00)
+    [Crap.cpp:~Crap:21] default destructor (object: 0x7fff559feef0)
 
 [main.cpp:main:97] assignment, smallCrap = globalDummyCrap
-	[Crap.cpp:Crap:14] specific constructor with int value (object: 0x7fff9ed0f330)
-	[Crap.cpp:setValue:45] set value to the member (object: 0x7fff9ed0f330)
-	[Crap.cpp:Crap:27] copy constructor (object: 0x7fff9ed0f320)
-	[Crap.cpp:getValue:54] get value from the member (object: 0x7fff9ed0f330)
-	[Crap.cpp:operator=:34] assignment operator (object: 0x7fff9ed0f330)
-	[Crap.cpp:getValue:54] get value from the member (object: 0x7fff9ed0f310)
-	[Crap.cpp:setValue:45] set value to the member (object: 0x7fff9ed0f330)
-	[Crap.cpp:~Crap:21] default destructor (object: 0x7fff9ed0f320)
-	[Crap.cpp:~Crap:21] default destructor (object: 0x7fff9ed0f330)
+    [Crap.cpp:Crap:14] specific constructor with int value (object: 0x7fff559feef0)
+    [Crap.cpp:setValue:45] set value to the member (object: 0x7fff559feef0)
+    [Crap.cpp:Crap:27] copy constructor (object: 0x7fff559fef00)
+    [Crap.cpp:getValue:54] get value from the member (object: 0x7fff559feef0)
+    [Crap.cpp:operator=:34] assignment operator (object: 0x7fff559feef0)
+    [Crap.cpp:getValue:54] get value from the member (object: 0x7fff559feee0)
+    [Crap.cpp:setValue:45] set value to the member (object: 0x7fff559feef0)
+    [Crap.cpp:~Crap:21] default destructor (object: 0x7fff559fef00)
+    [Crap.cpp:~Crap:21] default destructor (object: 0x7fff559feef0)
 
-[main.cpp:main:110] done
+[main.cpp:main:110] new with pointer, Crap* p_pointedCrap = new Crap()
+    [Crap.cpp:Crap:14] specific constructor with int value (object: 0x7d6010)
+    [Crap.cpp:setValue:45] set value to the member (object: 0x7d6010)
+    [Crap.cpp:~Crap:21] default destructor (object: 0x7d6010)
 
-	[Crap.cpp:~Crap:21] default destructor (object: 0x7fff9ed0f310)
+[main.cpp:main:116] done
+
+    [Crap.cpp:~Crap:21] default destructor (object: 0x7fff559feee0)

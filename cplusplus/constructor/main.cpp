@@ -107,6 +107,12 @@ int main()
 //         smallCrap.getValue(value);
     }
 
+    printf("\n[%s:%s:%d] new with pointer, Crap* p_pointedCrap = new Crap()\n", __FILE__, __func__, __LINE__);
+    {
+        Crap* p_pointedCrap = new Crap(123);
+        delete p_pointedCrap;
+    }
+
     printf("\n[%s:%s:%d] done\n\n", __FILE__, __func__, __LINE__);
 
     return 0;

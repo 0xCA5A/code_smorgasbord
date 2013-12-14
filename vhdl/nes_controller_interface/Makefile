@@ -2,11 +2,6 @@
 #
 #          makefile to build vhdl projects using modelsim / questa
 #
-# $LastChangedDate: 2008-07-24 08:34:39 +0200 (Thu, 24 Jul 2008) $
-# $Rev: 547 $
-# $Author: casa $
-# $URL: https://casa@thepacki.homelinux.org/svn/repos/neap/tools/Makefile_template $
-# $Id: Makefile_template 547 2008-07-24 06:34:39Z casa $
 ################################################################################
 
 ################################################################################

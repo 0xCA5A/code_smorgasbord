@@ -6,39 +6,55 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "UnixDomainSocketClient.h"
 
-UnixDomainSocketClient::UnixDomainSocketClient() {
-    m_pSocketName = "/tmp/unix-domain-socket";
+#include "UnixDomainSocketClient.h"
+#include "PrintMacros.h"
+
+
+UnixDomainSocketClient::UnixDomainSocketClient(const char* socketFilePath)
+    : m_pSocketName(socketFilePath) {
+
+    PRINT_FUNCTION_GREETER_MACRO
 }
 
 UnixDomainSocketClient::~UnixDomainSocketClient() {
+    PRINT_FUNCTION_GREETER_MACRO
 }
 
 void UnixDomainSocketClient::openSocket() {
-    struct sockaddr_un server_addr;
+    PRINT_FUNCTION_GREETER_MACRO
+
+    struct sockaddr_un clientAddr;
 
     // setup socket address structure
-    bzero(&server_addr,sizeof(server_addr));
-    server_addr.sun_family = AF_UNIX;
-    strncpy(server_addr.sun_path,m_pSocketName ,sizeof(server_addr.sun_path) - 1);
+    bzero(&clientAddr,sizeof(clientAddr));
+    clientAddr.sun_family = AF_UNIX;
+    strncpy(clientAddr.sun_path, m_pSocketName, sizeof(clientAddr.sun_path) - 1);
 
     // create socket
-    clientSocketFileDescriptor = socket(PF_UNIX, SOCK_DGRAM, 0);
-    if (!clientSocketFileDescriptor) {
+    m_clientUDSFileDescriptor = socket(PF_UNIX, SOCK_DGRAM, 0);
+    if (!m_clientUDSFileDescriptor) {
         perror("clientSocket");
         exit(-1);
     }
 
-    // connect to server
-    if (connect(clientSocketFileDescriptor,(const struct sockaddr *)&server_addr,sizeof(server_addr)) < 0) {
-        perror("connect");
-        exit(-1);
+    // prepare message
+    const uint32_t nrOfPrintedCharacters = snprintf(m_sendMessageBuffer, m_sendMessageBufferSizeInByte - 1, "hello from process %d", getpid());
+
+    std::cout << "[i] send message to socket, " << nrOfPrintedCharacters << " byte..." << std::endl;
+    const ssize_t nrOfSentBytes = sendto(m_clientUDSFileDescriptor, m_sendMessageBuffer, nrOfPrintedCharacters + 1, 0, (struct sockaddr *) &clientAddr, sizeof(struct sockaddr_un));
+    if (nrOfSentBytes < 0) {
+        perror("sending datagram message");
     }
+    std::cout << "[i] " << nrOfSentBytes << " byte sent to socket: " << std::string(m_sendMessageBuffer) << std::endl;
+
 }
+
 
 void UnixDomainSocketClient::closeSocket() {
+    PRINT_FUNCTION_GREETER_MACRO
 }
 
-void UnixDomainSocketClient::run() {
+void UnixDomainSocketClient::sendMessage() {
+    PRINT_FUNCTION_GREETER_MACRO
 }

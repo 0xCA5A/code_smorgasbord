@@ -1,20 +1,22 @@
 #pragma once
 
-#include <sys/un.h>
-#include <stdio.h>
+#include "UnCopyable.h"
+#include <inttypes.h>
 
 
-class UnixDomainSocketClient {
+class UnixDomainSocketClient : private UnCopyable {
 
 public:
-    UnixDomainSocketClient();
+    UnixDomainSocketClient(const char* socketFilePath);
     ~UnixDomainSocketClient();
 
     void openSocket();
     void closeSocket();
-    void run();
+    void sendMessage();
 
 private:
     const char* m_pSocketName;
-    int clientSocketFileDescriptor; 
+    int m_clientUDSFileDescriptor;
+    static const uint32_t m_sendMessageBufferSizeInByte = 1024;
+    char m_sendMessageBuffer[m_sendMessageBufferSizeInByte];
 };

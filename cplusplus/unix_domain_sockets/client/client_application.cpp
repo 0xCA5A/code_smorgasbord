@@ -2,10 +2,12 @@
 
 int main(int argc, char **argv) {
 
-    UnixDomainSocketClient client = UnixDomainSocketClient();
+
+    const char* socketFilePath = "/tmp/mySocket";
+    UnixDomainSocketClient client(socketFilePath);
     client.openSocket();
 
-    client.run();
+    client.sendMessage();
 
     client.closeSocket();
 

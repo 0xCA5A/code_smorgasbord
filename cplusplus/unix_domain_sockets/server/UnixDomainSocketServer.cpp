@@ -1,21 +1,18 @@
-
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
-
 #include <time.h>
 
+#include <string>
 
 #include "UnixDomainSocketServer.h"
 #include "PrintMacros.h"
 
 UnixDomainSocketServer::UnixDomainSocketServer(const char* socketFilePath)
-    : m_pSocketName(socketFilePath) {
-
-    }
+    : m_pSocketName(socketFilePath) {}
 
 UnixDomainSocketServer::~UnixDomainSocketServer() {
 }
@@ -25,7 +22,7 @@ bool UnixDomainSocketServer::createSocket() {
     struct sockaddr_un serverAddr;
 
     // setup socket address structure
-    bzero(&serverAddr,sizeof(serverAddr));
+    bzero(&serverAddr, sizeof(serverAddr));
     serverAddr.sun_family = AF_UNIX;
     strncpy(serverAddr.sun_path, m_pSocketName, sizeof(serverAddr.sun_path) - 1);
 
@@ -46,8 +43,8 @@ bool UnixDomainSocketServer::createSocket() {
 }
 
 bool UnixDomainSocketServer::closeSocket() {
-
     PRINT_FUNCTION_GREETER_MACRO
+
     if (close(m_serverUDSFileDescriptor)) {
         perror("closing datagram socket");
         return false;
@@ -80,11 +77,4 @@ void UnixDomainSocketServer::receiveMessage(uint32_t receiveTimeoutInUS) {
         const uint32_t nrOfReadBytes = read(m_serverUDSFileDescriptor, m_receiveMessageBuffer, sizeof(m_receiveMessageBuffer));
         std::cout << "[i] " << nrOfReadBytes << " bytes read from socket: " << std::string(m_receiveMessageBuffer) << std::endl;
     }
-
-    // select timeout, selectRetval == 0
-
-    // select error, selectRetval < 0
-//     if (selectRetval < 0) {
-// //         std::cout << "[i] select error..." << std::endl;
-//     }
 }

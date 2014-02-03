@@ -1,9 +1,11 @@
-#include "UnixDomainSocketServer.h"
-#include "PrintMacros.h"
+#include "server_application.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
+
+#include "UnixDomainSocketServer.h"
+#include "PrintMacros.h"
 
 
 bool g_applicationRunFlag;
@@ -13,7 +15,6 @@ void signalCallbackHandler(int signum) {
 }
 
 int main(int argc, char **argv) {
-
     PRINT_FUNCTION_GREETER_MACRO
 
     // register signal

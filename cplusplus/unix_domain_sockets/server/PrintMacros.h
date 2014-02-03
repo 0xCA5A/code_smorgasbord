@@ -4,4 +4,4 @@
 
 
 #define PRINT_FUNCTION_GREETER_MACRO \
-    std::cout << "[GREETER] hello from " << __func__ << std::endl;
+    std::cout << "[GREETER] enter function " << __func__ << std::endl;

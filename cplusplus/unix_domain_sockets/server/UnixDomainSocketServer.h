@@ -1,12 +1,13 @@
 #pragma once
 
-#include "UnCopyable.h"
 #include <inttypes.h>
 
-class UnixDomainSocketServer : private UnCopyable {
+#include "UnCopyable.h"
 
+
+class UnixDomainSocketServer : private UnCopyable {
 public:
-    UnixDomainSocketServer(const char* socketFilePath);
+    explicit UnixDomainSocketServer(const char* socketFilePath);
     ~UnixDomainSocketServer();
 
     bool createSocket();

@@ -1,3 +1,4 @@
+#include "client_application.h"
 #include "UnixDomainSocketClient.h"
 
 int main(int argc, char **argv) {

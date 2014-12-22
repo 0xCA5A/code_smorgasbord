@@ -57,6 +57,12 @@ class ClassBTest(unittest.TestCase):
         result = self.class_b_obj.rock_on(counter)
         self.assertEquals(counter, result)
 
+    def new_test_class_b_test_6(self):
+        print "[ClassATest] in test_class_b_test_4"
+        counter = 1
+        result = self.class_b_obj.rock_on(counter)
+        self.assertEquals(counter, not result)
+
 
 if __name__ == '__main__':
     unittest.main()

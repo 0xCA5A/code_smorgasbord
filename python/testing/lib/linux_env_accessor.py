@@ -2,10 +2,13 @@ import os
 import logging
 
 logger = logging.getLogger()
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
 
 class LinuxEnvAccessor(object):
 
-    mandatoryVariableStrings = ['SW_HASH', 'REVISION_STRING']
+    mandatoryVariableStrings = ['SW_HASH', 'REVISION_STRING', 'MAGIC_NUMBER']
 
     @classmethod
     def get(cls):

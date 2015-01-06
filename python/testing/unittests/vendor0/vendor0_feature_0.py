@@ -34,7 +34,7 @@ class Vendor0Feature0TestCase(unittest2.TestCase):
 
     def setUp(self):
         logger.info("hello from test setup")
-        self._obj = Vendor0Feature0TestCase()
+        self._obj = Vendor0Feature0()
 
     def tearDown(self):
         logger.info("hello from test teardown")

@@ -1,5 +1,4 @@
 import unittest2
-import sys
 import logging
 import lib.linux_env_accessor
 
@@ -50,6 +49,7 @@ class MegaFeature4000TestCase(unittest2.TestCase):
         logger.info(self._environment)
         self._obj.rock(2)
 
+    @unittest2.skipIf(int(lib.linux_env_accessor.LinuxEnvAccessor.get()['MAGIC_NUMBER']) > 12, "magic number was too big")
     def mega_test_feature_3(self):
         logger.info("feature 3 test")
         logger.info(self._environment)
@@ -72,7 +72,7 @@ class MegaFeature4000TestCase(unittest2.TestCase):
 
         self._obj.rock(3)
 
-    # @unittest2.skipIf(MegaFeature4000TestCase._environment['MAGIC_NUMBER'] < 1000)
+    @unittest2.skipIf(int(lib.linux_env_accessor.LinuxEnvAccessor.get()['MAGIC_NUMBER']) > 12, "magic number was too big")
     def vendor1_mega_test_feature_2(self):
         logger.info("vendor1 mega test feature 2")
         logger.info(self._environment)

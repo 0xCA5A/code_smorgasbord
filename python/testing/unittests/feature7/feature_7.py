@@ -9,7 +9,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 
-class MegaFeature1000(object):
+class Feature7(object):
 
     def __init__(self):
         logger.info("hello from constructor (%s)" % (repr(self)))
@@ -21,12 +21,12 @@ class MegaFeature1000(object):
         logger.info("rock on object %s: %d" % (repr(self), number))
 
 
-class MegaFeature1000TestCase(unittest2.TestCase):
+class Feature7TestCase(unittest2.TestCase):
 
     @classmethod
     def setUpClass(cls):
         logger.info("set up class")
-        MegaFeature1000TestCase._environment = lib.linux_env_accessor.LinuxEnvAccessor.get()
+        Feature7TestCase._environment = lib.linux_env_accessor.LinuxEnvAccessor.get()
 
     @classmethod
     def tearDownClass(cls):
@@ -34,26 +34,15 @@ class MegaFeature1000TestCase(unittest2.TestCase):
 
     def setUp(self):
         logger.info("hello from test setup")
-        self._obj = MegaFeature1000()
+        self._obj = Feature7()
 
     def tearDown(self):
         logger.info("hello from test teardown")
 
-    def mega_test_feature_1(self):
-        logger.info("feature 1 test")
+    def feature_7_test_0(self):
+        logger.info("feature 7 test 0")
         logger.info(self._environment)
         self._obj.rock(1)
-        self.assertTrue(False)
-
-    def vendor0_mega_test_feature_0(self):
-        logger.info("vendor0 mega test feature 0")
-        logger.info(self._environment)
-        self._obj.rock(3)
-
-    def vendor1_mega_test_feature_0(self):
-        logger.info("vendor0 mega test feature 0")
-        logger.info(self._environment)
-        self._obj.rock(3)
 
 
 if __name__ == '__main__':

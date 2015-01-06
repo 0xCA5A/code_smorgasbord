@@ -8,14 +8,14 @@ logger.setLevel(logging.INFO)
 
 class LinuxEnvAccessor(object):
 
-    mandatoryVariableStrings = ['SW_HASH', 'REVISION_STRING', 'MAGIC_NUMBER']
+    mandatory_environment_variable_strings = ['SW_HASH', 'REVISION_STRING', 'MAGIC_NUMBER']
 
     @classmethod
     def get(cls):
 
         env_variable_dict = {}
 
-        for variable_name in LinuxEnvAccessor.mandatoryVariableStrings:
+        for variable_name in LinuxEnvAccessor.mandatory_environment_variable_strings:
             logger.debug("read variable %s from environment")
             env_variable_dict[variable_name] = os.environ[variable_name]
 

@@ -9,7 +9,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 
-class MegaFeature1000(object):
+class Vendor0Feature0(object):
 
     def __init__(self):
         logger.info("hello from constructor (%s)" % (repr(self)))
@@ -21,12 +21,12 @@ class MegaFeature1000(object):
         logger.info("rock on object %s: %d" % (repr(self), number))
 
 
-class MegaFeature1000TestCase(unittest2.TestCase):
+class Vendor0Feature0TestCase(unittest2.TestCase):
 
     @classmethod
     def setUpClass(cls):
         logger.info("set up class")
-        MegaFeature1000TestCase._environment = lib.linux_env_accessor.LinuxEnvAccessor.get()
+        Vendor0Feature0TestCase._environment = lib.linux_env_accessor.LinuxEnvAccessor.get()
 
     @classmethod
     def tearDownClass(cls):
@@ -34,24 +34,25 @@ class MegaFeature1000TestCase(unittest2.TestCase):
 
     def setUp(self):
         logger.info("hello from test setup")
-        self._obj = MegaFeature1000()
+        self._obj = Vendor0Feature0TestCase()
 
     def tearDown(self):
         logger.info("hello from test teardown")
 
-    def mega_test_feature_1(self):
+    @unittest2.skip("demonstrating skipping")
+    def vendor0_test_feature_0(self):
+        logger.info("feature 0 test")
+        logger.info(self._environment)
+        self._obj.rock(1)
+
+    def vendor0_test_feature_1(self):
         logger.info("feature 1 test")
         logger.info(self._environment)
         self._obj.rock(1)
-        self.assertTrue(False)
 
-    def vendor0_mega_test_feature_0(self):
-        logger.info("vendor0 mega test feature 0")
-        logger.info(self._environment)
-        self._obj.rock(3)
-
-    def vendor1_mega_test_feature_0(self):
-        logger.info("vendor0 mega test feature 0")
+    @unittest2.skipIf(int(lib.linux_env_accessor.LinuxEnvAccessor.get()['MAGIC_NUMBER']) > 12, "magic number was too big")
+    def vendor0_mega_test_feature3(self):
+        logger.info("vendor1 mega test feature 3")
         logger.info(self._environment)
         self._obj.rock(3)
 

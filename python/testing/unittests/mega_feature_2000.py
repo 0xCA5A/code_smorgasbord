@@ -1,5 +1,4 @@
 import unittest2
-import sys
 import logging
 import lib.linux_env_accessor
 
@@ -24,10 +23,18 @@ class MegaFeature2000(object):
 
 class MegaFeature2000TestCase(unittest2.TestCase):
 
+    @classmethod
+    def setUpClass(cls):
+        logger.info("set up class")
+        MegaFeature2000TestCase._environment = lib.linux_env_accessor.LinuxEnvAccessor.get()
+
+    @classmethod
+    def tearDownClass(cls):
+        logger.info("tear down class")
+
     def setUp(self):
         logger.info("hello from test setup")
         self._obj = MegaFeature2000()
-        MegaFeature2000TestCase._environment = lib.linux_env_accessor.LinuxEnvAccessor.get()
 
     def tearDown(self):
         logger.info("hello from test teardown")
@@ -41,6 +48,7 @@ class MegaFeature2000TestCase(unittest2.TestCase):
         logger.info("feature 2 test")
         logger.info(self._environment)
         self._obj.rock(2)
+        self.assertTrue(False)
 
     def mega_test_feature_3(self):
         logger.info("feature 3 test")

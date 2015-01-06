@@ -8,11 +8,8 @@ export MAGIC_NUMBER="128"
 echo "***************************************************************"
 
 echo "***************************************************************"
-if [ $# -ne 1 ] ; then
-    echo -e "[ERROR] need a config file\n"
-    exit 1
-fi
-nose2 --verbose --config $1
+
+nose2 -s unittests mega_feature_2000.MegaFeature2000TestCase.mega_test_feature_1 mega_feature_2000.MegaFeature2000TestCase.mega_test_feature_3
 
 echo "[INFO] nose2 return value: $?"
 

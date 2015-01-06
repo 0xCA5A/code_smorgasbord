@@ -24,12 +24,10 @@ class MegaFeature4000(object):
 
 class MegaFeature4000TestCase(unittest2.TestCase):
 
-    _environment = None
-
     @classmethod
     def setUpClass(cls):
         logger.info("set up class")
-        _environment = lib.linux_env_accessor.LinuxEnvAccessor.get()
+        MegaFeature4000TestCase._environment = lib.linux_env_accessor.LinuxEnvAccessor.get()
 
     @classmethod
     def tearDownClass(cls):
@@ -57,20 +55,32 @@ class MegaFeature4000TestCase(unittest2.TestCase):
         logger.info(self._environment)
         self._obj.rock(3)
 
+    @unittest2.expectedFailure
     def vendor1_mega_test_feature_0(self):
         logger.info("vendor0 mega test feature 0")
         logger.info(self._environment)
         self._obj.rock(3)
+        self.assertNotEquals(1, 1)
 
-    @unittest2.skip("demonstrating skipping")
     def vendor1_mega_test_feature_1(self):
         logger.info("vendor1 mega test feature 1")
         logger.info(self._environment)
+
+        # skip test if condition check failed
+        if int(self._environment['MAGIC_NUMBER']) > 10:
+            self.skipTest("magic number is too large")
+
         self._obj.rock(3)
 
-    #@unittest2.skipif(_environment['MAGIC_NUMBER'] < 1000)
+    # @unittest2.skipIf(MegaFeature4000TestCase._environment['MAGIC_NUMBER'] < 1000)
     def vendor1_mega_test_feature_2(self):
         logger.info("vendor1 mega test feature 2")
+        logger.info(self._environment)
+        self._obj.rock(3)
+
+    @unittest2.skip("demonstrating skipping")
+    def vendor1_mega_test_feature3(self):
+        logger.info("vendor1 mega test feature 3")
         logger.info(self._environment)
         self._obj.rock(3)
 

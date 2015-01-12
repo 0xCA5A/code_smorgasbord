@@ -2,9 +2,7 @@ import unittest2
 import logging
 import lib.linux_env_accessor
 from BaseHTTPServer import HTTPServer
-from BaseHTTPServer import BaseHTTPRequestHandler
 import threading
-import time
 
 
 # configure module logger, default log level is configured to info
@@ -88,25 +86,25 @@ class Feature7TestCase(unittest2.TestCase):
 
     def tearDown(self):
         logger.info("hello from test teardown")
+        self._obj.stop_http_server_thread()
 
-    def feature_7_test_0(self):
+    def vendor0_mega_ressource_cleanup_test_object(self):
         logger.info("feature 7 test 0")
         logger.info(self._environment)
         self._obj.rock(1)
+        self._obj.create_http_server_thread()
+        self._obj.start_http_server_thread()
 
-    def vendor0_mega_ressource_cleanup_test(self):
-        """function wrapper to run the test easily with another runner configuration"""
-        self.mega_resource_cleanup_test()
-
-    def mega_resource_cleanup_test(self):
-        Feature7TestCase._feature7.create_http_server_thread()
-
-        Feature7TestCase._feature7.start_http_server_thread()
-
-        time.sleep(0.5)
         logger.info("before failing assertion with running HTTP server thread, no cleanup in test function")
         assert(False)
+        Feature7TestCase._feature7.stop_http_server_thread()
 
+    def vendor0_mega_ressource_cleanup_test_static(self):
+        Feature7TestCase._feature7.create_http_server_thread()
+        Feature7TestCase._feature7.start_http_server_thread()
+
+        logger.info("before failing assertion with running HTTP server thread, no cleanup in test function")
+        assert(False)
         Feature7TestCase._feature7.stop_http_server_thread()
 
 if __name__ == '__main__':

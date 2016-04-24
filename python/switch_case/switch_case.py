@@ -6,7 +6,8 @@ import time
 def timing(func):
     def wrap(*args):
         ts_before = time.time()
-        ret = func(*args)
+        for i in range(1000):
+            ret = func(i % 10)
         ts_after = time.time()
         print('function took %0.3fms (%fus)' % ((ts_after - ts_before) * 1000.0, (ts_after - ts_before)))
         return ret
@@ -35,7 +36,6 @@ def function_return(condition):
         return "8"
     if condition == 9:
         return "9"
-
     print("condition unhandled")
 
 
@@ -62,10 +62,8 @@ def function_elif(condition):
         ret = "8"
     elif condition == 9:
         ret = "9"
-
-    if not ret:
+    else:
         print("condition unhandled")
-
     return ret
 
 
@@ -92,10 +90,8 @@ def function_if(condition):
         ret = "8"
     if condition == 9:
         ret = "9"
-
     if not ret:
         print("condition unhandled")
-
     return ret
 
 
@@ -127,16 +123,16 @@ def function_hashmap(condition):
 if __name__ == "__main__":
 
     print("\nfunction_if")
-    print(function_if(9))
+    print(function_if())
 
     print("\nfunction_elif")
-    print(function_elif(9))
+    print(function_elif())
 
     print("\nfunction_return")
-    print(function_return(9))
+    print(function_return())
 
     print("\nfunction_hashmap_exception")
-    print(function_hashmap_exception(9))
+    print(function_hashmap_exception())
 
     print("\nfunction_hashmap")
-    print(function_hashmap(9))
+    print(function_hashmap())

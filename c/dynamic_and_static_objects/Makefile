@@ -93,7 +93,7 @@ $(DYNAMIC_LIB_NAME).$(DYNAMIC_LIB_MAJOR).$(DYNAMIC_LIB_MINOR) : libraryfunction1
 	@echo do target $@
 	@echo ---------------------------------------------------------------------
 
-	$(CC) -shared $(CFLAGS),-soname,$(DYNAMIC_LIB_NAME).$(DYNAMIC_LIB_MAJOR) -o $(DYNAMIC_LIB_NAME).$(DYNAMIC_LIB_MAJOR).$(DYNAMIC_LIB_MINOR) lib*.o
+	$(CC) -fPIC -shared $(CFLAGS) -o $(DYNAMIC_LIB_NAME).$(DYNAMIC_LIB_MAJOR).$(DYNAMIC_LIB_MINOR) lib*.o
 
 	ln -s $(DYNAMIC_LIB_NAME).$(DYNAMIC_LIB_MAJOR).$(DYNAMIC_LIB_MINOR) $(DYNAMIC_LIB_NAME).$(DYNAMIC_LIB_MAJOR)
 	ln -s $(DYNAMIC_LIB_NAME).$(DYNAMIC_LIB_MAJOR) $(DYNAMIC_LIB_NAME)

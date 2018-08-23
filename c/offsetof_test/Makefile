@@ -1,4 +1,4 @@
-CFLAGS += -std=c99 -Wall
+CFLAGS += -std=c99 -fplan9-extensions -Wall
 LDFLAGS +=
 
 APPLICATION_NAME = offsetof_test

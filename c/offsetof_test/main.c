@@ -45,8 +45,8 @@ int main()
     offset_in_bytes = offsetof(struct second_struct_s, weight);
     printf(" * offsetof(struct second_struct_s, weight): %ld [byte]\n", offset_in_bytes);
 
-    offset_in_bytes = offsetof(struct second_struct_s, non_existing_stuff);
-    printf(" * offsetof(struct second_struct_s, non_existing_stuff): %ld [byte]\n", offset_in_bytes);
+    //offset_in_bytes = offsetof(struct second_struct_s, non_existing_stuff);
+    //printf(" * offsetof(struct second_struct_s, non_existing_stuff): %ld [byte]\n", offset_in_bytes);
 
     return 0;
 }

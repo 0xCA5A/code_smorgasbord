@@ -3,6 +3,7 @@
 #include "DataStore.hpp"
 #include "DataStoreStlVector.hpp"
 #include "DataStoreStlMap.hpp"
+#include "DataStoreStlUnorderedMap.hpp"
 #include "DataStoreStlList.hpp"
 
 #include "PrintMacros.hpp"
@@ -130,6 +131,10 @@ void DataStoreTestManager::run(void)
   delete ds;
 
   ds = new DataStoreStlMap < uint32_t > ();
+  runTest(ds, testRecords);
+  delete ds;
+
+  ds = new DataStoreStlUnorderedMap < uint32_t > ();
   runTest(ds, testRecords);
   delete ds;
 };

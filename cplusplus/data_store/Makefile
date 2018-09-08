@@ -1,9 +1,9 @@
-OBJ_FILES := main.o DataStoreTestManager.o
+OBJ_FILES := DataStore.o DataStoreTestManager.o
 HEADER_FILES := $(wildcard *.hpp)
 TEMPLATE_FILES := $(wildcard *.tpp)
 CPPFLAGS += -Wall -std=c++11
 # CPPFLAGS += -DDEBUG
-APP_BINARY := dataStore
+APP_BINARY := DataStore
 COMPILER := g++
 
 
@@ -22,6 +22,7 @@ clean:
 	rm -f *.gch
 	rm -f $(APP_BINARY)
 	rm doc/html -rf
+	rm -rf build
 
 doxygen:
 	cd doc; doxygen Doxyfile; cd -

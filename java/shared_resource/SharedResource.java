@@ -11,6 +11,10 @@ class Factory2<T> {
         this.type = type;
     }
 
+    public static <F> Factory2<F> getInstance(Class<F> type) {
+        return new Factory2<F>(type);
+    }
+
     public T getInstance() {
         try {
             // assume type is a public class
@@ -19,22 +23,14 @@ class Factory2<T> {
             throw new RuntimeException(e);
         }
     }
-
-    public static <F> Factory2<F> getInstance(Class<F> type) {
-        return new Factory2<F>(type);
-    }
 }
 
 class WorkerThreadPool<T> {
 
+    private final Class<T> type;
     private ArrayList<T> workerThreads;
     private int threadPoolSize;
     private Logger logger;
-    private final Class<T> type;
-
-    public static <F> WorkerThreadPool<F> getInstance(Class<F> type, int threadPoolSize) {
-        return new WorkerThreadPool<F>(type, threadPoolSize);
-    }
 
     WorkerThreadPool(Class<T> type, int threadPoolSize) {
         this.type = type;
@@ -46,6 +42,10 @@ class WorkerThreadPool<T> {
             Factory2<T> factory = Factory2.getInstance(type);
             workerThreads.add(factory.getInstance());
         }
+    }
+
+    public static <F> WorkerThreadPool<F> getInstance(Class<F> type, int threadPoolSize) {
+        return new WorkerThreadPool<F>(type, threadPoolSize);
     }
 
 
@@ -73,6 +73,7 @@ class WorkerThread extends Thread {
     public int getThreadCount() {
         return objCount;
     }
+
     public String getUniqueIdentifier() {
         return uniqueIdentifier;
     }
@@ -175,15 +176,13 @@ class SharedResource {
 
     static final int NR_OF_PRODUCER_THREADS = 7;
     static final int NR_OF_CONSUMER_THREADS = 7;
+    private final int sleepTimeinSec = 5;
+    private final int producerThreadPoolSize = 10;
+    private final int consumerThreadPoolSize = 10;
     private Logger logger;
     private WorkerThreadPool<ProducerThread> ptp;
     private WorkerThreadPool<ConsumerThread> ctp;
-    private final int sleepTimeinSec = 5;
-
     private boolean running;
-
-    private final int producerThreadPoolSize = 10;
-    private final int consumerThreadPoolSize = 10;
 
     SharedResource() {
         logger = Logger.getLogger(getClass().getName());
@@ -192,12 +191,15 @@ class SharedResource {
         running = true;
     }
 
+    public static void main(String[] args) {
+        SharedResource sharedResource = new SharedResource();
+        sharedResource.run();
+    }
 
     private void initThreadPools() {
 //        ptp.init();
 //        ctp.init();
     }
-
 
     public void run() {
 
@@ -214,11 +216,6 @@ class SharedResource {
         }
 //        ptp.s();
 //        ctp.stopAll();
-    }
-
-    public static void main(String[] args) {
-        SharedResource sharedResource = new SharedResource();
-        sharedResource.run();
     }
 
 

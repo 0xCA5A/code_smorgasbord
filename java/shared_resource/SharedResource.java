@@ -172,7 +172,7 @@ class ProducerThread extends WorkerThread {
 }
 
 
-class SharedResource {
+class SharedResourceAccess {
 
     static final int NR_OF_PRODUCER_THREADS = 7;
     static final int NR_OF_CONSUMER_THREADS = 7;
@@ -180,31 +180,28 @@ class SharedResource {
     private final int producerThreadPoolSize = 10;
     private final int consumerThreadPoolSize = 10;
     private Logger logger;
-    private WorkerThreadPool<ProducerThread> ptp;
-    private WorkerThreadPool<ConsumerThread> ctp;
+    private ArrayList<WorkerThreadPool> threadPools;
     private boolean running;
 
-    SharedResource() {
+    SharedResourceAccess() {
         logger = Logger.getLogger(getClass().getName());
-        ptp = WorkerThreadPool.getInstance(ProducerThread.class, producerThreadPoolSize);
-        ctp = WorkerThreadPool.getInstance(ConsumerThread.class, consumerThreadPoolSize);
+        threadPools = new ArrayList<WorkerThreadPool>();
+        WorkerThreadPool.getInstance(ProducerThread.class, producerThreadPoolSize);
+        threadPools.add(WorkerThreadPool.getInstance(ConsumerThread.class, consumerThreadPoolSize));
+        threadPools.add(WorkerThreadPool.getInstance(ProducerThread.class, consumerThreadPoolSize));
         running = true;
     }
 
     public static void main(String[] args) {
-        SharedResource sharedResource = new SharedResource();
-        sharedResource.run();
-    }
-
-    private void initThreadPools() {
-//        ptp.init();
-//        ctp.init();
+        SharedResourceAccess sharedResourceAccess = new SharedResourceAccess();
+        sharedResourceAccess.run();
     }
 
     public void run() {
 
-
-        initThreadPools();
+        for (WorkerThreadPool threadPool: threadPools) {
+//            threadPool.work();
+        }
 
         while (running) {
             logger.info(String.format("Process data for %ss", sleepTimeinSec));
@@ -213,9 +210,10 @@ class SharedResource {
             } catch (InterruptedException ex) {
                 Thread.currentThread().interrupt();
             }
-        }
-//        ptp.s();
-//        ctp.stopAll();
+
+
+
+        };
     }
 
 

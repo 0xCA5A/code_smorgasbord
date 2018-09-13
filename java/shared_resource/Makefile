@@ -6,7 +6,7 @@ compile:
 	javac *.java
 
 run:
-	java SharedResource
+	java SharedResourceAccess
 
 clean:
 	rm -f *~

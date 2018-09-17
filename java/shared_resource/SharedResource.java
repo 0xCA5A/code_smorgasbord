@@ -23,11 +23,6 @@ class MyLogger {
     }
 }
 
-// TODO: HOW TO AVOID THIS???
-class MyLoggingThread extends MyLogger {
-
-}
-
 class Factory2<T> {
 
     //NOTE: T type MUST have a default constructor
@@ -51,11 +46,18 @@ class Factory2<T> {
     }
 }
 
-class WorkerThreadPool<T> extends MyLoggingThread {
+interface IDataStore {
+    public void produce();
+    public void consume();
+    public int getSize();
+}
+
+class WorkerThreadPool<T> extends MyLogger {
 
     private final Class<T> type;
     private ArrayList<T> workerThreads;
     private int threadPoolSize;
+    private Thread thread;
 
     WorkerThreadPool(Class<T> type, int threadPoolSize) {
         this.type = type;
@@ -70,15 +72,12 @@ class WorkerThreadPool<T> extends MyLoggingThread {
         initThreadPool();
     }
 
-    public static <F> WorkerThreadPool<F> getInstance(Class<F> type, int threadPoolSize) {
+    public static <F> WorkerThreadPool<F> getInstance(Class<F> type, int threadPoolSize, IDataStore dataStore) {
         return new WorkerThreadPool<F>(type, threadPoolSize);
     }
 
     //FIXME!!!
     private void initThreadPool() {
-
-//        LOGGER.fine(String.format("thread pool size: %d", threadPoolSize));
-
         for (int i = 0; i < threadPoolSize; i++) {
             Factory2<T> factory = Factory2.getInstance(type);
             workerThreads.add(factory.getInstance());
@@ -86,10 +85,24 @@ class WorkerThreadPool<T> extends MyLoggingThread {
     }
 
 
-    public void run() {
+//
+//    class Work implements runnable {
+//
+//        public void run() {
+//
+//
+//            LOGGER.info("hello from Work");
+//        }
+//    }
+
+    public void work() {
 
 
-        LOGGER.fine("Let's process some data...");
+//
+//        LOGGER.fine("Let's process some data...");
+//        thread = new Thread(new Work());
+
+
 
 
     }
@@ -98,7 +111,9 @@ class WorkerThreadPool<T> extends MyLoggingThread {
 }
 
 
-class WorkerThread extends MyLoggingThread {
+
+
+class WorkerThread extends MyLogger {
 
     private static int objCount;
     protected final int upperRandLimit = 50;
@@ -128,7 +143,7 @@ class WorkerThread extends MyLoggingThread {
 }
 
 
-class SynchronizedData extends MyLogger {
+class SynchronizedData extends MyLogger implements IDataStore {
 
 //    private List<String> syncal;
 
@@ -143,17 +158,20 @@ class SynchronizedData extends MyLogger {
 
     }
 
+    private static int getRandomNumberInRange(int max) {
+        Random r = new Random();
+        return r.nextInt(max);
+    }
 
-    public void add(int dataElement) {
+    public void produce() {
         synchronized (data) {
-
+            int dataElement = getRandomNumberInRange(Integer.MAX_VALUE);
             LOGGER.fine(String.format("Add data element %d", dataElement));
             data.add(dataElement);
         }
     }
 
-
-    public void get() {
+    public void consume() {
         synchronized (data) {
             if (data.isEmpty()) {
                 LOGGER.fine("No data to get");
@@ -165,7 +183,7 @@ class SynchronizedData extends MyLogger {
         }
     }
 
-    public int size(int dataElement) {
+    public int getSize() {
         synchronized (data) {
             return data.size();
         }
@@ -229,6 +247,7 @@ class SharedResourceAccess extends MyLogger {
 //    private Logger logger;
     private ArrayList<WorkerThreadPool> threadPools;
     private boolean running;
+    private IDataStore dataStore;
 
     SharedResourceAccess() {
 //        logger = Logger.getLogger(getClass().getName());
@@ -246,11 +265,14 @@ class SharedResourceAccess extends MyLogger {
 
     public void operate() {
 
+        dataStore = new SynchronizedData();
+
+
         LOGGER.info("Create worker thread pools");
-        threadPools.add(WorkerThreadPool.getInstance(ConsumerThread.class, NR_OF_CONSUMER_THREADS));
-        threadPools.add(WorkerThreadPool.getInstance(ProducerThread.class, NR_OF_PRODUCER_THREADS));
+        threadPools.add(WorkerThreadPool.getInstance(ConsumerThread.class, NR_OF_CONSUMER_THREADS, dataStore));
+        threadPools.add(WorkerThreadPool.getInstance(ProducerThread.class, NR_OF_PRODUCER_THREADS, dataStore));
         for (WorkerThreadPool threadPool : threadPools) {
-            threadPool.run();
+            threadPool.work();
         }
 
         while (running) {

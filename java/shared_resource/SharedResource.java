@@ -1,11 +1,9 @@
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.logging.Logger;
 import java.util.logging.LogManager;
-import java.util.Iterator;
-import java.io.InputStream;
-import java.io.IOException;
-import java.lang.UnsupportedOperationException;
+import java.util.logging.Logger;
 
 class MyLogger {
     protected static Logger LOGGER = null;
@@ -24,88 +22,80 @@ class MyLogger {
     }
 }
 
-class Factory2<T> {
-
-    //NOTE: T type MUST have a default constructor
-    private final Class<T> type;
-    private IDataStore dataStore;
-
-    public Factory2(Class<T> type, IDataStore dataStore) {
-        this.type = type;
-        this.dataStore = dataStore;
-    }
-
-    public static <F> Factory2<F> getInstance(Class<F> type, IDataStore dataStore) {
-        return new Factory2<F>(type, dataStore);
-    }
-
-    public T getInstance() {
-        try {
-            // assume type is a public class
-            return type.newInstance();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-}
+//class Factory2<T> {
+//
+//    //NOTE: T type MUST have a default constructor
+//    private final Class<T> type;
+//    private IDataStore dataStore;
+//
+//    public Factory2(Class<T> type, IDataStore dataStore) {
+//        this.type = type;
+//        this.dataStore = dataStore;
+//    }
+//
+//    public static <F> Factory2<F> getInstance(Class<F> type) {
+//        return new Factory2<F>(type, dataStore);
+//    }
+//
+//    public T getInstance() {
+//        try {
+//            // assume type is a public class
+//            T obj = type.newInstance();
+//            obj.linkDataStore(dataStore);
+//            return obj;
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+//}
 
 interface IDataStore {
-    public void addData(int value);
-    public int getData();
-    public int getSize();
+    public void storeData(int value);
+
+    public int consumeData();
+
+    public int getNrOfDataElements();
 }
 
-class WorkerThreadPool<T> extends MyLogger {
+class WorkerPool extends MyLogger {
 
-    private final Class<T> type;
-    private ArrayList<T> workerThreads;
-    private int threadPoolSize;
-    private Thread thread;
+    private ArrayList<Thread> workers;
+    private int poolSize;
     private IDataStore dataStore;
 
-    WorkerThreadPool(Class<T> type, int threadPoolSize, IDataStore dataStore) {
-        this.type = type;
-        threadPoolSize = threadPoolSize;
-        workerThreads = new ArrayList<T>();
-        dataStore = dataStore;
+    WorkerPool(int poolSize, IDataStore dataStore) {
+        this.poolSize = poolSize;
+        this.workers = new ArrayList<Thread>();
+        this.dataStore = dataStore;
+        initPool();
+    }
 
-        //FIXME: This has to be here, I can not put that to a private function... how to fix that ??
-        for (int i = 0; i < threadPoolSize; i++) {
-            Factory2<T> factory = Factory2.getInstance(type, dataStore);
-            workerThreads.add(factory.getInstance());
+    private void initPool() {
+        for (int i = 0; i < poolSize / 2; i++) {
+
+            workers.add(new Thread(new Producer(dataStore)));
         }
-        initThreadPool();
-    }
-
-    public static <F> WorkerThreadPool<F> getInstance(Class<F> type, int threadPoolSize, IDataStore dataStore) {
-        return new WorkerThreadPool<F>(type, threadPoolSize, dataStore);
-    }
-
-    //FIXME!!!
-    private void initThreadPool() {
-        for (int i = 0; i < threadPoolSize; i++) {
-            Factory2<T> factory = Factory2.getInstance(type, dataStore);
-            workerThreads.add(factory.getInstance());
+        for (int i = 0; i < poolSize / 2; i++) {
+            workers.add(new Thread(new Consumer(dataStore)));
         }
     }
 
     public void work() {
-        for (T thread: workerThreads) {
+        for (Thread worker : workers) {
             // Why do i have to do this downcast??
-            WorkerThread worker = (WorkerThread)thread;
-            worker.run();
+//            WorkerThread worker = (WorkerThread)thread;
+
+            worker.start();
         }
     }
 }
 
 
-
-
-abstract class WorkerThread extends MyLogger implements Runnable {
+abstract class Worker extends MyLogger implements Runnable {
 
     private static int objCount;
-    protected int jobsProcessed;
-    protected final int upperRandLimit = 100;
+    protected int jobsCompleted;
+    protected final int upperRandLimit = 3000;
     //    protected Logger logger;
     private int nrOfProcessedObjects = 0;
 //    private String uniqueIdentifier;
@@ -114,14 +104,12 @@ abstract class WorkerThread extends MyLogger implements Runnable {
     IDataStore dataStore;
 
 
-    WorkerThread(IDataStore dataStore) {
-//        uniqueIdentifier = String.format("%s_%d_%s", getClass().getName(), objCount, hashCode());
-        dataStore = dataStore;
-        objCount++;
-        running = true;
-        jobsProcessed = 0;
-
-
+    Worker(IDataStore dataStore) {
+//  uniqueIdentifier = String.format("%s_%d_%s", getClass().getName(), objCount, hashCode());
+        this.dataStore = dataStore;
+        this.running = true;
+        this.jobsCompleted = 0;
+        this.objCount++;
 
     }
 
@@ -130,20 +118,25 @@ abstract class WorkerThread extends MyLogger implements Runnable {
         return rand.nextInt(upperRandLimit) + 1;
     }
 
+    protected int getObjCount() {
+        return objCount;
+    }
+
     protected int getRandValue() {
         Random rand = new Random();
         return rand.nextInt();
     }
-
-    public int getThreadCount() {
-        return objCount;
-    }
+//
+//    public int getTCount() {
+//        return objCount;
+//    }
 
     public String getUniqueIdentifier() {
         return this.toString();
     }
 
     public abstract void run();
+
     public void stop() {
         running = false;
     }
@@ -155,7 +148,7 @@ class SynchronizedData extends MyLogger implements IDataStore {
     private ArrayList<Integer> data;
 
     SynchronizedData() {
-        data = new ArrayList<>();
+        this.data = new ArrayList<>();
     }
 
     private static int getRandomNumberInRange(int max) {
@@ -163,7 +156,7 @@ class SynchronizedData extends MyLogger implements IDataStore {
         return r.nextInt(max);
     }
 
-    public void addData(int dataElement) {
+    public void storeData(int dataElement) {
         synchronized (data) {
             LOGGER.fine(String.format("Add data element %d", dataElement));
             data.add(dataElement);
@@ -178,109 +171,61 @@ class SynchronizedData extends MyLogger implements IDataStore {
 
     }
 
-    public int getData() {
+    public int consumeData() {
         synchronized (data) {
-
             if (canGetData()) {
-                int dataElement = data.get(0);
-                LOGGER.fine(String.format("Get data element %d", dataElement));
-                return dataElement;
+                return data.get(0);
             }
-
-            LOGGER.info("FIXME");
-            return 0;
-
+            return -1;
         }
     }
 
-    public int getSize() {
+    public int getNrOfDataElements() {
         synchronized (data) {
             return data.size();
         }
     }
 }
 
+class Consumer extends Worker {
 
-class DummyData implements IDataStore {
-@java.lang.Override
-public void addData(int value) {
-
-        }
-
-@java.lang.Override
-public int getData() {
-        return 0;
-        }
-
-@java.lang.Override
-public int getSize() {
-        return 0;
-        }
-}
-
-class ConsumerThread extends WorkerThread {
-
-    // BUG: this is here because of the factory...
-    ConsumerThread() {
-        super(new DummyData());
-        LOGGER.info(String.format("IN DEFAULT CONSTRUCTOR @ %s", this));
-    }
-
-    ConsumerThread(IDataStore dataStore) {
+    Consumer(IDataStore dataStore) {
         super(dataStore);
-        LOGGER.fine(String.format("New %s: %d @ %s", getClass().getName(), getThreadCount(), getUniqueIdentifier()));
+        LOGGER.fine(String.format("New %s: %d @ %s", getClass().getName(), getObjCount(), getUniqueIdentifier()));
     }
 
-    private void consumeData() {
+    private int consumeData() {
+        int processTimeMs = -1;
         try {
-            int processTimeinMs = getRandProcessTimeMs();
-            Thread.yield();
-            Thread.sleep(processTimeinMs);
+            processTimeMs = getRandProcessTimeMs();
+            Thread.sleep(processTimeMs);
         } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
         }
-
-        // BAAAAAD
-        if (dataStore != null) {
-            int dataElement = dataStore.getData();
-            LOGGER.info(String.format("Consumed data element '%s'", dataElement));
-        }
+        return processTimeMs;
     }
 
     public void run() {
-//        LOGGER.info(String.format("Running thread %s", getUniqueIdentifier()));
+        LOGGER.info(String.format("Starting thread %s", getUniqueIdentifier()));
 
         while (running) {
+            assert (dataStore != null);
+            int processTimeMs = consumeData();
 
-            if (dataStore == null) {
-                running = false;
-                continue;
-            }
-
+            LOGGER.info(String.format("[%s] Successfully completed job #%d (process time: %dms)", getUniqueIdentifier(), jobsCompleted, processTimeMs));
+            jobsCompleted++;
             Thread.yield();
-            consumeData();
-
-            LOGGER.info(String.format("[%s] Successfully processed job #%d", getUniqueIdentifier(), jobsProcessed));
-            jobsProcessed++;
-
         }
 
     }
 }
 
-class ProducerThread extends WorkerThread {
+class Producer extends Worker {
 
 
-    // BUG: this is here because of the factory...
-    ProducerThread() {
-        super(new DummyData());
-        LOGGER.info(String.format("IN DEFAULT CONSTRUCTOR @ %s", this));
-
-    }
-
-    ProducerThread(IDataStore dataStore) {
+    Producer(IDataStore dataStore) {
         super(dataStore);
-        LOGGER.info(String.format("New %s: %d @ %s", getClass().getName(), getThreadCount(), getUniqueIdentifier()));
+        LOGGER.info(String.format("New %s: %d @ %s", getClass().getName(), getObjCount(), getUniqueIdentifier()));
     }
 
     private void produceData() {
@@ -292,30 +237,26 @@ class ProducerThread extends WorkerThread {
         }
 
         int value = getRandValue();
-        dataStore.addData(value);
+        dataStore.storeData(value);
 
-        LOGGER.info(String.format("[%] Successfully processed job #%d", getUniqueIdentifier(), jobsProcessed));
-        jobsProcessed++;
+        LOGGER.info(String.format("[%s] Successfully processed job #%d", getUniqueIdentifier(), jobsCompleted));
+        jobsCompleted++;
 
 
     }
 
     public void run() {
-        LOGGER.info(String.format("[%s] Running %s", getUniqueIdentifier(), this.getClass()));
+
+        LOGGER.info(String.format("Starting thread %s", getUniqueIdentifier()));
 
         while (running) {
+            assert (dataStore != null);
 
-
-            if (dataStore == null) {
-                running = false;
-                continue;
-            }
-
-            Thread.yield();
-            LOGGER.info(String.format("[%s] Start job #%d", getUniqueIdentifier(), jobsProcessed));
-
-
+            LOGGER.info(String.format("[%s] Start job #%d", getUniqueIdentifier(), jobsCompleted));
             produceData();
+            Thread.yield();
+
+
         }
 
     }
@@ -331,13 +272,15 @@ class SharedResourceAccess extends MyLogger {
     //    static final int producerThreadPoolSize = 10;
 //    static final int consumerThreadPoolSize = 10;
 //    private Logger logger;
-    private ArrayList<WorkerThreadPool> threadPools;
+    private ArrayList<WorkerPool> workerPools;
     private boolean running;
     private IDataStore dataStore;
 
     SharedResourceAccess() {
-        threadPools = new ArrayList<WorkerThreadPool>();
-        running = true;
+        this.workerPools = new ArrayList<WorkerPool>();
+        this.running = true;
+
+        this.dataStore = new SynchronizedData();
     }
 
     public static void main(String[] args) {
@@ -347,14 +290,13 @@ class SharedResourceAccess extends MyLogger {
 
     public void operate() {
 
-        dataStore = new SynchronizedData();
-
 
         LOGGER.info("Create worker thread pools");
-        threadPools.add(WorkerThreadPool.getInstance(ConsumerThread.class, NR_OF_CONSUMER_THREADS, dataStore));
-        threadPools.add(WorkerThreadPool.getInstance(ProducerThread.class, NR_OF_PRODUCER_THREADS, dataStore));
-        for (WorkerThreadPool threadPool : threadPools) {
-            threadPool.work();
+//        threadPools.add(WorkerThreadPool.getInstance(ProducerThread.class, dataStore));
+        int poolSize = NR_OF_CONSUMER_THREADS + NR_OF_PRODUCER_THREADS;
+        workerPools.add(new WorkerPool(poolSize, dataStore));
+        for (WorkerPool pool : workerPools) {
+            pool.work();
         }
 
         while (running) {

@@ -95,7 +95,7 @@ abstract class Worker extends MyLogger implements Runnable {
 
     private static int objCount;
     protected int jobsCompleted;
-    protected final int upperRandLimit = 3000;
+    protected final int upperRandLimit = 42;
     //    protected Logger logger;
     private int nrOfProcessedObjects = 0;
 //    private String uniqueIdentifier;
@@ -105,7 +105,6 @@ abstract class Worker extends MyLogger implements Runnable {
 
 
     Worker(IDataStore dataStore) {
-//  uniqueIdentifier = String.format("%s_%d_%s", getClass().getName(), objCount, hashCode());
         this.dataStore = dataStore;
         this.running = true;
         this.jobsCompleted = 0;
@@ -124,7 +123,9 @@ abstract class Worker extends MyLogger implements Runnable {
 
     protected int getRandValue() {
         Random rand = new Random();
-        return rand.nextInt();
+        int value = rand.nextInt();
+        if (value < 0) {value *= -1;}
+        return value;
     }
 //
 //    public int getTCount() {
@@ -140,15 +141,43 @@ abstract class Worker extends MyLogger implements Runnable {
     public void stop() {
         running = false;
     }
+
+    protected int delayWork() {
+        int processTimeMs = -1;
+        try {
+            processTimeMs = getRandProcessTimeMs();
+            Thread.sleep(processTimeMs);
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+        return processTimeMs;
+    }
+
 }
 
 
 class SynchronizedData extends MyLogger implements IDataStore {
 
     private ArrayList<Integer> data;
+    int readAccessCnt;
+    int writeAccessCnt;
 
     SynchronizedData() {
         this.data = new ArrayList<>();
+        this.readAccessCnt = 0;
+        this.writeAccessCnt = 0;
+    }
+
+    int getReadAccessCnt() {
+        return readAccessCnt;
+    }
+
+    int getWriteAccessCnt() {
+        return writeAccessCnt;
+    }
+
+    int getAccessCnt() {
+        return readAccessCnt + writeAccessCnt;
     }
 
     private static int getRandomNumberInRange(int max) {
@@ -158,23 +187,34 @@ class SynchronizedData extends MyLogger implements IDataStore {
 
     public void storeData(int dataElement) {
         synchronized (data) {
-            LOGGER.fine(String.format("Add data element %d", dataElement));
+            LOGGER.fine(String.format("Add new data element %d", dataElement));
             data.add(dataElement);
+            LOGGER.finer(String.format("New data store size after storing data: %d elements", getNrOfDataElements()));
+            writeAccessCnt++;
         }
     }
 
     public boolean canGetData() {
-        if (data.isEmpty()) {
-            return false;
+        synchronized (data) {
+            if (data.isEmpty()) {
+                return false;
+            }
+            return true;
         }
-        return true;
 
     }
 
     public int consumeData() {
         synchronized (data) {
             if (canGetData()) {
-                return data.get(0);
+//                int dataElement = data.get(0);
+                int dataElement = data.remove(0);
+
+
+                LOGGER.fine(String.format("Consume data element %d", dataElement));
+                LOGGER.finer(String.format("New data store size after consuming data: %d elements", getNrOfDataElements()));
+                readAccessCnt++;
+
             }
             return -1;
         }
@@ -191,28 +231,25 @@ class Consumer extends Worker {
 
     Consumer(IDataStore dataStore) {
         super(dataStore);
-        LOGGER.fine(String.format("New %s: %d @ %s", getClass().getName(), getObjCount(), getUniqueIdentifier()));
+        LOGGER.finer(String.format("New %s: %d @ %s", getClass().getName(), getObjCount(), getUniqueIdentifier()));
     }
+
 
     private int consumeData() {
-        int processTimeMs = -1;
-        try {
-            processTimeMs = getRandProcessTimeMs();
-            Thread.sleep(processTimeMs);
-        } catch (InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
-        return processTimeMs;
+        int processTime = delayWork();
+        dataStore.consumeData();
+        return processTime;
     }
 
+
     public void run() {
-        LOGGER.info(String.format("Starting thread %s", getUniqueIdentifier()));
+        LOGGER.finer(String.format("Starting thread %s", getUniqueIdentifier()));
 
         while (running) {
             assert (dataStore != null);
+            LOGGER.fine(String.format("[%s] Start job #%d", getUniqueIdentifier(), jobsCompleted));
             int processTimeMs = consumeData();
-
-            LOGGER.info(String.format("[%s] Successfully completed job #%d (process time: %dms)", getUniqueIdentifier(), jobsCompleted, processTimeMs));
+            LOGGER.fine(String.format("[%s] Successfully completed job #%d (process time: %dms)", getUniqueIdentifier(), jobsCompleted, processTimeMs));
             jobsCompleted++;
             Thread.yield();
         }
@@ -225,38 +262,26 @@ class Producer extends Worker {
 
     Producer(IDataStore dataStore) {
         super(dataStore);
-        LOGGER.info(String.format("New %s: %d @ %s", getClass().getName(), getObjCount(), getUniqueIdentifier()));
+        LOGGER.finer(String.format("New %s: %d @ %s", getClass().getName(), getObjCount(), getUniqueIdentifier()));
     }
 
-    private void produceData() {
-        try {
-            int processTimeinMs = getRandProcessTimeMs();
-            Thread.sleep(processTimeinMs);
-        } catch (InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
-
-        int value = getRandValue();
-        dataStore.storeData(value);
-
-        LOGGER.info(String.format("[%s] Successfully processed job #%d", getUniqueIdentifier(), jobsCompleted));
-        jobsCompleted++;
-
-
+    private int produceData() {
+        int processTimeMs = delayWork();
+        int dataElement = this.getRandValue();
+        dataStore.storeData(dataElement);
+        return processTimeMs;
     }
 
     public void run() {
-
-        LOGGER.info(String.format("Starting thread %s", getUniqueIdentifier()));
+        LOGGER.finer(String.format("Starting thread %s", getUniqueIdentifier()));
 
         while (running) {
             assert (dataStore != null);
-
-            LOGGER.info(String.format("[%s] Start job #%d", getUniqueIdentifier(), jobsCompleted));
-            produceData();
+            LOGGER.fine(String.format("[%s] Start job #%d", getUniqueIdentifier(), jobsCompleted));
+            int processTimeMs = produceData();
+            LOGGER.fine(String.format("[%s] Successfully completed job #%d (process time: %dms)", getUniqueIdentifier(), jobsCompleted, processTimeMs));
+            jobsCompleted++;
             Thread.yield();
-
-
         }
 
     }
@@ -274,7 +299,7 @@ class SharedResourceAccess extends MyLogger {
 //    private Logger logger;
     private ArrayList<WorkerPool> workerPools;
     private boolean running;
-    private IDataStore dataStore;
+    private SynchronizedData dataStore;
 
     SharedResourceAccess() {
         this.workerPools = new ArrayList<WorkerPool>();
@@ -289,10 +314,7 @@ class SharedResourceAccess extends MyLogger {
     }
 
     public void operate() {
-
-
         LOGGER.info("Create worker thread pools");
-//        threadPools.add(WorkerThreadPool.getInstance(ProducerThread.class, dataStore));
         int poolSize = NR_OF_CONSUMER_THREADS + NR_OF_PRODUCER_THREADS;
         workerPools.add(new WorkerPool(poolSize, dataStore));
         for (WorkerPool pool : workerPools) {
@@ -300,7 +322,7 @@ class SharedResourceAccess extends MyLogger {
         }
 
         while (running) {
-            LOGGER.info(String.format("Process data for %ss", sleepTimeInSec));
+            LOGGER.info(String.format("Process data for %ss, data store access count: %d, current number of data elements: %d", sleepTimeInSec, dataStore.getAccessCnt(), dataStore.getNrOfDataElements()));
             try {
                 Thread.sleep(sleepTimeInSec * 1000);
             } catch (InterruptedException ex) {

@@ -1,11 +1,12 @@
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 interface IDataStore {
     public void storeData(int value);
@@ -71,8 +72,9 @@ class WorkerPool extends MyLogger {
 //
 //        }
         for (Thread worker : workers) {
-                worker.stop();
+            worker.interrupt();
 
+//
             try {
                 worker.join();
             } catch (InterruptedException ex) {
@@ -95,14 +97,15 @@ abstract class Worker extends MyLogger implements Runnable {
     private int nrOfProcessedObjects = 0;
 //    private String uniqueIdentifier;
 
-    protected volatile boolean running;
+//    protected volatile boolean running;
+    protected final AtomicBoolean running;
     IDataStore dataStore;
 
 
     Worker(IDataStore dataStore) {
         this.dataStore = dataStore;
-        this.running = true;
         this.jobsCompleted = 0;
+        this.running = new AtomicBoolean(true);
         this.objCount++;
 
     }
@@ -135,9 +138,22 @@ abstract class Worker extends MyLogger implements Runnable {
 
     public abstract void run();
 
-    public void terminate() {
-        running = false;
-    }
+//    ///// ?????
+//    public final void halt() {
+////    public void stop() {
+//        LOGGER.info("in stop!!!");
+//
+//        running.set(false);
+//    }
+//
+//    @Overwrite
+//    public void interrupt() {
+//
+//        LOGGER.info("in hello world!!!");
+//
+//        running.set(false);
+//    }
+
 
     protected int delayWork() {
         int processTimeMs = -1;
@@ -244,7 +260,7 @@ class Consumer extends Worker {
     public void run() {
         LOGGER.finer(String.format("Starting thread %s", getUniqueIdentifier()));
 
-        while (running) {
+        while (!Thread.currentThread().isInterrupted()) {
             assert (dataStore != null);
             LOGGER.fine(String.format("[%s] Start job #%d", getUniqueIdentifier(), jobsCompleted));
             int processTimeMs = consumeData();
@@ -253,6 +269,7 @@ class Consumer extends Worker {
 
             jobsCompleted++;
             Thread.yield();
+
         }
 
     }
@@ -278,7 +295,7 @@ class Producer extends Worker {
     public void run() {
         LOGGER.finer(String.format("Starting thread %s", getUniqueIdentifier()));
 
-        while (running) {
+        while (!Thread.currentThread().isInterrupted()) {
             assert (dataStore != null);
             LOGGER.fine(String.format("[%s] Start job #%d", getUniqueIdentifier(), jobsCompleted));
             int processTimeMs = produceData();
@@ -318,7 +335,7 @@ class SharedResourceAccess extends MyLogger {
 
     public static long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
         long diffInMillies = date2.getTime() - date1.getTime();
-        return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
+        return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
     }
 
     public void operate() {
@@ -326,7 +343,7 @@ class SharedResourceAccess extends MyLogger {
         int poolSize = NR_OF_CONSUMER_THREADS + NR_OF_PRODUCER_THREADS;
 
         workerPools.add(new WorkerPool(poolSize, dataStore));
-        for (WorkerPool workerPool: workerPools) {
+        for (WorkerPool workerPool : workerPools) {
             workerPool.start();
         }
 
@@ -352,7 +369,7 @@ class SharedResourceAccess extends MyLogger {
             LOGGER.info(String.format("Processed data for total %sms now, data store access count: %d, current number of data elements: %d", timeDiffMs, dataStore.getAccessCnt(), dataStore.getNrOfDataElements()));
         }
 
-        for (WorkerPool workerPool: workerPools) {
+        for (WorkerPool workerPool : workerPools) {
             workerPool.terminate();
         }
 

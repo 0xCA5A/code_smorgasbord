@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 interface IDataStore {
     public void storeData(int value);
@@ -97,7 +97,7 @@ abstract class Worker extends MyLogger implements Runnable {
     private int nrOfProcessedObjects = 0;
 //    private String uniqueIdentifier;
 
-//    protected volatile boolean running;
+    //    protected volatile boolean running;
     protected final AtomicBoolean running;
     IDataStore dataStore;
 

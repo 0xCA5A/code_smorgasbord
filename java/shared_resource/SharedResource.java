@@ -4,6 +4,16 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
+interface IDataStore {
+    public void storeData(int value);
+
+    public int consumeData();
+
+    public int getNrOfDataElements();
+}
 
 class MyLogger {
     protected static Logger LOGGER = null;
@@ -16,45 +26,10 @@ class MyLogger {
             LogManager.getLogManager().readConfiguration(stream);
             LOGGER = Logger.getLogger(MyLogger.class.getName());
 
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
-}
-
-//class Factory2<T> {
-//
-//    //NOTE: T type MUST have a default constructor
-//    private final Class<T> type;
-//    private IDataStore dataStore;
-//
-//    public Factory2(Class<T> type, IDataStore dataStore) {
-//        this.type = type;
-//        this.dataStore = dataStore;
-//    }
-//
-//    public static <F> Factory2<F> getInstance(Class<F> type) {
-//        return new Factory2<F>(type, dataStore);
-//    }
-//
-//    public T getInstance() {
-//        try {
-//            // assume type is a public class
-//            T obj = type.newInstance();
-//            obj.linkDataStore(dataStore);
-//            return obj;
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-//}
-
-interface IDataStore {
-    public void storeData(int value);
-
-    public int consumeData();
-
-    public int getNrOfDataElements();
 }
 
 class WorkerPool extends MyLogger {
@@ -80,14 +55,34 @@ class WorkerPool extends MyLogger {
         }
     }
 
-    public void work() {
+    public void start() {
+
+        LOGGER.info(String.format("Starting %d workers in pool %s", workers.size(), this));
         for (Thread worker : workers) {
             // Why do i have to do this downcast??
 //            WorkerThread worker = (WorkerThread)thread;
-
             worker.start();
         }
     }
+
+    public void terminate() {
+//        for (Thread worker : workers) {
+//            worker.interrupt();
+//
+//        }
+        for (Thread worker : workers) {
+                worker.stop();
+
+            try {
+                worker.join();
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
+        }
+        LOGGER.info(String.format("Successfully stopped %s workers in pool %s", workers.size(), this));
+    }
+
+
 }
 
 
@@ -100,7 +95,7 @@ abstract class Worker extends MyLogger implements Runnable {
     private int nrOfProcessedObjects = 0;
 //    private String uniqueIdentifier;
 
-    protected boolean running;
+    protected volatile boolean running;
     IDataStore dataStore;
 
 
@@ -124,7 +119,9 @@ abstract class Worker extends MyLogger implements Runnable {
     protected int getRandValue() {
         Random rand = new Random();
         int value = rand.nextInt();
-        if (value < 0) {value *= -1;}
+        if (value < 0) {
+            value *= -1;
+        }
         return value;
     }
 //
@@ -138,7 +135,7 @@ abstract class Worker extends MyLogger implements Runnable {
 
     public abstract void run();
 
-    public void stop() {
+    public void terminate() {
         running = false;
     }
 
@@ -231,7 +228,9 @@ class Consumer extends Worker {
 
     Consumer(IDataStore dataStore) {
         super(dataStore);
-        LOGGER.finer(String.format("New %s: %d @ %s", getClass().getName(), getObjCount(), getUniqueIdentifier()));
+        LOGGER.finer(String.format("[%s] Create new object %s %d", getUniqueIdentifier(), getClass().getName(),
+                getObjCount()));
+
     }
 
 
@@ -249,7 +248,9 @@ class Consumer extends Worker {
             assert (dataStore != null);
             LOGGER.fine(String.format("[%s] Start job #%d", getUniqueIdentifier(), jobsCompleted));
             int processTimeMs = consumeData();
-            LOGGER.fine(String.format("[%s] Successfully completed job #%d (process time: %dms)", getUniqueIdentifier(), jobsCompleted, processTimeMs));
+            LOGGER.fine(String.format("[%s] Successfully completed my job #%d (process time: %dms)", getUniqueIdentifier(), jobsCompleted, processTimeMs));
+
+
             jobsCompleted++;
             Thread.yield();
         }
@@ -262,7 +263,9 @@ class Producer extends Worker {
 
     Producer(IDataStore dataStore) {
         super(dataStore);
-        LOGGER.finer(String.format("New %s: %d @ %s", getClass().getName(), getObjCount(), getUniqueIdentifier()));
+
+        LOGGER.finer(String.format("[%s] Create new object %s %d", getUniqueIdentifier(), getClass().getName(),
+                getObjCount()));
     }
 
     private int produceData() {
@@ -279,7 +282,7 @@ class Producer extends Worker {
             assert (dataStore != null);
             LOGGER.fine(String.format("[%s] Start job #%d", getUniqueIdentifier(), jobsCompleted));
             int processTimeMs = produceData();
-            LOGGER.fine(String.format("[%s] Successfully completed job #%d (process time: %dms)", getUniqueIdentifier(), jobsCompleted, processTimeMs));
+            LOGGER.fine(String.format("[%s] Successfully completed my job #%d (process time: %dms)", getUniqueIdentifier(), jobsCompleted, processTimeMs));
             jobsCompleted++;
             Thread.yield();
         }
@@ -313,22 +316,46 @@ class SharedResourceAccess extends MyLogger {
         sharedResourceAccess.operate();
     }
 
+    public static long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
+        long diffInMillies = date2.getTime() - date1.getTime();
+        return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
+    }
+
     public void operate() {
         LOGGER.info("Create worker thread pools");
         int poolSize = NR_OF_CONSUMER_THREADS + NR_OF_PRODUCER_THREADS;
+
         workerPools.add(new WorkerPool(poolSize, dataStore));
-        for (WorkerPool pool : workerPools) {
-            pool.work();
+        for (WorkerPool workerPool: workerPools) {
+            workerPool.start();
         }
 
+
+        Date startTimestamp = new Date();
+        int cnt = 0;
         while (running) {
-            LOGGER.info(String.format("Process data for %ss, data store access count: %d, current number of data elements: %d", sleepTimeInSec, dataStore.getAccessCnt(), dataStore.getNrOfDataElements()));
+
+
+            if (cnt > 1) {
+                break;
+            }
+            cnt++;
+
             try {
                 Thread.sleep(sleepTimeInSec * 1000);
             } catch (InterruptedException ex) {
                 Thread.currentThread().interrupt();
             }
+
+            Date now = new Date();
+            long timeDiffMs = getDateDiff(startTimestamp, now, TimeUnit.MILLISECONDS);
+            LOGGER.info(String.format("Processed data for total %sms now, data store access count: %d, current number of data elements: %d", timeDiffMs, dataStore.getAccessCnt(), dataStore.getNrOfDataElements()));
         }
+
+        for (WorkerPool workerPool: workerPools) {
+            workerPool.terminate();
+        }
+
     }
 }
 

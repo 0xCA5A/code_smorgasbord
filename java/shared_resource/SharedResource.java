@@ -48,7 +48,6 @@ class WorkerPool extends MyLogger {
 
     private void initPool() {
         for (int i = 0; i < poolSize / 2; i++) {
-
             workers.add(new Thread(new Producer(dataStore)));
         }
         for (int i = 0; i < poolSize / 2; i++) {
@@ -57,24 +56,16 @@ class WorkerPool extends MyLogger {
     }
 
     public void start() {
-
         LOGGER.info(String.format("Starting %d workers in pool %s", workers.size(), this));
         for (Thread worker : workers) {
-            // Why do i have to do this downcast??
-//            WorkerThread worker = (WorkerThread)thread;
             worker.start();
         }
     }
 
     public void terminate() {
-//        for (Thread worker : workers) {
-//            worker.interrupt();
-//
-//        }
+
         for (Thread worker : workers) {
             worker.interrupt();
-
-//
             try {
                 worker.join();
             } catch (InterruptedException ex) {
@@ -87,27 +78,20 @@ class WorkerPool extends MyLogger {
 
 }
 
-
 abstract class Worker extends MyLogger implements Runnable {
 
     private static int objCount;
     protected int jobsCompleted;
     protected final int upperRandLimit = 42;
-    //    protected Logger logger;
     private int nrOfProcessedObjects = 0;
-//    private String uniqueIdentifier;
-
-    //    protected volatile boolean running;
     protected final AtomicBoolean running;
-    IDataStore dataStore;
-
+    protected IDataStore dataStore;
 
     Worker(IDataStore dataStore) {
         this.dataStore = dataStore;
         this.jobsCompleted = 0;
         this.running = new AtomicBoolean(true);
         this.objCount++;
-
     }
 
     protected int getRandProcessTimeMs() {
@@ -127,33 +111,10 @@ abstract class Worker extends MyLogger implements Runnable {
         }
         return value;
     }
-//
-//    public int getTCount() {
-//        return objCount;
-//    }
 
     public String getUniqueIdentifier() {
         return this.toString();
     }
-
-    public abstract void run();
-
-//    ///// ?????
-//    public final void halt() {
-////    public void stop() {
-//        LOGGER.info("in stop!!!");
-//
-//        running.set(false);
-//    }
-//
-//    @Overwrite
-//    public void interrupt() {
-//
-//        LOGGER.info("in hello world!!!");
-//
-//        running.set(false);
-//    }
-
 
     protected int delayWork() {
         int processTimeMs = -1;
@@ -166,8 +127,8 @@ abstract class Worker extends MyLogger implements Runnable {
         return processTimeMs;
     }
 
+    public abstract void run();
 }
-
 
 class SynchronizedData extends MyLogger implements IDataStore {
 
@@ -185,8 +146,16 @@ class SynchronizedData extends MyLogger implements IDataStore {
         return readAccessCnt;
     }
 
+    float getReadAccessPercent() {
+        return (100.0f / getAccessCnt()) * readAccessCnt;
+    }
+
     int getWriteAccessCnt() {
         return writeAccessCnt;
+    }
+
+    float getWriteAccessPercent() {
+        return (100.0f / getAccessCnt()) * writeAccessCnt;
     }
 
     int getAccessCnt() {
@@ -220,10 +189,7 @@ class SynchronizedData extends MyLogger implements IDataStore {
     public int consumeData() {
         synchronized (data) {
             if (canGetData()) {
-//                int dataElement = data.get(0);
                 int dataElement = data.remove(0);
-
-
                 LOGGER.fine(String.format("Consume data element %d", dataElement));
                 LOGGER.finer(String.format("New data store size after consuming data: %d elements", getNrOfDataElements()));
                 readAccessCnt++;
@@ -244,11 +210,11 @@ class Consumer extends Worker {
 
     Consumer(IDataStore dataStore) {
         super(dataStore);
+        assert (dataStore != null);
         LOGGER.finer(String.format("[%s] Create new object %s %d", getUniqueIdentifier(), getClass().getName(),
                 getObjCount()));
 
     }
-
 
     private int consumeData() {
         int processTime = delayWork();
@@ -256,12 +222,10 @@ class Consumer extends Worker {
         return processTime;
     }
 
-
     public void run() {
         LOGGER.finer(String.format("Starting thread %s", getUniqueIdentifier()));
 
         while (!Thread.currentThread().isInterrupted()) {
-            assert (dataStore != null);
             LOGGER.fine(String.format("[%s] Start job #%d", getUniqueIdentifier(), jobsCompleted));
             int processTimeMs = consumeData();
             LOGGER.fine(String.format("[%s] Successfully completed my job #%d (process time: %dms)", getUniqueIdentifier(), jobsCompleted, processTimeMs));
@@ -271,18 +235,16 @@ class Consumer extends Worker {
             Thread.yield();
 
         }
-
+        LOGGER.finer(String.format("Gracefully exit thread %s", this));
     }
 }
 
 class Producer extends Worker {
 
-
     Producer(IDataStore dataStore) {
         super(dataStore);
-
-        LOGGER.finer(String.format("[%s] Create new object %s %d", getUniqueIdentifier(), getClass().getName(),
-                getObjCount()));
+        assert (dataStore != null);
+        LOGGER.finer(String.format("[%s] Create new object %s %d", getUniqueIdentifier(), getClass().getName(), getObjCount()));
     }
 
     private int produceData() {
@@ -296,7 +258,6 @@ class Producer extends Worker {
         LOGGER.finer(String.format("Starting thread %s", getUniqueIdentifier()));
 
         while (!Thread.currentThread().isInterrupted()) {
-            assert (dataStore != null);
             LOGGER.fine(String.format("[%s] Start job #%d", getUniqueIdentifier(), jobsCompleted));
             int processTimeMs = produceData();
             LOGGER.fine(String.format("[%s] Successfully completed my job #%d (process time: %dms)", getUniqueIdentifier(), jobsCompleted, processTimeMs));
@@ -308,37 +269,91 @@ class Producer extends Worker {
 
 }
 
+class SynchronizedDataStat extends MyLogger {
+
+    private static int statObjCnt = 0;
+    private long timeDiffMs;
+    private SynchronizedData dataStore;
+
+    SynchronizedDataStat(Date startTimestamp, SynchronizedData dataStore) {
+        this.dataStore = dataStore;
+        statObjCnt++;
+        timeDiffMs = getDateDiff(startTimestamp, new Date(), TimeUnit.MILLISECONDS);
+    }
+
+    public void show() {
+        LOGGER.info("====================================================================");
+        LOGGER.info(String.format("=== STATUS REPORT #%d (%s) ", statObjCnt, this));
+        LOGGER.info(String.format(" * data process time:\t\t\t%sms", timeDiffMs));
+        LOGGER.info(String.format(" * total data store access count:\t%d", dataStore.getAccessCnt()));
+        LOGGER.info(String.format(" * data store read access count:\t%d (%.2f%%)", dataStore.getReadAccessCnt(), dataStore.getReadAccessPercent()));
+        LOGGER.info(String.format(" * data store write access count:\t%d (%.2f%%)", dataStore.getWriteAccessCnt(), dataStore.getWriteAccessPercent()));
+        LOGGER.info(String.format(" * nr of data elements in data store:\t%d", dataStore.getNrOfDataElements()));
+        LOGGER.info("====================================================================");
+    }
+
+    public long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
+        long diffInMillies = date2.getTime() - date1.getTime();
+        return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
+    }
+}
+
 
 class SharedResourceAccess extends MyLogger {
 
     private static final int NR_OF_PRODUCER_THREADS = 7;
     private static final int NR_OF_CONSUMER_THREADS = 7;
-    private final int sleepTimeInSec = 4;
-    //    static final int producerThreadPoolSize = 10;
-//    static final int consumerThreadPoolSize = 10;
-//    private Logger logger;
+    private final int reportIntervalMs = 3000;
     private ArrayList<WorkerPool> workerPools;
-    private boolean running;
     private SynchronizedData dataStore;
+
+    static volatile boolean running = true;
+    static int statCnt = 0;
 
     SharedResourceAccess() {
         this.workerPools = new ArrayList<WorkerPool>();
-        this.running = true;
-
         this.dataStore = new SynchronizedData();
     }
 
     public static void main(String[] args) {
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                LOGGER.info("Ctrl C catched");
+                running = false;
+            }
+        });
+
         SharedResourceAccess sharedResourceAccess = new SharedResourceAccess();
         sharedResourceAccess.operate();
+        sharedResourceAccess.waitToBeShutDown();
+        LOGGER.info("Gracefully exit main");
+
     }
 
-    public static long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
-        long diffInMillies = date2.getTime() - date1.getTime();
-        return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
+    public void waitToBeShutDown() {
+        Date startTimestamp = new Date();
+        while (running) {
+
+            try {
+                Thread.sleep(reportIntervalMs);
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
+            showStat(startTimestamp);
+        }
+
+        for (WorkerPool workerPool : workerPools) {
+            workerPool.terminate();
+        }
     }
 
-    public void operate() {
+    private void showStat(Date startTimestamp) {
+        SynchronizedDataStat dataStat = new SynchronizedDataStat(startTimestamp, dataStore);
+        dataStat.show();
+    }
+
+    private void operate() {
         LOGGER.info("Create worker thread pools");
         int poolSize = NR_OF_CONSUMER_THREADS + NR_OF_PRODUCER_THREADS;
 
@@ -347,31 +362,6 @@ class SharedResourceAccess extends MyLogger {
             workerPool.start();
         }
 
-
-        Date startTimestamp = new Date();
-        int cnt = 0;
-        while (running) {
-
-
-            if (cnt > 1) {
-                break;
-            }
-            cnt++;
-
-            try {
-                Thread.sleep(sleepTimeInSec * 1000);
-            } catch (InterruptedException ex) {
-                Thread.currentThread().interrupt();
-            }
-
-            Date now = new Date();
-            long timeDiffMs = getDateDiff(startTimestamp, now, TimeUnit.MILLISECONDS);
-            LOGGER.info(String.format("Processed data for total %sms now, data store access count: %d, current number of data elements: %d", timeDiffMs, dataStore.getAccessCnt(), dataStore.getNrOfDataElements()));
-        }
-
-        for (WorkerPool workerPool : workerPools) {
-            workerPool.terminate();
-        }
 
     }
 }

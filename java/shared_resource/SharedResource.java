@@ -222,6 +222,7 @@ class Consumer extends Worker {
         return processTime;
     }
 
+    @Override
     public void run() {
         LOGGER.finer(String.format("Starting thread %s", getUniqueIdentifier()));
 
@@ -254,6 +255,7 @@ class Producer extends Worker {
         return processTimeMs;
     }
 
+    @Override
     public void run() {
         LOGGER.finer(String.format("Starting thread %s", getUniqueIdentifier()));
 

@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+
+<project name="findbugs" default="findbugs">
+
+    <property file="findbugs.properties"/>
+
+    <ant antfile="bootstrap_findbugs.xml"/>
+
+    <taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask">
+        <classpath>
+            <fileset dir="${findbugs.home}/lib">
+                <include name="**/*.jar"/>
+            </fileset>
+        </classpath>
+    </taskdef>
+    <target name="prepare" description="prepare">
+        <mkdir dir="${findbugs.report_dir}"/>
+    </target>
+    <target name="findbugs" depends="prepare" description="run findbugs">
+        <findbugs home="${findbugs.home}" output="html" failOnError="true"
+                  outputFile="${findbugs.report_dir}/${findbugs.report_file}"
+                  jvmArgs="-Xms256m -Xmx768m">
+            <class location="target/"/>
+        </findbugs>
+    </target>
+
+</project>

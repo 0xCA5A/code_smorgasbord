@@ -1,32 +1,31 @@
-<project name="findbugs bootstrap script" default="bootstrap" basedir="." >
+<project name="findbugs bootstrap script" default="bootstrap" basedir=".">
 
+    <property file="findbugs.properties"/>
 
-  <property file="project.properties"/>
+    <property file="${user.home}/ant-global.properties"/>
+    <property name="findbugs.version" value="3.0.1"/>
 
-  <property file="${user.home}/ant-global.properties"/>
-  <property name="findbugs.home" value="${user.home}/.findbugs"/>
-  <property name="findbugs.version" value="2.0.0"/>
-  
-  <echo>installing findbugs into ${findbugs.home}</echo>
-  <property name="sourceforge.mirror" value="http://switch.dl.sourceforge.net/project/findbugs" />
-  
-  <available file="${findbugs.home}/findbugs.zip" property="findbugs.installed"/>
-  
-  <echo>bootstrap findbugs</echo>
-  <target name="bootstrap" unless="findbugs.installed">
-    <echo>installing findbugs</echo>
-    
-    <mkdir dir="${findbugs.home}" />
-    <get src="${sourceforge.mirror}/findbugs/${findbugs.version}/findbugs-${findbugs.version}.zip" dest="${findbugs.home}/findbugs.zip" usetimestamp="true" />
-    <unzip src="${findbugs.home}/findbugs.zip" dest="${findbugs.home}" />
-   
-    <move todir="${findbugs.home}">
-      <fileset dir="${findbugs.home}/findbugs-${findbugs.version}">
-        <include name="**/*" />
-      </fileset>
-    </move>
+    <echo>installing findbugs into ${findbugs.home}</echo>
+    <property name="sourceforge.mirror" value="http://prdownloads.sourceforge.net/findbugs"/>
 
-    <delete dir="${findbugs.home}/findbugs-${findbugs.version}" />
-  </target>
-  
-</project>  
+    <available file="${findbugs.home}/findbugs.zip" property="findbugs.installed"/>
+
+    <echo>bootstrap findbugs</echo>
+    <target name="bootstrap" unless="findbugs.installed">
+        <echo>installing findbugs</echo>
+
+        <mkdir dir="${findbugs.home}"/>
+        <get src="${sourceforge.mirror}/findbugs/${findbugs.version}/findbugs-${findbugs.version}.zip"
+             dest="${findbugs.home}/findbugs.zip" usetimestamp="true"/>
+        <unzip src="${findbugs.home}/findbugs.zip" dest="${findbugs.home}"/>
+
+        <move todir="${findbugs.home}">
+            <fileset dir="${findbugs.home}/findbugs-${findbugs.version}">
+                <include name="**/*"/>
+            </fileset>
+        </move>
+
+        <delete dir="${findbugs.home}/findbugs-${findbugs.version}"/>
+    </target>
+
+</project>

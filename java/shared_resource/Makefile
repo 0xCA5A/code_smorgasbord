@@ -15,3 +15,6 @@ run:
 
 clean:
 	rm -rf target
+
+format:
+	java -jar ~/bin/google-java-format-1.6-all-deps.jar --aosp --replace src/main/java/*.java

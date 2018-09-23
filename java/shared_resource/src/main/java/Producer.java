@@ -1,4 +1,3 @@
-
 package src.main.java;
 
 public class Producer extends Worker {
@@ -6,7 +5,10 @@ public class Producer extends Worker {
     Producer(IDataStore dataStore) {
         super(dataStore);
         assert (dataStore != null);
-        LOGGER.finer(String.format("[%s] Create new object %s %d", getUniqueIdentifier(), getClass().getName(), getObjCount()));
+        LOGGER.finer(
+                String.format(
+                        "[%s] Create new object %s %d",
+                        getUniqueIdentifier(), getClass().getName(), getObjCount()));
     }
 
     private int produceData() {
@@ -23,11 +25,12 @@ public class Producer extends Worker {
         while (!Thread.currentThread().isInterrupted()) {
             LOGGER.fine(String.format("[%s] Start job #%d", getUniqueIdentifier(), jobsCompleted));
             int processTimeMs = produceData();
-            LOGGER.fine(String.format("[%s] Successfully completed my job #%d (process time: %dms)", getUniqueIdentifier(), jobsCompleted, processTimeMs));
+            LOGGER.fine(
+                    String.format(
+                            "[%s] Successfully completed my job #%d (process time: %dms)",
+                            getUniqueIdentifier(), jobsCompleted, processTimeMs));
             jobsCompleted++;
             Thread.yield();
         }
-
     }
-
 }

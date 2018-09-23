@@ -1,7 +1,6 @@
 package src.main.java;
 
 import java.util.Random;
-
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class Worker extends MyLogger implements Runnable {
@@ -55,6 +54,3 @@ public abstract class Worker extends MyLogger implements Runnable {
 
     public abstract void run();
 }
-
-
-

@@ -44,7 +44,10 @@ public class SynchronizedData extends MyLogger implements IDataStore {
         synchronized (data) {
             LOGGER.fine(String.format("Add new data element %d", dataElement));
             data.add(dataElement);
-            LOGGER.finer(String.format("New data store size after storing data: %d elements", getNrOfDataElements()));
+            LOGGER.finer(
+                    String.format(
+                            "New data store size after storing data: %d elements",
+                            getNrOfDataElements()));
             writeAccessCnt++;
         }
     }
@@ -56,7 +59,6 @@ public class SynchronizedData extends MyLogger implements IDataStore {
             }
             return true;
         }
-
     }
 
     public int consumeData() {
@@ -64,9 +66,11 @@ public class SynchronizedData extends MyLogger implements IDataStore {
             if (canGetData()) {
                 int dataElement = data.remove(0);
                 LOGGER.fine(String.format("Consume data element %d", dataElement));
-                LOGGER.finer(String.format("New data store size after consuming data: %d elements", getNrOfDataElements()));
+                LOGGER.finer(
+                        String.format(
+                                "New data store size after consuming data: %d elements",
+                                getNrOfDataElements()));
                 readAccessCnt++;
-
             }
             return -1;
         }

@@ -7,5 +7,3 @@ public interface IDataStore {
 
     public int getNrOfDataElements();
 }
-
-

@@ -21,18 +21,19 @@ public class SharedResourceAccess extends MyLogger {
 
     public static void main(String[] args) {
 
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            public void run() {
-                LOGGER.info("Ctrl C catched");
-                running = false;
-            }
-        });
+        Runtime.getRuntime()
+                .addShutdownHook(
+                        new Thread() {
+                            public void run() {
+                                LOGGER.info("Ctrl C catched");
+                                running = false;
+                            }
+                        });
 
         SharedResourceAccess sharedResourceAccess = new SharedResourceAccess();
         sharedResourceAccess.operate();
         sharedResourceAccess.waitToBeShutDown();
         LOGGER.info("Gracefully exit main");
-
     }
 
     public void waitToBeShutDown() {
@@ -65,8 +66,5 @@ public class SharedResourceAccess extends MyLogger {
         for (WorkerPool workerPool : workerPools) {
             workerPool.start();
         }
-
-
     }
 }
-

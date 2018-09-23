@@ -1,7 +1,7 @@
 package src.main.java;
 
-import java.util.concurrent.TimeUnit;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class SynchronizedDataStat extends MyLogger {
 
@@ -19,10 +19,20 @@ public class SynchronizedDataStat extends MyLogger {
         LOGGER.info("====================================================================");
         LOGGER.info(String.format("=== STATUS REPORT #%d (%s) ", statObjCnt, this));
         LOGGER.info(String.format(" * data process time:\t\t\t%sms", timeDiffMs));
-        LOGGER.info(String.format(" * total data store access count:\t%d", dataStore.getAccessCnt()));
-        LOGGER.info(String.format(" * data store read access count:\t%d (%.2f%%)", dataStore.getReadAccessCnt(), dataStore.getReadAccessPercent()));
-        LOGGER.info(String.format(" * data store write access count:\t%d (%.2f%%)", dataStore.getWriteAccessCnt(), dataStore.getWriteAccessPercent()));
-        LOGGER.info(String.format(" * nr of data elements in data store:\t%d", dataStore.getNrOfDataElements()));
+        LOGGER.info(
+                String.format(" * total data store access count:\t%d", dataStore.getAccessCnt()));
+        LOGGER.info(
+                String.format(
+                        " * data store read access count:\t%d (%.2f%%)",
+                        dataStore.getReadAccessCnt(), dataStore.getReadAccessPercent()));
+        LOGGER.info(
+                String.format(
+                        " * data store write access count:\t%d (%.2f%%)",
+                        dataStore.getWriteAccessCnt(), dataStore.getWriteAccessPercent()));
+        LOGGER.info(
+                String.format(
+                        " * nr of data elements in data store:\t%d",
+                        dataStore.getNrOfDataElements()));
         LOGGER.info("====================================================================");
     }
 

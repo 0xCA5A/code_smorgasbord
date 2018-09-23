@@ -41,8 +41,7 @@ public class WorkerPool extends MyLogger {
                 Thread.currentThread().interrupt();
             }
         }
-        LOGGER.info(String.format("Successfully stopped %s workers in pool %s", workers.size(), this));
+        LOGGER.info(
+                String.format("Successfully stopped %s workers in pool %s", workers.size(), this));
     }
-
-
 }

@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<project name="SharedResource" default="run">
+
+    <target name="clean" description="clean env">
+        <delete dir="target"/>
+    </target>
+
+    <target name="prepare" depends="clean" description="prepare env">
+        <mkdir dir="target"/>
+        <symlink link="target" resource="../src/main/resources/logging.properties"/>
+    </target>
+
+    <target name="compile" depends="prepare" description="compile java code">
+        <javac srcdir="src" destdir="target" includeantruntime="true"/>
+    </target>
+
+    <target name="run" depends="compile" description="run java application">
+        <java classname="src.main.java.SharedResourceAccess" classpath="target"/>
+    </target>
+
+</project>

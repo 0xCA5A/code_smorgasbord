@@ -11,8 +11,12 @@ public class SynchronizedDataStat extends MyLogger {
 
     SynchronizedDataStat(Date startTimestamp, SynchronizedData dataStore) {
         this.dataStore = dataStore;
-        statObjCnt++;
+        incStatObjCnt();
         timeDiffMs = getDateDiff(startTimestamp, new Date(), TimeUnit.MILLISECONDS);
+    }
+
+    public static void incStatObjCnt() {
+        statObjCnt++;
     }
 
     public void show() {

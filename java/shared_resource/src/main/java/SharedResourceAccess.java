@@ -7,7 +7,7 @@ public class SharedResourceAccess extends MyLogger {
 
     private static final int NR_OF_PRODUCER_THREADS = 7;
     private static final int NR_OF_CONSUMER_THREADS = 7;
-    private final int reportIntervalMs = 3000;
+    private static final int reportIntervalMs = 3000;
     private ArrayList<WorkerPool> workerPools;
     private SynchronizedData dataStore;
 

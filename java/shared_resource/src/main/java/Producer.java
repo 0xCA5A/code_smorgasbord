@@ -23,13 +23,14 @@ public class Producer extends Worker {
         LOGGER.finer(String.format("Starting thread %s", getUniqueIdentifier()));
 
         while (!Thread.currentThread().isInterrupted()) {
-            LOGGER.fine(String.format("[%s] Start job #%d", getUniqueIdentifier(), jobsCompleted));
+            LOGGER.fine(
+                    String.format("[%s] Start job #%d", getUniqueIdentifier(), getJobsCompleted()));
             int processTimeMs = produceData();
             LOGGER.fine(
                     String.format(
                             "[%s] Successfully completed my job #%d (process time: %dms)",
-                            getUniqueIdentifier(), jobsCompleted, processTimeMs));
-            jobsCompleted++;
+                            getUniqueIdentifier(), getJobsCompleted(), processTimeMs));
+            incJobsCompleted();
             Thread.yield();
         }
     }

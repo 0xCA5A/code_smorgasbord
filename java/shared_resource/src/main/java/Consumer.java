@@ -22,14 +22,15 @@ public class Consumer extends Worker {
         LOGGER.finer(String.format("Starting thread %s", getUniqueIdentifier()));
 
         while (!Thread.currentThread().isInterrupted()) {
-            LOGGER.fine(String.format("[%s] Start job #%d", getUniqueIdentifier(), jobsCompleted));
+            LOGGER.fine(
+                    String.format("[%s] Start job #%d", getUniqueIdentifier(), getJobsCompleted()));
             int processTimeMs = consumeData();
             LOGGER.fine(
                     String.format(
                             "[%s] Successfully completed my job #%d (process time: %dms)",
-                            getUniqueIdentifier(), jobsCompleted, processTimeMs));
+                            getUniqueIdentifier(), getJobsCompleted(), processTimeMs));
 
-            jobsCompleted++;
+            incJobsCompleted();
             Thread.yield();
         }
         LOGGER.finer(String.format("Gracefully exit thread %s", this));

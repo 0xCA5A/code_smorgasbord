@@ -5,10 +5,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class Worker extends MyLogger implements Runnable {
 
-    private static int objCount;
-    protected int jobsCompleted;
-    protected final int upperRandLimit = 42;
-    private int nrOfProcessedObjects = 0;
+    private static long objCount;
+    private long jobsCompleted;
+    private static final int upperRandLimit = 42;
     protected final AtomicBoolean running;
     protected IDataStore dataStore;
 
@@ -16,7 +15,11 @@ public abstract class Worker extends MyLogger implements Runnable {
         this.dataStore = dataStore;
         this.jobsCompleted = 0;
         this.running = new AtomicBoolean(true);
-        this.objCount++;
+        incWorkerObjCnt();
+    }
+
+    public static void incWorkerObjCnt() {
+        objCount++;
     }
 
     protected int getRandProcessTimeMs() {
@@ -24,7 +27,15 @@ public abstract class Worker extends MyLogger implements Runnable {
         return rand.nextInt(upperRandLimit) + 1;
     }
 
-    protected int getObjCount() {
+    protected void incJobsCompleted() {
+        jobsCompleted++;
+    }
+
+    protected long getJobsCompleted() {
+        return jobsCompleted;
+    }
+
+    protected long getObjCount() {
         return objCount;
     }
 

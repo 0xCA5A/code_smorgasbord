@@ -6,7 +6,7 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 public class MyLogger {
-    protected static Logger LOGGER = null;
+    protected static final Logger LOGGER;
     private static String loggingProps = "logging.properties";
 
     static {

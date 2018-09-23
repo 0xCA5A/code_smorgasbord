@@ -1,12 +1,17 @@
+JAVAC_FLAGS = -g -Xdiags:verbose -Xlint:cast,deprecation,divzero,empty,fallthrough,finally,overrides,path,serial,unchecked
+TARGET_DIR = target
 
-all: clean compile run
+all: clean prepare compile run
+
+prepare:
+	mkdir -p target
 
 compile:
-	javac -g -Xdiags:verbose -Xlint:cast,deprecation,divzero,empty,fallthrough,finally,overrides,path,serial,unchecked *.java
+	javac -d $(TARGET_DIR) $(JAVAC_FLAGS) src/main/java/*.java
 
 run:
-	java SharedResourceAccess
+	cp src/main/resources/*.* $(TARGET_DIR)
+	java --class-path target src.main.java.SharedResourceAccess
 
 clean:
-	rm -f *~
-	rm -f *.class
+	rm -rf target

@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+
+<project name="format" basedir=".">
+
+    <property file="format.properties"/>
+    <apply executable="java" parallel="false" relative="yes">
+        <arg line="-jar ${format.jar}"/>
+        <arg line="--replace"/>
+        <arg line="--aosp"/>
+        <fileset dir="." includes="${format.files}"/>
+    </apply>
+</project>

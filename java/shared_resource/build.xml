@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<project name="SharedResource" default="run">
+<project name="SharedResource" default="compile">
 
     <target name="clean" description="clean env">
         <delete dir="target"/>

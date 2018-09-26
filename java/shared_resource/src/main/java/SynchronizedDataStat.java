@@ -22,16 +22,16 @@ public class SynchronizedDataStat extends MyLogger {
     public void show() {
         LOGGER.info("====================================================================");
         LOGGER.info(String.format("=== STATUS REPORT #%d (%s) ", statObjCnt, this));
-        LOGGER.info(String.format(" * data process time:\t\t\t%sms", timeDiffMs));
+        LOGGER.info(String.format(" * total data process time:\t\t\t%sms", timeDiffMs));
         LOGGER.info(
-                String.format(" * total data store access count:\t%d", dataStore.getAccessCnt()));
+                String.format(" * total data store access count:\t\t%d", dataStore.getAccessCnt()));
         LOGGER.info(
                 String.format(
-                        " * data store read access count:\t%d (%.2f%%)",
+                        " * data store read access count:\t\t%d (%.2f%%)",
                         dataStore.getReadAccessCnt(), dataStore.getReadAccessPercent()));
         LOGGER.info(
                 String.format(
-                        " * data store write access count:\t%d (%.2f%%)",
+                        " * data store write access count:\t\t%d (%.2f%%)",
                         dataStore.getWriteAccessCnt(), dataStore.getWriteAccessPercent()));
         LOGGER.info(
                 String.format(

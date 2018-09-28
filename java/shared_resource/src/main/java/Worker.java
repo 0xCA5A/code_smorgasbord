@@ -13,6 +13,7 @@ public abstract class Worker extends MyLogger implements Runnable {
 
     Worker(IDataStore dataStore) {
         this.dataStore = dataStore;
+        assert (dataStore != null);
         this.jobsCompleted = 0;
         this.running = new AtomicBoolean(true);
         incWorkerObjCnt();

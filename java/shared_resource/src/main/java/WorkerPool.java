@@ -2,11 +2,35 @@ package src.main.java;
 
 import java.util.ArrayList;
 
-public class WorkerPool extends MyLogger {
+class ConsumerWorkerPool extends WorkerPool {
+
+    ConsumerWorkerPool(int poolSize, IDataStore dataStore) {
+        super(poolSize, dataStore);
+    }
+
+    @Override
+    protected Worker getWorker() {
+        return new Consumer(dataStore);
+    }
+}
+
+class ProducerWorkerPool extends WorkerPool {
+
+    ProducerWorkerPool(int poolSize, IDataStore dataStore) {
+        super(poolSize, dataStore);
+    }
+
+    @Override
+    protected Worker getWorker() {
+        return new Producer(dataStore);
+    }
+}
+
+public abstract class WorkerPool extends MyLogger {
 
     private ArrayList<Thread> workers;
-    private int poolSize;
-    private IDataStore dataStore;
+    protected int poolSize;
+    protected IDataStore dataStore;
 
     WorkerPool(int poolSize, IDataStore dataStore) {
         this.poolSize = poolSize;
@@ -15,12 +39,11 @@ public class WorkerPool extends MyLogger {
         initPool();
     }
 
+    protected abstract Worker getWorker();
+
     private void initPool() {
-        for (int i = 0; i < poolSize / 2; i++) {
-            workers.add(new Thread(new Producer(dataStore)));
-        }
-        for (int i = 0; i < poolSize / 2; i++) {
-            workers.add(new Thread(new Consumer(dataStore)));
+        for (int i = 0; i < poolSize; i++) {
+            workers.add(new Thread(this.getWorker()));
         }
     }
 

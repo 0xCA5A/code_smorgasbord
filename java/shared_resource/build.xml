@@ -11,11 +11,19 @@
     </target>
 
     <target name="compile" depends="prepare" description="compile java code">
-        <javac srcdir="src" destdir="target" includeantruntime="true"/>
+        <javac srcdir="src" destdir="target" includeantruntime="true" debug="true"
+               debuglevel="lines,vars,source" deprecation="true" listfiles="true"/>
     </target>
 
     <target name="run" depends="compile" description="run java application">
-        <java classname="src.main.java.SharedResourceAccess" classpath="target"/>
+        <java classname="src.main.java.SharedResourceAccess" classpath="target" fork="true" failonerror="true">
+            <jvmarg value="-ea"/>
+            <!--<jvmarg value="-verbose"/>-->
+
+            <!--<assertions enablesystemassertions="true">-->
+                <!--<enable package="src.main.java"/>-->
+            <!--</assertions>-->
+        </java>
     </target>
 
 </project>

@@ -1,9 +1,9 @@
 package src.main.java;
 
 public interface IDataStore {
-    public void storeData(int value);
+    void storeData(DataElement element);
 
-    public int consumeData();
+    DataElement consumeData();
 
-    public int getNrOfDataElements();
+    long getNrOfDataElements();
 }

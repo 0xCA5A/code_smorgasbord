@@ -23,9 +23,13 @@ public abstract class Worker extends MyLogger implements Runnable {
         objCount++;
     }
 
-    protected int getRandProcessTimeMs() {
+    protected int getRandomInt() {
         Random rand = new Random();
         return rand.nextInt(upperRandLimit) + 1;
+    }
+
+    protected int getRandProcessTimeMs() {
+        return getRandomInt();
     }
 
     protected void incJobsCompleted() {
@@ -40,13 +44,13 @@ public abstract class Worker extends MyLogger implements Runnable {
         return objCount;
     }
 
-    protected int getRandValue() {
+    protected IntDataElement getRandomData() {
         Random rand = new Random();
         int value = rand.nextInt();
         if (value < 0) {
             value *= -1;
         }
-        return value;
+        return new IntDataElement(value);
     }
 
     public String getUniqueIdentifier() {

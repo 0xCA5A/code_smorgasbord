@@ -61,8 +61,6 @@ public class SharedResourceAccess extends MyLogger {
     private void initWorkerPools() {
         this.workerPools = new ArrayList<WorkerPool>();
         LOGGER.info("Create worker thread pools");
-        int poolSize = NR_OF_CONSUMER_THREADS + NR_OF_PRODUCER_THREADS;
-
         ConsumerWorkerPool cwp = new ConsumerWorkerPool(NR_OF_CONSUMER_THREADS, dataStore);
         workerPools.add(cwp);
         ProducerWorkerPool pwp = new ProducerWorkerPool(NR_OF_PRODUCER_THREADS, dataStore);

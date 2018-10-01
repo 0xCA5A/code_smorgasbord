@@ -17,9 +17,10 @@
         <mkdir dir="${findbugs.report_dir}"/>
     </target>
     <target name="findbugs" depends="prepare" description="run findbugs">
-        <findbugs home="${findbugs.home}" output="html" failOnError="true"
+        <findbugs home="${findbugs.home}" output="${findbugs.output}" failOnError="true"
                   outputFile="${findbugs.report_dir}/${findbugs.report_file}"
-                  jvmArgs="-Xms256m -Xmx768m">
+                  jvmArgs="${findbugs.jvm_extra_args} -Xms256m -Xmx768m"
+                  effort="max">
             <class location="target/"/>
         </findbugs>
     </target>

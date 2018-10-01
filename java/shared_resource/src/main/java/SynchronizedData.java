@@ -1,13 +1,12 @@
 package src.main.java;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Random;
 
 public class SynchronizedData extends MyLogger implements IDataStore {
 
-    private ArrayList<Serializable> storage;
+    private ArrayList<byte[]> storage;
     int readAccessCnt;
     int writeAccessCnt;
 
@@ -45,7 +44,11 @@ public class SynchronizedData extends MyLogger implements IDataStore {
     public void storeData(DataElement dataElement) {
         synchronized (storage) {
             LOGGER.fine(String.format("Add new data element %s", dataElement));
-            storage.add(dataElement);
+
+            byte[] serializedData = Serializer.toByteArray(dataElement);
+
+            storage.add(serializedData);
+
             LOGGER.finer(
                     String.format(
                             "New data store size after storing data: %d elements",
@@ -69,7 +72,8 @@ public class SynchronizedData extends MyLogger implements IDataStore {
                 throw new NoSuchElementException("No data available");
             }
 
-            Serializable dataElement = storage.remove(0);
+            byte[] serializedData = storage.remove(0);
+            DataElement dataElement = Serializer.fromByteArray(serializedData);
             LOGGER.fine(String.format("Consume data element %s", dataElement.toString()));
             LOGGER.finer(
                     String.format(

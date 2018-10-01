@@ -3,14 +3,18 @@ package src.main.java;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Random;
+import java.util.logging.Logger;
 
-public class SynchronizedData extends MyLogger implements IDataStore {
+public class SynchronizedData implements IDataStore {
 
     private ArrayList<byte[]> storage;
-    int readAccessCnt;
-    int writeAccessCnt;
+    private int readAccessCnt;
+    private int writeAccessCnt;
+
+    private Logger logger;
 
     SynchronizedData() {
+        logger = MyLogManager.getLogger(this.toString());
         this.storage = new ArrayList<>();
         this.readAccessCnt = 0;
         this.writeAccessCnt = 0;
@@ -43,13 +47,13 @@ public class SynchronizedData extends MyLogger implements IDataStore {
 
     public void storeData(DataElement dataElement) {
         synchronized (storage) {
-            LOGGER.fine(String.format("Add new data element %s", dataElement));
+            logger.fine(String.format("Add new data element %s", dataElement));
 
             byte[] serializedData = Serializer.toByteArray(dataElement);
 
             storage.add(serializedData);
 
-            LOGGER.finer(
+            logger.finer(
                     String.format(
                             "New data store size after storing data: %d elements",
                             getNrOfDataElements()));
@@ -74,8 +78,8 @@ public class SynchronizedData extends MyLogger implements IDataStore {
 
             byte[] serializedData = storage.remove(0);
             DataElement dataElement = Serializer.fromByteArray(serializedData);
-            LOGGER.fine(String.format("Consume data element %s", dataElement.toString()));
-            LOGGER.finer(
+            logger.fine(String.format("Consume data element %s", dataElement.toString()));
+            logger.finer(
                     String.format(
                             "New data store size after consuming data: %d elements",
                             getNrOfDataElements()));

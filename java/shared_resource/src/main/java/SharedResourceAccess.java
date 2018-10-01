@@ -2,8 +2,9 @@ package src.main.java;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Logger;
 
-public class SharedResourceAccess extends MyLogger {
+public class SharedResourceAccess {
 
     private static final int NR_OF_PRODUCER_THREADS = 7;
     private static final int NR_OF_CONSUMER_THREADS = 7;
@@ -11,10 +12,14 @@ public class SharedResourceAccess extends MyLogger {
     private ArrayList<WorkerPool> workerPools;
     private SynchronizedData dataStore;
 
+    private Logger logger;
+
     static volatile boolean running = true;
     static int statCnt = 0;
 
     SharedResourceAccess() {
+
+        logger = MyLogManager.getLogger(this.toString());
         this.dataStore = new SynchronizedData();
         initWorkerPools();
     }
@@ -25,7 +30,6 @@ public class SharedResourceAccess extends MyLogger {
                 .addShutdownHook(
                         new Thread() {
                             public void run() {
-                                LOGGER.info("Ctrl C catched");
                                 running = false;
                             }
                         });
@@ -33,7 +37,6 @@ public class SharedResourceAccess extends MyLogger {
         SharedResourceAccess sharedResourceAccess = new SharedResourceAccess();
         sharedResourceAccess.operate();
         sharedResourceAccess.waitToBeShutDown();
-        LOGGER.info("Gracefully exit main");
     }
 
     public void waitToBeShutDown() {
@@ -60,7 +63,7 @@ public class SharedResourceAccess extends MyLogger {
 
     private void initWorkerPools() {
         this.workerPools = new ArrayList<WorkerPool>();
-        LOGGER.info("Create worker thread pools");
+        logger.info("Create worker thread pools");
         ConsumerWorkerPool cwp = new ConsumerWorkerPool(NR_OF_CONSUMER_THREADS, dataStore);
         workerPools.add(cwp);
         ProducerWorkerPool pwp = new ProducerWorkerPool(NR_OF_PRODUCER_THREADS, dataStore);
@@ -69,7 +72,7 @@ public class SharedResourceAccess extends MyLogger {
 
     private void operate() {
         for (WorkerPool workerPool : workerPools) {
-            LOGGER.info(String.format("Starting %s", workerPool));
+            logger.info(String.format("Starting %s", workerPool));
             workerPool.start();
         }
     }

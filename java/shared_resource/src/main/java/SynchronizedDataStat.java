@@ -2,15 +2,19 @@ package src.main.java;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
-public class SynchronizedDataStat extends MyLogger {
+public class SynchronizedDataStat {
 
     private static int statObjCnt = 0;
     private long timeDiffMs;
     private SynchronizedData dataStore;
+    private Logger logger;
 
     SynchronizedDataStat(Date startTimestamp, SynchronizedData dataStore) {
         this.dataStore = dataStore;
+        logger = MyLogManager.getLogger(this.toString());
+
         incStatObjCnt();
         timeDiffMs = getDateDiff(startTimestamp, new Date(), TimeUnit.MILLISECONDS);
     }
@@ -20,24 +24,24 @@ public class SynchronizedDataStat extends MyLogger {
     }
 
     public void show() {
-        LOGGER.info("====================================================================");
-        LOGGER.info(String.format("=== STATUS REPORT #%d (%s) ", statObjCnt, this));
-        LOGGER.info(String.format(" * total data process time:\t\t\t%sms", timeDiffMs));
-        LOGGER.info(
+        logger.info("====================================================================");
+        logger.info(String.format("=== STATUS REPORT #%d (%s) ", statObjCnt, this));
+        logger.info(String.format(" * total data process time:\t\t\t%sms", timeDiffMs));
+        logger.info(
                 String.format(" * total data store access count:\t\t%d", dataStore.getAccessCnt()));
-        LOGGER.info(
+        logger.info(
                 String.format(
                         " * data store read access count:\t\t%d (%.2f%%)",
                         dataStore.getReadAccessCnt(), dataStore.getReadAccessPercent()));
-        LOGGER.info(
+        logger.info(
                 String.format(
                         " * data store write access count:\t\t%d (%.2f%%)",
                         dataStore.getWriteAccessCnt(), dataStore.getWriteAccessPercent()));
-        LOGGER.info(
+        logger.info(
                 String.format(
                         " * nr of data elements in data store:\t%d",
                         dataStore.getNrOfDataElements()));
-        LOGGER.info("====================================================================");
+        logger.info("====================================================================");
     }
 
     private long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {

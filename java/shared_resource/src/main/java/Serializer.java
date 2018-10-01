@@ -8,7 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 
-public class Serializer extends MyLogger {
+public class Serializer {
 
     public static DataElement fromByteArray(byte[] serializedData) {
         ByteArrayInputStream bais = new ByteArrayInputStream(serializedData);

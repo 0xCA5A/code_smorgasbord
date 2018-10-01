@@ -1,12 +1,17 @@
 package src.main.java;
 
 import java.util.NoSuchElementException;
+import java.util.logging.Logger;
 
 public class Consumer extends Worker {
 
+    private Logger logger;
+
     Consumer(IDataStore dataStore) {
         super(dataStore);
-        LOGGER.finer(
+        logger = MyLogManager.getLogger(this.toString());
+
+        logger.finer(
                 String.format(
                         "[%s] Create new object %s %d",
                         getUniqueIdentifier(), getClass().getName(), getObjCount()));
@@ -14,10 +19,10 @@ public class Consumer extends Worker {
 
     @Override
     public void run() {
-        LOGGER.finer(String.format("Starting thread %s", getUniqueIdentifier()));
+        logger.finer(String.format("Starting thread %s", getUniqueIdentifier()));
         int processTimeMs;
         while (!Thread.currentThread().isInterrupted()) {
-            LOGGER.fine(
+            logger.fine(
                     String.format("[%s] Start job #%d", getUniqueIdentifier(), getJobsCompleted()));
             try {
                 processTimeMs = consumeData();
@@ -27,23 +32,23 @@ public class Consumer extends Worker {
                         String.format(
                                 "'%s' reported by thread %s - " + "interrupt work for %dms",
                                 noElemEx.getMessage(), this, delayTimeMs);
-                LOGGER.warning(msg);
+                logger.warning(msg);
                 try {
                     Thread.sleep(delayTimeMs);
                 } catch (InterruptedException irEx) {
-                    LOGGER.severe(String.format("Thread %s could not sleep", this));
+                    logger.severe(String.format("Thread %s could not sleep", this));
                 }
                 continue;
             }
 
-            LOGGER.fine(
+            logger.fine(
                     String.format(
                             "[%s] Successfully completed my job #%d (process time: %dms)",
                             getUniqueIdentifier(), getJobsCompleted(), processTimeMs));
             incJobsCompleted();
             Thread.yield();
         }
-        LOGGER.finer(String.format("Gracefully exit thread %s", this));
+        logger.finer(String.format("Gracefully exit thread %s", this));
     }
 
     private int consumeData() {

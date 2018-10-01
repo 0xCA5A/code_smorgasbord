@@ -1,6 +1,7 @@
 package src.main.java;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 class ConsumerWorkerPool extends WorkerPool {
 
@@ -26,8 +27,9 @@ class ProducerWorkerPool extends WorkerPool {
     }
 }
 
-public abstract class WorkerPool extends MyLogger {
+public abstract class WorkerPool {
 
+    private Logger logger;
     private ArrayList<Thread> workers;
     protected int poolSize;
     protected IDataStore dataStore;
@@ -36,6 +38,8 @@ public abstract class WorkerPool extends MyLogger {
         this.poolSize = poolSize;
         this.workers = new ArrayList<>();
         this.dataStore = dataStore;
+        logger = MyLogManager.getLogger(this.toString());
+
         initPool();
     }
 
@@ -48,7 +52,7 @@ public abstract class WorkerPool extends MyLogger {
     }
 
     public void start() {
-        LOGGER.info(String.format("Starting %d workers in pool %s", workers.size(), this));
+        logger.info(String.format("Starting %d workers in pool %s", workers.size(), this));
         for (Thread worker : workers) {
             worker.start();
         }
@@ -64,7 +68,7 @@ public abstract class WorkerPool extends MyLogger {
                 Thread.currentThread().interrupt();
             }
         }
-        LOGGER.info(
+        logger.info(
                 String.format("Successfully stopped %s workers in pool %s", workers.size(), this));
     }
 }

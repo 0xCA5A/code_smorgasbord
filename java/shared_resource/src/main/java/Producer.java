@@ -1,10 +1,14 @@
 package src.main.java;
 
+import java.util.logging.Logger;
+
 public class Producer extends Worker {
+    private Logger logger;
 
     Producer(IDataStore dataStore) {
         super(dataStore);
-        LOGGER.finer(
+        logger = MyLogManager.getLogger(this.toString());
+        logger.finer(
                 String.format(
                         "[%s] Create new object %s %d",
                         getUniqueIdentifier(), getClass().getName(), getObjCount()));
@@ -12,19 +16,19 @@ public class Producer extends Worker {
 
     @Override
     public void run() {
-        LOGGER.finer(String.format("Starting thread %s", getUniqueIdentifier()));
+        logger.finer(String.format("Starting thread %s", getUniqueIdentifier()));
         while (!Thread.currentThread().isInterrupted()) {
-            LOGGER.fine(
+            logger.fine(
                     String.format("[%s] Start job #%d", getUniqueIdentifier(), getJobsCompleted()));
             int processTimeMs = produceData();
-            LOGGER.fine(
+            logger.fine(
                     String.format(
                             "[%s] Successfully completed my job #%d (process time: %dms)",
                             getUniqueIdentifier(), getJobsCompleted(), processTimeMs));
             incJobsCompleted();
             Thread.yield();
         }
-        LOGGER.finer(String.format("Gracefully exit thread %s", this));
+        logger.finer(String.format("Gracefully exit thread %s", this));
     }
 
     private int produceData() {

@@ -5,17 +5,19 @@ import java.io.InputStream;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-public class MyLogger {
-    protected static final Logger LOGGER;
+public class MyLogManager {
     private static String loggingProps = "logging.properties";
 
     static {
-        InputStream stream = MyLogger.class.getClassLoader().getResourceAsStream(loggingProps);
+        InputStream stream = MyLogManager.class.getClassLoader().getResourceAsStream(loggingProps);
         try {
             LogManager.getLogManager().readConfiguration(stream);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        LOGGER = Logger.getLogger(MyLogger.class.getName());
+    }
+
+    static Logger getLogger(String name) {
+        return Logger.getLogger(name);
     }
 }

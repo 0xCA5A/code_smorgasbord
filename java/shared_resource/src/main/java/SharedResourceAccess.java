@@ -6,9 +6,8 @@ import java.util.logging.Logger;
 
 public class SharedResourceAccess {
 
-    private static final int NR_OF_PRODUCER_THREADS = 7;
-    private static final int NR_OF_CONSUMER_THREADS = 7;
-    private static final int reportIntervalMs = 3000;
+    private static final String propFileName = "app.properties";
+
     private ArrayList<WorkerPool> workerPools;
     private SynchronizedData dataStore;
 
@@ -17,10 +16,14 @@ public class SharedResourceAccess {
     static volatile boolean running = true;
     static int statCnt = 0;
 
-    SharedResourceAccess() {
+    MyConfig config;
 
+    SharedResourceAccess() {
         logger = MyLogManager.getLogger(this.toString());
-        this.dataStore = new SynchronizedData();
+        dataStore = new SynchronizedData();
+        config = new MyConfig(propFileName);
+        config.print();
+
         initWorkerPools();
     }
 
@@ -44,7 +47,7 @@ public class SharedResourceAccess {
         while (running) {
 
             try {
-                Thread.sleep(reportIntervalMs);
+                Thread.sleep(config.reportIntervalS * 1000);
             } catch (InterruptedException ex) {
                 Thread.currentThread().interrupt();
             }
@@ -64,10 +67,10 @@ public class SharedResourceAccess {
     private void initWorkerPools() {
         this.workerPools = new ArrayList<WorkerPool>();
         logger.info("Create worker thread pools");
-        ConsumerWorkerPool cwp = new ConsumerWorkerPool(NR_OF_CONSUMER_THREADS, dataStore);
-        workerPools.add(cwp);
-        ProducerWorkerPool pwp = new ProducerWorkerPool(NR_OF_PRODUCER_THREADS, dataStore);
+        ProducerWorkerPool pwp = new ProducerWorkerPool(config.nrOfProducerThreads, dataStore);
         workerPools.add(pwp);
+        ConsumerWorkerPool cwp = new ConsumerWorkerPool(config.nrOfConsumerThreads, dataStore);
+        workerPools.add(cwp);
     }
 
     private void operate() {

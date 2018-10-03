@@ -1,5 +1,6 @@
 package src.main.java;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Logger;
@@ -21,10 +22,17 @@ public class SharedResourceAccess {
     SharedResourceAccess() {
         logger = MyLogManager.getLogger(this.toString());
         dataStore = new SynchronizedData();
-        config = new MyConfig(propFileName);
-        config.print();
 
+        initConfig();
         initWorkerPools();
+    }
+
+    private void initConfig() {
+        ClassLoader loader = SharedResourceAccess.class.getClassLoader();
+        URL url = loader.getResource(propFileName);
+        String absFileName = url.getFile();
+        config = new MyConfig(absFileName);
+        config.print();
     }
 
     public static void main(String[] args) {

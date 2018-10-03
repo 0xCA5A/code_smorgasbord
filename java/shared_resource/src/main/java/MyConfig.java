@@ -1,5 +1,6 @@
 package src.main.java;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,8 +60,11 @@ public class MyConfig {
         try {
             input = new FileInputStream(propFileName);
             props.load(input);
+
+            File file = new File(propFileName);
             logger.info(
-                    String.format("Properties from file '%s' successfully loaded", propFileName));
+                    String.format("Properties from file '%s' successfully loaded", file.getName()));
+            logger.fine(String.format("Properties file path: '%s'", propFileName));
         } catch (IOException ex) {
             logger.warning(
                     ex.getMessage()

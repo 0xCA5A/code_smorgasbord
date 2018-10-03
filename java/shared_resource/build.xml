@@ -1,18 +1,19 @@
 <?xml version="1.0" ?>
 <project name="SharedResource" default="compile">
 
-    <property file="build.properties"/>
+    <property file="src/main/resources/app.properties"/>
 
-    <target name="clean" description="clean env">
+    <target name="clean" description="Clean env">
         <delete dir="target"/>
     </target>
 
-    <target name="prepare" depends="clean" description="prepare env">
+    <target name="prepare" depends="clean" description="Prepare env">
         <mkdir dir="target"/>
+        <symlink link="target" resource="../src/main/resources/app.properties"/>
         <symlink link="target" resource="../src/main/resources/logging.properties"/>
     </target>
 
-    <target name="compile" depends="prepare" description="compile java code">
+    <target name="compile" depends="prepare" description="Compile java code">
         <javac srcdir="src" destdir="target" includeantruntime="true" debug="true"
                debuglevel="lines,vars,source" deprecation="true" listfiles="true"
                verbose="false" failonerror="true">
@@ -20,7 +21,7 @@
         </javac>
     </target>
 
-    <target name="run" depends="compile" description="run java application">
+    <target name="run" depends="compile" description="Run java application">
         <java classname="src.main.java.SharedResourceAccess" classpath="target" fork="true" failonerror="true">
             <jvmarg value="-ea"/>
             <!--<jvmarg value="-verbose"/>-->
@@ -31,10 +32,11 @@
         </java>
     </target>
 
-    <target name="monitor" depends="compile" description="run java application with JMX">
+    <target name="monitor" depends="compile" description="Run java application with JMX">
         <java classname="src.main.java.SharedResourceAccess" classpath="target" fork="true" failonerror="true">
             <jvmarg value="-Djava.rmi.server.hostname=${app.monitor_hostname}"/>
-            <jvmarg value="-Dcom.sun.management.jmxremote.port=${app.monitor_port}"/>
+            <!--BUG: if this line is active, my logger does not work anymore... ??-->
+            <!--<jvmarg value="-Dcom.sun.management.jmxremote.port=${app.monitor_port}"/>-->
             <jvmarg value="-Dcom.sun.management.jmxremote.local.only=false"/>
             <jvmarg value="-Dcom.sun.management.jmxremote.authenticate=false"/>
             <jvmarg value="-Dcom.sun.management.jmxremote.ssl=false"/>

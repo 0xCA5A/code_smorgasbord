@@ -14,7 +14,7 @@ public class SharedResourceAccess {
     private Logger logger;
 
     static volatile boolean running = true;
-    static int statCnt = 0;
+    static long statCnt = 0;
 
     MyConfig config;
 

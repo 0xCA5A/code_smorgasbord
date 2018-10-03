@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 
 public class SynchronizedDataStat {
 
-    private static int statObjCnt = 0;
+    private static long statObjCnt = 0;
     private long timeDiffMs;
     private SynchronizedData dataStore;
     private Logger logger;

@@ -8,8 +8,8 @@ import java.util.logging.Logger;
 public class SynchronizedData implements IDataStore {
 
     private ArrayList<byte[]> storage;
-    private int readAccessCnt;
-    private int writeAccessCnt;
+    private long readAccessCnt;
+    private long writeAccessCnt;
 
     private Logger logger;
 
@@ -20,23 +20,29 @@ public class SynchronizedData implements IDataStore {
         this.writeAccessCnt = 0;
     }
 
-    int getReadAccessCnt() {
+    long getReadAccessCnt() {
         return readAccessCnt;
     }
 
     float getReadAccessPercent() {
+        if (getAccessCnt() <= 0) {
+            return 0;
+        }
         return (100.0f / getAccessCnt()) * readAccessCnt;
     }
 
-    int getWriteAccessCnt() {
+    long getWriteAccessCnt() {
         return writeAccessCnt;
     }
 
     float getWriteAccessPercent() {
+        if (getAccessCnt() <= 0) {
+            return 0;
+        }
         return (100.0f / getAccessCnt()) * writeAccessCnt;
     }
 
-    int getAccessCnt() {
+    long getAccessCnt() {
         return readAccessCnt + writeAccessCnt;
     }
 

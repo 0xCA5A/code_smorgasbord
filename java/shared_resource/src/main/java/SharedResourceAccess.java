@@ -23,16 +23,8 @@ public class SharedResourceAccess {
         logger = MyLogManager.getLogger(this.toString());
         dataStore = new SynchronizedData();
 
-        initConfig();
+        initConfigFromPropFile();
         initWorkerPools();
-    }
-
-    private void initConfig() {
-        ClassLoader loader = SharedResourceAccess.class.getClassLoader();
-        URL url = loader.getResource(propFileName);
-        String absFileName = url.getFile();
-        config = new MyConfig(absFileName);
-        new InfoBanner(logger, config);
     }
 
     public static void main(String[] args) {
@@ -48,6 +40,14 @@ public class SharedResourceAccess {
         SharedResourceAccess sharedResourceAccess = new SharedResourceAccess();
         sharedResourceAccess.operate();
         sharedResourceAccess.waitToBeShutDown();
+    }
+
+    private void initConfigFromPropFile() {
+        ClassLoader loader = SharedResourceAccess.class.getClassLoader();
+        URL url = loader.getResource(propFileName);
+        String absFileName = url.getFile();
+        config = new MyConfig(absFileName);
+        new InfoBanner(logger, config);
     }
 
     public void waitToBeShutDown() {
@@ -75,9 +75,13 @@ public class SharedResourceAccess {
     private void initWorkerPools() {
         this.workerPools = new ArrayList<WorkerPool>();
         logger.info("Create worker thread pools");
-        ProducerWorkerPool pwp = new ProducerWorkerPool(config.nrOfProducerThreads, dataStore);
+        ProducerWorkerPool pwp =
+                new ProducerWorkerPool(
+                        config.nrOfProducerThreads, dataStore, config.maxWorkerLatencyMs);
         workerPools.add(pwp);
-        ConsumerWorkerPool cwp = new ConsumerWorkerPool(config.nrOfConsumerThreads, dataStore);
+        ConsumerWorkerPool cwp =
+                new ConsumerWorkerPool(
+                        config.nrOfConsumerThreads, dataStore, config.maxWorkerLatencyMs);
         workerPools.add(cwp);
     }
 

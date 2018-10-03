@@ -5,25 +5,25 @@ import java.util.logging.Logger;
 
 class ConsumerWorkerPool extends WorkerPool {
 
-    ConsumerWorkerPool(int poolSize, IDataStore dataStore) {
-        super(poolSize, dataStore);
+    ConsumerWorkerPool(int poolSize, IDataStore dataStore, int maxWorkerLatencyMs) {
+        super(poolSize, dataStore, maxWorkerLatencyMs);
     }
 
     @Override
     protected Worker getWorker() {
-        return new Consumer(dataStore);
+        return new Consumer(dataStore, maxWorkerLatencyMs);
     }
 }
 
 class ProducerWorkerPool extends WorkerPool {
 
-    ProducerWorkerPool(int poolSize, IDataStore dataStore) {
-        super(poolSize, dataStore);
+    ProducerWorkerPool(int poolSize, IDataStore dataStore, int maxWorkerLatencyMs) {
+        super(poolSize, dataStore, maxWorkerLatencyMs);
     }
 
     @Override
     protected Worker getWorker() {
-        return new Producer(dataStore);
+        return new Producer(dataStore, maxWorkerLatencyMs);
     }
 }
 
@@ -33,11 +33,13 @@ public abstract class WorkerPool {
     private ArrayList<Thread> workers;
     protected int poolSize;
     protected IDataStore dataStore;
+    protected int maxWorkerLatencyMs;
 
-    WorkerPool(int poolSize, IDataStore dataStore) {
+    WorkerPool(int poolSize, IDataStore dataStore, int maxWorkerLatencyMs) {
         this.poolSize = poolSize;
         this.workers = new ArrayList<>();
         this.dataStore = dataStore;
+        this.maxWorkerLatencyMs = maxWorkerLatencyMs;
         logger = MyLogManager.getLogger(this.toString());
 
         initPool();

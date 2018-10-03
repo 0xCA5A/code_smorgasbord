@@ -5,8 +5,8 @@ import java.util.logging.Logger;
 public class Producer extends Worker {
     private Logger logger;
 
-    Producer(IDataStore dataStore) {
-        super(dataStore);
+    Producer(IDataStore dataStore, int maxWorkerLatencyMs) {
+        super(dataStore, maxWorkerLatencyMs);
         logger = MyLogManager.getLogger(this.toString());
         logger.finer(
                 String.format(

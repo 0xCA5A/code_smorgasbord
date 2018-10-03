@@ -7,14 +7,15 @@ public abstract class Worker implements Runnable {
 
     private static long objCount;
     private long jobsCompleted;
-    private static final int upperRandLimit = 42;
+    private final int maxWorkerLatencyMs;
     protected final AtomicBoolean running;
     protected IDataStore dataStore;
 
-    Worker(IDataStore dataStore) {
+    Worker(IDataStore dataStore, int maxWorkerLatencyMs) {
         this.dataStore = dataStore;
         assert (dataStore != null);
         this.jobsCompleted = 0;
+        this.maxWorkerLatencyMs = maxWorkerLatencyMs;
         this.running = new AtomicBoolean(true);
         incWorkerObjCnt();
     }
@@ -25,7 +26,7 @@ public abstract class Worker implements Runnable {
 
     protected int getRandomInt() {
         Random rand = new Random();
-        return rand.nextInt(upperRandLimit) + 1;
+        return rand.nextInt(maxWorkerLatencyMs) + 1;
     }
 
     protected int getRandProcessTimeMs() {

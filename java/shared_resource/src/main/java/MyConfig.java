@@ -11,27 +11,15 @@ public class MyConfig {
 
     private Logger logger;
 
-    public static final int NR_OF_PRODUCER_THREADS = 7;
-    public static final int NR_OF_CONSUMER_THREADS = 7;
-    public static final int MAX_WORKER_LATENCY_MS = 42;
-    public static final int REPORT_INTERVAL_S = 3;
+    private static final int NR_OF_PRODUCER_THREADS = 7;
+    private static final int NR_OF_CONSUMER_THREADS = 7;
+    private static final int MAX_WORKER_LATENCY_MS = 42;
+    private static final int REPORT_INTERVAL_S = 3;
 
     public final int nrOfConsumerThreads;
     public final int nrOfProducerThreads;
     public final int maxWorkerLatencyMs;
     public final int reportIntervalS;
-
-    public void print() {
-        String separator = new String(new char[80]).replace("\0", "#");
-        logger.info(separator);
-        logger.info(String.format("# %s", this));
-        logger.info(separator);
-        logger.info(String.format("# * nrOfConsumerThreads: %d", nrOfConsumerThreads));
-        logger.info(String.format("# * nrOfProducerThreads: %d", nrOfProducerThreads));
-        logger.info(String.format("# * maxWorkerLatencyMs: %d", maxWorkerLatencyMs));
-        logger.info(String.format("# * reportIntervalS: %d", reportIntervalS));
-        logger.info(separator);
-    }
 
     public MyConfig(String propFileName) {
         logger = MyLogManager.getLogger(this.toString());

@@ -1,6 +1,7 @@
 package src.main.java;
 
 import java.util.Date;
+import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
@@ -24,24 +25,24 @@ public class SynchronizedDataStat {
     }
 
     public void show() {
-        logger.info("====================================================================");
-        logger.info(String.format("=== STATUS REPORT #%d (%s) ", statObjCnt, this));
-        logger.info(String.format(" * total data process time:\t\t\t%sms", timeDiffMs));
-        logger.info(
-                String.format(" * total data store access count:\t\t%d", dataStore.getAccessCnt()));
-        logger.info(
+        String header = String.format("STATUS REPORT #%d (%s) ", statObjCnt, this);
+        TreeMap<String, String> hashMap = new TreeMap<String, String>();
+        hashMap.put("total data process time", String.format("%dms", timeDiffMs));
+        hashMap.put("total data store access count", String.format("%d", dataStore.getAccessCnt()));
+        String readValue =
                 String.format(
-                        " * data store read access count:\t\t%d (%.2f%%)",
-                        dataStore.getReadAccessCnt(), dataStore.getReadAccessPercent()));
-        logger.info(
+                        "%d (%.2f%%)",
+                        dataStore.getReadAccessCnt(), dataStore.getReadAccessPercent());
+        hashMap.put("data store read access count", readValue);
+        String writeValue =
                 String.format(
-                        " * data store write access count:\t\t%d (%.2f%%)",
-                        dataStore.getWriteAccessCnt(), dataStore.getWriteAccessPercent()));
-        logger.info(
-                String.format(
-                        " * nr of data elements in data store:\t%d",
-                        dataStore.getNrOfDataElements()));
-        logger.info("====================================================================");
+                        "%d (%.2f%%)",
+                        dataStore.getWriteAccessCnt(), dataStore.getWriteAccessPercent());
+        hashMap.put("data store write access count", writeValue);
+        hashMap.put(
+                "data elements in data store",
+                String.format("%d", dataStore.getNrOfDataElements()));
+        new InfoBanner(logger, header, hashMap);
     }
 
     private long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {

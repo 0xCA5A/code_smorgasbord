@@ -32,7 +32,7 @@ public class SharedResourceAccess {
         URL url = loader.getResource(propFileName);
         String absFileName = url.getFile();
         config = new MyConfig(absFileName);
-        config.print();
+        new InfoBanner(logger, config);
     }
 
     public static void main(String[] args) {

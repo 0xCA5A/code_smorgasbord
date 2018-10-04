@@ -8,6 +8,7 @@ public class SynchronizedData implements IDataStore {
 
     private ArrayList<byte[]> storage;
     private long readAccessCnt;
+    private long readMissCnt;
     private long writeAccessCnt;
 
     private Logger logger;
@@ -16,6 +17,7 @@ public class SynchronizedData implements IDataStore {
         logger = MyLogManager.getLogger(this.toString());
         this.storage = new ArrayList<>();
         this.readAccessCnt = 0;
+        this.readMissCnt = 0;
         this.writeAccessCnt = 0;
     }
 
@@ -28,6 +30,17 @@ public class SynchronizedData implements IDataStore {
             return 0;
         }
         return (100.0f / getAccessCnt()) * readAccessCnt;
+    }
+
+    long getReadMissCnt() {
+        return readMissCnt;
+    }
+
+    float getReadMissPercent() {
+        if (getReadMissCnt() <= 0) {
+            return 0;
+        }
+        return (100.0f / getAccessCnt()) * readMissCnt;
     }
 
     long getWriteAccessCnt() {
@@ -73,6 +86,7 @@ public class SynchronizedData implements IDataStore {
     public DataElement consumeData() throws NoSuchElementException {
         synchronized (storage) {
             if (!canGetData()) {
+                readMissCnt++;
                 throw new NoSuchElementException("No data available");
             }
 

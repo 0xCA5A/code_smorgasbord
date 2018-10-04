@@ -45,15 +45,6 @@ public abstract class Worker implements Runnable {
         return objCount;
     }
 
-    protected IntDataElement getRandomData() {
-        Random rand = new Random();
-        int value = rand.nextInt();
-        if (value < 0) {
-            value *= -1;
-        }
-        return new IntDataElement(value);
-    }
-
     public String getUniqueIdentifier() {
         return this.toString();
     }

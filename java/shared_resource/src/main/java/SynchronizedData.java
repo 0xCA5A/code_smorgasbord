@@ -2,7 +2,6 @@ package src.main.java;
 
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
-import java.util.Random;
 import java.util.logging.Logger;
 
 public class SynchronizedData implements IDataStore {
@@ -44,11 +43,6 @@ public class SynchronizedData implements IDataStore {
 
     long getAccessCnt() {
         return readAccessCnt + writeAccessCnt;
-    }
-
-    private static int getRandomNumberInRange(int max) {
-        Random r = new Random();
-        return r.nextInt(max);
     }
 
     public void storeData(DataElement dataElement) {

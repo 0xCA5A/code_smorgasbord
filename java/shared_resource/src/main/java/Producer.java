@@ -33,7 +33,7 @@ public class Producer extends Worker {
 
     private int produceData() {
         int processTimeMs = delayWork();
-        DataElement dataElement = this.getRandomData();
+        DataElement dataElement = new StringDataElement();
         dataStore.storeData(dataElement);
         return processTimeMs;
     }

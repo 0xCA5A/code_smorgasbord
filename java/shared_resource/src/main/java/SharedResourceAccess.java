@@ -28,15 +28,6 @@ public class SharedResourceAccess {
     }
 
     public static void main(String[] args) {
-
-        Runtime.getRuntime()
-                .addShutdownHook(
-                        new Thread() {
-                            public void run() {
-                                running = false;
-                            }
-                        });
-
         SharedResourceAccess sharedResourceAccess = new SharedResourceAccess();
         sharedResourceAccess.operate();
         sharedResourceAccess.waitToBeShutDown();

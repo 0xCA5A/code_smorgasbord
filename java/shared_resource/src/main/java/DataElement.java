@@ -1,7 +1,16 @@
 package src.main.java;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Random;
+
+class Helper {
+    public static int getRandomUnsignedInRange(int max) {
+        Random r = new Random();
+        int value = r.nextInt(max);
+        return (value < 0) ? value * -1 : value;
+    }
+}
 
 public abstract class DataElement<T> implements Serializable {
     private T randData;
@@ -40,14 +49,8 @@ class StringDataElement extends DataElement<String> {
         super(getRandomString());
     }
 
-    private static int getRandomUnsignedInRange(int max) {
-        Random r = new Random();
-        int value = r.nextInt(max);
-        return (value < 0) ? value * -1 : value;
-    }
-
     private static String getRandomString() {
-        int count = getRandomUnsignedInRange(maxStringLen);
+        int count = Helper.getRandomUnsignedInRange(maxStringLen);
         StringBuilder builder = new StringBuilder();
         while (count-- != 0) {
             int character = (int) (Math.random() * ALPHA_NUMERIC_STRING.length());
@@ -57,14 +60,31 @@ class StringDataElement extends DataElement<String> {
     }
 }
 
-class ComplexDataElement extends DataElement<Object[]> {
-    ComplexDataElement(Object[] randData) {
+class ComplexDataElement extends DataElement<ArrayList> {
+    private static final int maxNrOfObjects = 200;
 
-        super(randData);
+    ComplexDataElement() {
+        super(getObjects());
+    }
+
+    private static ArrayList<Object> getObjects() {
+        ArrayList<Object> objList = new ArrayList<Object>();
+
+        int nrOfObjects = Helper.getRandomUnsignedInRange(maxNrOfObjects);
+        for (int i = 0; i < nrOfObjects; i++) {
+            // ballast object
+            String singleStr = String.format("%d ", nrOfObjects);
+            Object obj = new String(new char[nrOfObjects]).replace("\0", singleStr);
+            objList.add(obj);
+        }
+        return objList;
     }
 
     @Override
     public String toString() {
-        return this.toString();
+        String objId = this.getClass().toString();
+        String objString =
+                String.format("%s (nr of objects attached: %d)", objId, this.getData().size());
+        return objString;
     }
 }

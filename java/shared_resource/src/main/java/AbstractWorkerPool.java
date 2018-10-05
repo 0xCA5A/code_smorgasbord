@@ -4,33 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-class ConsumerWorkerPool extends WorkerPool {
-
-    ConsumerWorkerPool(
-            int poolSize, IDataStore dataStore, int maxWorkerLatencyMs, Class<?> dataElementClass) {
-        super(poolSize, dataStore, maxWorkerLatencyMs, dataElementClass);
-    }
-
-    @Override
-    protected IWorker getWorker() {
-        return new Consumer(dataStore, maxWorkerLatencyMs, dataElementClass);
-    }
-}
-
-class ProducerWorkerPool extends WorkerPool {
-
-    ProducerWorkerPool(
-            int poolSize, IDataStore dataStore, int maxWorkerLatencyMs, Class<?> dataElementClass) {
-        super(poolSize, dataStore, maxWorkerLatencyMs, dataElementClass);
-    }
-
-    @Override
-    protected IWorker getWorker() {
-        return new Producer(dataStore, maxWorkerLatencyMs, dataElementClass);
-    }
-}
-
-public abstract class WorkerPool {
+public abstract class AbstractWorkerPool implements IWorkerPool {
 
     protected final Logger logger;
     private final List<Thread> workers;
@@ -39,7 +13,7 @@ public abstract class WorkerPool {
     protected int maxWorkerLatencyMs;
     protected Class<?> dataElementClass;
 
-    WorkerPool(
+    AbstractWorkerPool(
             int poolSize, IDataStore dataStore, int maxWorkerLatencyMs, Class<?> dataElementClass) {
         this.poolSize = poolSize;
         this.workers = new ArrayList<>();
@@ -51,11 +25,11 @@ public abstract class WorkerPool {
         initPool();
     }
 
-    protected abstract IWorker getWorker();
+    protected abstract IWorker createWorker();
 
     private void initPool() {
         for (int i = 0; i < poolSize; i++) {
-            workers.add(new Thread(this.getWorker()));
+            workers.add(new Thread(this.createWorker()));
         }
     }
 

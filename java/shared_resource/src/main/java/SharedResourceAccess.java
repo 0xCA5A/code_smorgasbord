@@ -10,14 +10,10 @@ public class SharedResourceAccess {
 
     private static final String PROP_FILE_NAME = "app.properties";
 
-    private List<WorkerPool> workerPools;
+    private List<IWorkerPool> workerPools;
     private final SynchronizedData dataStore;
-
     private final Logger logger;
-
     static boolean running = true;
-    static long statCnt = 0;
-
     MyConfig config;
 
     SharedResourceAccess() {
@@ -54,7 +50,7 @@ public class SharedResourceAccess {
             showStat(startTimestamp);
         }
 
-        for (WorkerPool workerPool : workerPools) {
+        for (IWorkerPool workerPool : workerPools) {
             workerPool.terminate();
         }
     }
@@ -65,7 +61,7 @@ public class SharedResourceAccess {
     }
 
     private void initWorkerPools() {
-        this.workerPools = new ArrayList<WorkerPool>();
+        this.workerPools = new ArrayList<>();
         logger.info("Create worker thread pools");
         ProducerWorkerPool pwp =
                 new ProducerWorkerPool(
@@ -84,7 +80,7 @@ public class SharedResourceAccess {
     }
 
     private void operate() {
-        for (WorkerPool workerPool : workerPools) {
+        for (IWorkerPool workerPool : workerPools) {
             logger.info(String.format("Starting %s", workerPool));
             workerPool.start();
         }

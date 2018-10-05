@@ -10,12 +10,14 @@ public abstract class Worker implements Runnable {
     private final int maxWorkerLatencyMs;
     protected final AtomicBoolean running;
     protected IDataStore dataStore;
+    protected Class<?> dataElementClass;
 
-    Worker(IDataStore dataStore, int maxWorkerLatencyMs) {
+    Worker(IDataStore dataStore, int maxWorkerLatencyMs, Class<?> dataElementClass) {
         this.dataStore = dataStore;
         assert (dataStore != null);
         this.jobsCompleted = 0;
         this.maxWorkerLatencyMs = maxWorkerLatencyMs;
+        this.dataElementClass = dataElementClass;
         this.running = new AtomicBoolean(true);
         incWorkerObjCnt();
     }

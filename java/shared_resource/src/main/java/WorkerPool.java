@@ -5,25 +5,27 @@ import java.util.logging.Logger;
 
 class ConsumerWorkerPool extends WorkerPool {
 
-    ConsumerWorkerPool(int poolSize, IDataStore dataStore, int maxWorkerLatencyMs) {
-        super(poolSize, dataStore, maxWorkerLatencyMs);
+    ConsumerWorkerPool(
+            int poolSize, IDataStore dataStore, int maxWorkerLatencyMs, Class<?> dataElementClass) {
+        super(poolSize, dataStore, maxWorkerLatencyMs, dataElementClass);
     }
 
     @Override
     protected Worker getWorker() {
-        return new Consumer(dataStore, maxWorkerLatencyMs);
+        return new Consumer(dataStore, maxWorkerLatencyMs, dataElementClass);
     }
 }
 
 class ProducerWorkerPool extends WorkerPool {
 
-    ProducerWorkerPool(int poolSize, IDataStore dataStore, int maxWorkerLatencyMs) {
-        super(poolSize, dataStore, maxWorkerLatencyMs);
+    ProducerWorkerPool(
+            int poolSize, IDataStore dataStore, int maxWorkerLatencyMs, Class<?> dataElementClass) {
+        super(poolSize, dataStore, maxWorkerLatencyMs, dataElementClass);
     }
 
     @Override
     protected Worker getWorker() {
-        return new Producer(dataStore, maxWorkerLatencyMs);
+        return new Producer(dataStore, maxWorkerLatencyMs, dataElementClass);
     }
 }
 
@@ -34,12 +36,15 @@ public abstract class WorkerPool {
     protected int poolSize;
     protected IDataStore dataStore;
     protected int maxWorkerLatencyMs;
+    protected Class<?> dataElementClass;
 
-    WorkerPool(int poolSize, IDataStore dataStore, int maxWorkerLatencyMs) {
+    WorkerPool(
+            int poolSize, IDataStore dataStore, int maxWorkerLatencyMs, Class<?> dataElementClass) {
         this.poolSize = poolSize;
         this.workers = new ArrayList<>();
         this.dataStore = dataStore;
         this.maxWorkerLatencyMs = maxWorkerLatencyMs;
+        this.dataElementClass = dataElementClass;
         logger = MyLogManager.getLogger(this.toString());
 
         initPool();

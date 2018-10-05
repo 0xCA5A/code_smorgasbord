@@ -7,8 +7,8 @@ public class Consumer extends Worker {
 
     private Logger logger;
 
-    Consumer(IDataStore dataStore, int maxWorkerLatencyMs) {
-        super(dataStore, maxWorkerLatencyMs);
+    Consumer(IDataStore dataStore, int maxWorkerLatencyMs, Class<?> dataElementClass) {
+        super(dataStore, maxWorkerLatencyMs, dataElementClass);
         logger = MyLogManager.getLogger(this.toString());
 
         logger.finer(

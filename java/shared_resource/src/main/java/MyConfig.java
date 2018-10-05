@@ -15,11 +15,13 @@ public class MyConfig {
     private static final int NR_OF_CONSUMER_THREADS = 7;
     private static final int MAX_WORKER_LATENCY_MS = 42;
     private static final int REPORT_INTERVAL_S = 3;
+    private static final String DEFAULT_DATA_ELEMENT_TYPE = "src.main.java.IntDataElement";
 
     public final int nrOfConsumerThreads;
     public final int nrOfProducerThreads;
     public final int maxWorkerLatencyMs;
     public final int reportIntervalS;
+    public final Class<?> dataElementType;
 
     public MyConfig(String propFileName) {
         logger = MyLogManager.getLogger(this.toString());
@@ -30,16 +32,40 @@ public class MyConfig {
                 props.getProperty(
                         "app.nr_of_consumer_threads", String.valueOf(NR_OF_CONSUMER_THREADS));
         nrOfConsumerThreads = Integer.parseInt(stringValue);
+
         stringValue =
                 props.getProperty(
                         "app.nr_of_producer_threads", String.valueOf(NR_OF_PRODUCER_THREADS));
         nrOfProducerThreads = Integer.parseInt(stringValue);
+
         stringValue =
                 props.getProperty(
                         "app.max_worker_latency_ms", String.valueOf(MAX_WORKER_LATENCY_MS));
         maxWorkerLatencyMs = Integer.parseInt(stringValue);
+
         stringValue = props.getProperty("app.report_interval_s", String.valueOf(REPORT_INTERVAL_S));
         reportIntervalS = Integer.parseInt(stringValue);
+
+        stringValue = props.getProperty("app.data_element_type", DEFAULT_DATA_ELEMENT_TYPE);
+        dataElementType = getClassByName(stringValue);
+    }
+
+    private static Class<?> getClassByName(String className) {
+        Class<?> prototype = null;
+        try {
+            prototype = Class.forName(className);
+        } catch (ClassNotFoundException ex) {
+            // Cheap loop prevention
+            assert (className != DEFAULT_DATA_ELEMENT_TYPE);
+            // FIXME: how to log from static context?
+            System.out.println(
+                    String.format(
+                            "Unable to get class for type '%s', using fallback '%s'",
+                            className, DEFAULT_DATA_ELEMENT_TYPE));
+            prototype = getClassByName(DEFAULT_DATA_ELEMENT_TYPE);
+        }
+        assert (prototype != null);
+        return prototype;
     }
 
     private Properties readPropFile(String propFileName) {

@@ -68,11 +68,17 @@ public class SharedResourceAccess {
         logger.info("Create worker thread pools");
         ProducerWorkerPool pwp =
                 new ProducerWorkerPool(
-                        config.nrOfProducerThreads, dataStore, config.maxWorkerLatencyMs);
+                        config.nrOfProducerThreads,
+                        dataStore,
+                        config.maxWorkerLatencyMs,
+                        config.dataElementType);
         workerPools.add(pwp);
         ConsumerWorkerPool cwp =
                 new ConsumerWorkerPool(
-                        config.nrOfConsumerThreads, dataStore, config.maxWorkerLatencyMs);
+                        config.nrOfConsumerThreads,
+                        dataStore,
+                        config.maxWorkerLatencyMs,
+                        config.dataElementType);
         workerPools.add(cwp);
     }
 

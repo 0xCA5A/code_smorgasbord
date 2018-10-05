@@ -29,7 +29,7 @@ public abstract class DataElement<T> implements Serializable {
 }
 
 class IntDataElement extends DataElement<Integer> {
-    IntDataElement() {
+    public IntDataElement() {
         super(getRandomUnsignedInt());
     }
 
@@ -45,7 +45,7 @@ class StringDataElement extends DataElement<String> {
     private static final int maxStringLen = 1000;
     private static final String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-    StringDataElement() {
+    public StringDataElement() {
         super(getRandomString());
     }
 
@@ -63,7 +63,7 @@ class StringDataElement extends DataElement<String> {
 class ComplexDataElement extends DataElement<ArrayList> {
     private static final int maxNrOfObjects = 200;
 
-    ComplexDataElement() {
+    public ComplexDataElement() {
         super(getObjects());
     }
 

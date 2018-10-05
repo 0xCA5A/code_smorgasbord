@@ -1,12 +1,14 @@
 package src.main.java;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
 public class Producer extends Worker {
     private Logger logger;
 
-    Producer(IDataStore dataStore, int maxWorkerLatencyMs) {
-        super(dataStore, maxWorkerLatencyMs);
+    Producer(IDataStore dataStore, int maxWorkerLatencyMs, Class<?> dataElementClass) {
+        super(dataStore, maxWorkerLatencyMs, dataElementClass);
         logger = MyLogManager.getLogger(this.toString());
         logger.finer(
                 String.format(
@@ -33,8 +35,36 @@ public class Producer extends Worker {
 
     private int produceData() {
         int processTimeMs = delayWork();
-        DataElement dataElement = new ComplexDataElement();
+        DataElement dataElement = createDataElement();
         dataStore.storeData(dataElement);
         return processTimeMs;
+    }
+
+    private void logException(String exceptionString) {
+        logger.severe(String.format("Caught '%s' while creating a data element", exceptionString));
+    }
+
+    private DataElement createDataElement() {
+
+        Constructor<?> constructor = null;
+        try {
+            constructor = dataElementClass.getConstructor();
+        } catch (NoSuchMethodException constEx) {
+            logException(constEx.toString());
+        } finally {
+            assert (constructor != null);
+        }
+
+        DataElement dataElement = null;
+        try {
+            dataElement = (DataElement) constructor.newInstance();
+        } catch (InstantiationException
+                | IllegalAccessException
+                | InvocationTargetException multiEx) {
+            logException(multiEx.toString());
+        } finally {
+            assert (dataElement != null);
+        }
+        return dataElement;
     }
 }

@@ -3,7 +3,7 @@ package src.main.java;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
-public class Consumer extends Worker {
+public class Consumer extends AbstractWorker {
 
     private Logger logger;
 

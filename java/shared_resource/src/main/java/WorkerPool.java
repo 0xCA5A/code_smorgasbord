@@ -12,7 +12,7 @@ class ConsumerWorkerPool extends WorkerPool {
     }
 
     @Override
-    protected Worker getWorker() {
+    protected IWorker getWorker() {
         return new Consumer(dataStore, maxWorkerLatencyMs, dataElementClass);
     }
 }
@@ -25,7 +25,7 @@ class ProducerWorkerPool extends WorkerPool {
     }
 
     @Override
-    protected Worker getWorker() {
+    protected IWorker getWorker() {
         return new Producer(dataStore, maxWorkerLatencyMs, dataElementClass);
     }
 }
@@ -51,7 +51,7 @@ public abstract class WorkerPool {
         initPool();
     }
 
-    protected abstract Worker getWorker();
+    protected abstract IWorker getWorker();
 
     private void initPool() {
         for (int i = 0; i < poolSize; i++) {

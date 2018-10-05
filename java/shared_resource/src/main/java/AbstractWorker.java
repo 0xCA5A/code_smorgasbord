@@ -3,7 +3,7 @@ package src.main.java;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public abstract class Worker implements Runnable {
+public abstract class AbstractWorker implements IWorker {
 
     private static long objCount;
     private long jobsCompleted;
@@ -12,7 +12,7 @@ public abstract class Worker implements Runnable {
     protected IDataStore dataStore;
     protected Class<?> dataElementClass;
 
-    Worker(IDataStore dataStore, int maxWorkerLatencyMs, Class<?> dataElementClass) {
+    AbstractWorker(IDataStore dataStore, int maxWorkerLatencyMs, Class<?> dataElementClass) {
         this.dataStore = dataStore;
         assert dataStore != null;
         this.jobsCompleted = 0;

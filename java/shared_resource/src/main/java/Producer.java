@@ -35,7 +35,7 @@ public class Producer extends Worker {
 
     private int produceData() {
         int processTimeMs = delayWork();
-        DataElement dataElement = createDataElement();
+        IDataElement dataElement = createDataElement();
         dataStore.storeData(dataElement);
         return processTimeMs;
     }
@@ -44,7 +44,7 @@ public class Producer extends Worker {
         logger.severe(String.format("Caught '%s' while creating a data element", exceptionString));
     }
 
-    private DataElement createDataElement() {
+    private IDataElement createDataElement() {
 
         Constructor<?> constructor = null;
         try {
@@ -55,9 +55,9 @@ public class Producer extends Worker {
             assert (constructor != null);
         }
 
-        DataElement dataElement = null;
+        IDataElement dataElement = null;
         try {
-            dataElement = (DataElement) constructor.newInstance();
+            dataElement = (IDataElement) constructor.newInstance();
         } catch (InstantiationException
                 | IllegalAccessException
                 | InvocationTargetException multiEx) {

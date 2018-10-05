@@ -58,7 +58,7 @@ public class SynchronizedData implements IDataStore {
         return readAccessCnt + writeAccessCnt;
     }
 
-    public void storeData(DataElement dataElement) {
+    public void storeData(IDataElement dataElement) {
         synchronized (storage) {
             logger.fine(String.format("Add new data element %s", dataElement));
 
@@ -83,7 +83,7 @@ public class SynchronizedData implements IDataStore {
         }
     }
 
-    public DataElement consumeData() throws NoSuchElementException {
+    public IDataElement consumeData() throws NoSuchElementException {
         synchronized (storage) {
             if (!canGetData()) {
                 readMissCnt++;
@@ -91,14 +91,14 @@ public class SynchronizedData implements IDataStore {
             }
 
             byte[] serializedData = storage.remove(0);
-            DataElement dataElement = Serializer.fromByteArray(serializedData);
+            IDataElement dataElement = Serializer.fromByteArray(serializedData);
             logger.fine(String.format("Consume data element %s", dataElement.toString()));
             logger.finer(
                     String.format(
                             "New data store size after consuming data: %d elements",
                             getNrOfDataElements()));
             readAccessCnt++;
-            return (DataElement) dataElement;
+            return (IDataElement) dataElement;
         }
     }
 

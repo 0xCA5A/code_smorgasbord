@@ -12,7 +12,7 @@ public final class Serializer {
 
     private Serializer() {};
 
-    public static DataElement fromByteArray(byte[] serializedData) {
+    public static IDataElement fromByteArray(byte[] serializedData) {
         ByteArrayInputStream bais = new ByteArrayInputStream(serializedData);
         ObjectInput in = null;
         Object object = null;
@@ -30,10 +30,10 @@ public final class Serializer {
                 // ignore close exception
             }
         }
-        return (DataElement) object;
+        return (IDataElement) object;
     }
 
-    public static byte[] toByteArray(DataElement dataElement) {
+    public static byte[] toByteArray(IDataElement dataElement) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutput out = null;
         byte[] objBytes = null;

@@ -2,13 +2,16 @@ package src.main.java;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
-class Helper {
-    public static int getRandomUnsignedInRange(int max) {
+final class RandomHelper {
+    private RandomHelper() {};
+
+    public static int getUnsignedInRange(int max) {
         Random r = new Random();
         int value = r.nextInt(max);
-        return (value < 0) ? value * -1 : value;
+        return value < 0 ? value * -1 : value;
     }
 }
 
@@ -29,14 +32,10 @@ public abstract class DataElement<T> implements Serializable {
 }
 
 class IntDataElement extends DataElement<Integer> {
-    public IntDataElement() {
-        super(getRandomUnsignedInt());
-    }
+    private static final int maxIntValue = Integer.MAX_VALUE;
 
-    private static int getRandomUnsignedInt() {
-        Random rand = new Random();
-        int value = rand.nextInt();
-        return (value < 0) ? value : value * -1;
+    public IntDataElement() {
+        super(RandomHelper.getUnsignedInRange(maxIntValue));
     }
 }
 
@@ -50,7 +49,7 @@ class StringDataElement extends DataElement<String> {
     }
 
     private static String getRandomString() {
-        int count = Helper.getRandomUnsignedInRange(maxStringLen);
+        int count = RandomHelper.getUnsignedInRange(maxStringLen);
         StringBuilder builder = new StringBuilder();
         while (count-- != 0) {
             int character = (int) (Math.random() * ALPHA_NUMERIC_STRING.length());
@@ -60,17 +59,17 @@ class StringDataElement extends DataElement<String> {
     }
 }
 
-class ComplexDataElement extends DataElement<ArrayList> {
+class ComplexDataElement extends DataElement<List> {
     private static final int maxNrOfObjects = 200;
 
     public ComplexDataElement() {
-        super(getObjects());
+        super(getObjectList());
     }
 
-    private static ArrayList<Object> getObjects() {
+    private static List<Object> getObjectList() {
         ArrayList<Object> objList = new ArrayList<Object>();
 
-        int nrOfObjects = Helper.getRandomUnsignedInRange(maxNrOfObjects);
+        int nrOfObjects = RandomHelper.getUnsignedInRange(maxNrOfObjects);
         for (int i = 0; i < nrOfObjects; i++) {
             // ballast object
             String singleStr = String.format("%d ", nrOfObjects);
@@ -83,8 +82,6 @@ class ComplexDataElement extends DataElement<ArrayList> {
     @Override
     public String toString() {
         String objId = this.getClass().toString();
-        String objString =
-                String.format("%s (nr of objects attached: %d)", objId, this.getData().size());
-        return objString;
+        return String.format("%s (nr of objects attached: %d)", objId, this.getData().size());
     }
 }

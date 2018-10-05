@@ -1,5 +1,6 @@
 package src.main.java;
 
+import java.util.List;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
@@ -32,7 +33,7 @@ class ProducerWorkerPool extends WorkerPool {
 public abstract class WorkerPool {
 
     private Logger logger;
-    private ArrayList<Thread> workers;
+    private List<Thread> workers;
     protected int poolSize;
     protected IDataStore dataStore;
     protected int maxWorkerLatencyMs;
@@ -45,7 +46,7 @@ public abstract class WorkerPool {
         this.dataStore = dataStore;
         this.maxWorkerLatencyMs = maxWorkerLatencyMs;
         this.dataElementClass = dataElementClass;
-        logger = MyLogManager.getLogger(this.toString());
+        logger = MyLogHelper.getLogger(this.toString());
 
         initPool();
     }

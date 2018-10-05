@@ -14,7 +14,7 @@ public class SynchronizedData implements IDataStore {
     private Logger logger;
 
     SynchronizedData() {
-        logger = MyLogManager.getLogger(this.toString());
+        logger = MyLogHelper.getLogger(this.toString());
         this.storage = new ArrayList<>();
         this.readAccessCnt = 0;
         this.readMissCnt = 0;

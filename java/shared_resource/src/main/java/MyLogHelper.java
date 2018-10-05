@@ -5,11 +5,13 @@ import java.io.InputStream;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-public class MyLogManager {
+public final class MyLogHelper {
     private static String loggingProps = "logging.properties";
 
+    private MyLogHelper() {};
+
     static {
-        InputStream stream = MyLogManager.class.getClassLoader().getResourceAsStream(loggingProps);
+        InputStream stream = MyLogHelper.class.getClassLoader().getResourceAsStream(loggingProps);
         try {
             LogManager.getLogManager().readConfiguration(stream);
         } catch (IOException e) {

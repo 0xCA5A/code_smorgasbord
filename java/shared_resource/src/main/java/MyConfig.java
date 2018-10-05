@@ -24,7 +24,7 @@ public class MyConfig {
     public final Class<?> dataElementType;
 
     public MyConfig(String propFileName) {
-        logger = MyLogManager.getLogger(this.toString());
+        logger = MyLogHelper.getLogger(this.toString());
         Properties props = readPropFile(propFileName);
 
         String stringValue;

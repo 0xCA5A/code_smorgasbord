@@ -20,7 +20,7 @@ public class SharedResourceAccess {
     MyConfig config;
 
     SharedResourceAccess() {
-        logger = MyLogManager.getLogger(this.toString());
+        logger = MyLogHelper.getLogger(this.toString());
         dataStore = new SynchronizedData();
 
         initConfigFromPropFile();

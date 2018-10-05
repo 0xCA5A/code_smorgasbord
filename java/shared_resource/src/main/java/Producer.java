@@ -9,7 +9,7 @@ public class Producer extends Worker {
 
     Producer(IDataStore dataStore, int maxWorkerLatencyMs, Class<?> dataElementClass) {
         super(dataStore, maxWorkerLatencyMs, dataElementClass);
-        logger = MyLogManager.getLogger(this.toString());
+        logger = MyLogHelper.getLogger(this.toString());
         logger.finer(
                 String.format(
                         "[%s] Create new object %s %d",

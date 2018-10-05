@@ -14,7 +14,7 @@ public class SynchronizedDataStat {
 
     SynchronizedDataStat(Date startTimestamp, SynchronizedData dataStore) {
         this.dataStore = dataStore;
-        logger = MyLogManager.getLogger(this.toString());
+        logger = MyLogHelper.getLogger(this.toString());
 
         incStatObjCnt();
         timeDiffMs = getDateDiff(startTimestamp, new Date(), TimeUnit.MILLISECONDS);

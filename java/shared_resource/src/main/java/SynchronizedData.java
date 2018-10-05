@@ -62,7 +62,7 @@ public class SynchronizedData implements IDataStore {
         synchronized (storage) {
             logger.fine(String.format("Add new data element %s", dataElement));
 
-            byte[] serializedData = Serializer.toByteArray(dataElement);
+            byte[] serializedData = SerializationHelper.toByteArray(dataElement);
 
             storage.add(serializedData);
 
@@ -91,7 +91,7 @@ public class SynchronizedData implements IDataStore {
             }
 
             byte[] serializedData = storage.remove(0);
-            IDataElement dataElement = Serializer.fromByteArray(serializedData);
+            IDataElement dataElement = SerializationHelper.fromByteArray(serializedData);
             logger.fine(String.format("Consume data element %s", dataElement.toString()));
             logger.finer(
                     String.format(

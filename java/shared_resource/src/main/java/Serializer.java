@@ -8,7 +8,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 
-public class Serializer {
+public final class Serializer {
+
+    private Serializer() {};
 
     public static DataElement fromByteArray(byte[] serializedData) {
         ByteArrayInputStream bais = new ByteArrayInputStream(serializedData);

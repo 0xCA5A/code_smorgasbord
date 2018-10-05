@@ -9,10 +9,10 @@ public class SynchronizedDataStat {
 
     private static long statObjCnt = 0;
     private final long timeDiffMs;
-    private final SynchronizedData dataStore;
+    private final SynchronizedDataStore dataStore;
     private final Logger logger;
 
-    SynchronizedDataStat(Date startTimestamp, SynchronizedData dataStore) {
+    SynchronizedDataStat(Date startTimestamp, SynchronizedDataStore dataStore) {
         this.dataStore = dataStore;
         logger = MyLogHelper.getLogger(this.toString());
 

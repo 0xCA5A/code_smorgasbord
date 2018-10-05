@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
-public class SynchronizedData implements IDataStore {
+public class SynchronizedDataStore implements IDataStore {
 
     private final List<byte[]> storage;
     private long readAccessCnt;
@@ -14,7 +14,7 @@ public class SynchronizedData implements IDataStore {
 
     private final Logger logger;
 
-    SynchronizedData() {
+    SynchronizedDataStore() {
         logger = MyLogHelper.getLogger(this.toString());
         this.storage = new ArrayList<>();
         this.readAccessCnt = 0;

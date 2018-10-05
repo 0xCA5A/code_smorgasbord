@@ -11,14 +11,14 @@ public class SharedResourceAccess {
     private static final String PROP_FILE_NAME = "app.properties";
 
     private List<IWorkerPool> workerPools;
-    private final SynchronizedData dataStore;
+    private final SynchronizedDataStore dataStore;
     private final Logger logger;
     static boolean running = true;
     MyConfig config;
 
     SharedResourceAccess() {
         logger = MyLogHelper.getLogger(this.toString());
-        dataStore = new SynchronizedData();
+        dataStore = new SynchronizedDataStore();
 
         initConfigFromPropFile();
         initWorkerPools();

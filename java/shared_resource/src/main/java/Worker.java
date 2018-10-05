@@ -14,7 +14,7 @@ public abstract class Worker implements Runnable {
 
     Worker(IDataStore dataStore, int maxWorkerLatencyMs, Class<?> dataElementClass) {
         this.dataStore = dataStore;
-        assert (dataStore != null);
+        assert dataStore != null;
         this.jobsCompleted = 0;
         this.maxWorkerLatencyMs = maxWorkerLatencyMs;
         this.dataElementClass = dataElementClass;

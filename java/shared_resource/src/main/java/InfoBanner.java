@@ -1,67 +1,66 @@
 package src.main.java;
 
 import java.lang.reflect.Field;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 
 class InfoBanner {
     private static final String MAGIC_CHAR = "#";
-    private TreeMap<String, String> hashMap;
 
-    private TreeMap<String, String> getPublicFields(Logger logger, Object object) {
+    private Map<String, String> getPublicFields(Logger clientLogger, Object object) {
 
-        TreeMap<String, String> hashMap = new TreeMap<String, String>();
+        Map<String, String> hashMap = new TreeMap<String, String>();
         Class myClass = object.getClass();
         Field[] fields = myClass.getFields();
 
         for (Field field : fields) {
             String fieldName = field.getName();
             String[] parts = fieldName.split("\\.");
-            Object value = null;
+            Object value;
             try {
                 value = field.get(object);
             } catch (IllegalAccessException ex) {
                 value = 0;
-                logger.warning("");
+                clientLogger.warning("");
             }
-            hashMap.put(
-                    (parts.length != 0) ? parts[parts.length - 1] : fieldName, value.toString());
+            hashMap.put(parts.length != 0 ? parts[parts.length - 1] : fieldName, value.toString());
         }
 
         return hashMap;
     }
 
-    InfoBanner(Logger logger, String header, TreeMap<String, String> hashMap) {
+    InfoBanner(Logger logger, String header, Map<String, String> hashMap) {
         printBanner(logger, header, hashMap);
     }
 
     InfoBanner(Logger logger, String header, Object object) {
-        TreeMap<String, String> hashMap = getPublicFields(logger, object);
+        Map<String, String> hashMap = getPublicFields(logger, object);
         printBanner(logger, header, hashMap);
     }
 
     InfoBanner(Logger logger, Object object) {
         String header = object.getClass().toString();
-        TreeMap<String, String> hashMap = getPublicFields(logger, object);
+        Map<String, String> hashMap = getPublicFields(logger, object);
         printBanner(logger, header, hashMap);
     }
 
-    private void printBanner(Logger logger, String header, TreeMap<String, String> hashMap) {
-        assert (logger != null);
-        assert (hashMap != null);
+    private void printBanner(Logger clientLogger, String header, Map<String, String> hashMap) {
+        assert clientLogger != null;
+        assert hashMap != null;
 
         String separator = new String(new char[80]).replace("\0", MAGIC_CHAR);
-        logger.info(separator);
-        logger.info(String.format("# %s", header));
-        logger.info(separator);
+        clientLogger.info(separator);
+        clientLogger.info(String.format("# %s", header));
+        clientLogger.info(separator);
 
         for (SortedMap.Entry<String, String> entry : hashMap.entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();
-            logger.info(String.format("%s * %s:\t\t%s", MAGIC_CHAR, key, value));
+            clientLogger.info(String.format("%s * %s:\t\t%s", MAGIC_CHAR, key, value));
         }
 
-        logger.info(separator);
+        clientLogger.info(separator);
     }
 }

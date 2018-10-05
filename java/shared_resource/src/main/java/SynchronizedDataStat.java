@@ -29,26 +29,30 @@ public class SynchronizedDataStat {
         TreeMap<String, String> hashMap = new TreeMap<String, String>();
         hashMap.put("total data process time", String.format("%dms", timeDiffMs));
         hashMap.put("total data store access count", String.format("%d", dataStore.getAccessCnt()));
+        hashMap.put(
+                "data elements in data store",
+                String.format("%d", dataStore.getNrOfDataElements()));
 
         String readCntValue =
                 String.format(
                         "%d (%.2f%%)",
                         dataStore.getReadAccessCnt(), dataStore.getReadAccessPercent());
         hashMap.put("data store read access count", readCntValue);
-
         String readMissValue =
                 String.format(
                         "%d (%.2f%%)", dataStore.getReadMissCnt(), dataStore.getReadMissPercent());
         hashMap.put("data store read miss count", readMissValue);
-
         String writeCntValue =
                 String.format(
                         "%d (%.2f%%)",
                         dataStore.getWriteAccessCnt(), dataStore.getWriteAccessPercent());
         hashMap.put("data store write access count", writeCntValue);
-        hashMap.put(
-                "data elements in data store",
-                String.format("%d", dataStore.getNrOfDataElements()));
+
+        float readsPerSecond = (float) dataStore.getReadAccessCnt() / (timeDiffMs / 1000);
+        hashMap.put("data store reads per second", String.format("%.2f", readsPerSecond));
+        float writesPerSecond = (float) dataStore.getWriteAccessCnt() / (timeDiffMs / 1000);
+        hashMap.put("data store writes per second", String.format("%.2f", writesPerSecond));
+
         new InfoBanner(logger, header, hashMap);
     }
 

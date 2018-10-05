@@ -32,7 +32,7 @@ public class Consumer extends Worker {
                         String.format(
                                 "'%s' reported by thread %s - " + "interrupt work for %dms",
                                 noElemEx.getMessage(), this, delayTimeMs);
-                logger.warning(msg);
+                logger.fine(msg);
                 try {
                     Thread.sleep(delayTimeMs);
                 } catch (InterruptedException irEx) {

@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 
 public class Consumer extends AbstractWorker {
 
-    private Logger logger;
+    private final Logger logger;
 
     Consumer(IDataStore dataStore, int maxWorkerLatencyMs, Class<?> dataElementClass) {
         super(dataStore, maxWorkerLatencyMs, dataElementClass);

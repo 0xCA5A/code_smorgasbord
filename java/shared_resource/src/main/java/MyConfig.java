@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 
 public class MyConfig {
 
-    private Logger logger;
+    private final Logger logger;
 
     private static final int NR_OF_PRODUCER_THREADS = 7;
     private static final int NR_OF_CONSUMER_THREADS = 7;

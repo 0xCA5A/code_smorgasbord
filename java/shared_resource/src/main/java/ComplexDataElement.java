@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ComplexDataElement extends AbstractDataElement<List> {
-    private static final int maxNrOfObjects = 200;
+    private static final int MAX_NR_OF_OBJECTS = 200;
 
     public ComplexDataElement() {
         super(getObjectList());
@@ -13,7 +13,7 @@ public class ComplexDataElement extends AbstractDataElement<List> {
     private static List<Object> getObjectList() {
         ArrayList<Object> objList = new ArrayList<Object>();
 
-        int nrOfObjects = RandomHelper.getUnsignedInRange(maxNrOfObjects);
+        int nrOfObjects = RandomHelper.getUnsignedInRange(MAX_NR_OF_OBJECTS);
         for (int i = 0; i < nrOfObjects; i++) {
             // ballast object
             String singleStr = String.format("%d ", nrOfObjects);

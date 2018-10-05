@@ -3,10 +3,10 @@ package src.main.java;
 import java.io.Serializable;
 
 public abstract class AbstractDataElement<T> implements Serializable, IDataElement {
-    private T randData;
+    private final T data;
 
     AbstractDataElement(T randData) {
-        this.randData = randData;
+        this.data = randData;
     }
 
     public String toString() {
@@ -14,6 +14,6 @@ public abstract class AbstractDataElement<T> implements Serializable, IDataEleme
     }
 
     public T getData() {
-        return randData;
+        return data;
     }
 }

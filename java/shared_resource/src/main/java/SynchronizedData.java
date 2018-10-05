@@ -7,12 +7,12 @@ import java.util.logging.Logger;
 
 public class SynchronizedData implements IDataStore {
 
-    private List<byte[]> storage;
+    private final List<byte[]> storage;
     private long readAccessCnt;
     private long readMissCnt;
     private long writeAccessCnt;
 
-    private Logger logger;
+    private final Logger logger;
 
     SynchronizedData() {
         logger = MyLogHelper.getLogger(this.toString());

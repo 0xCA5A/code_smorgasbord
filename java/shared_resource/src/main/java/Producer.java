@@ -5,7 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
 public class Producer extends AbstractWorker {
-    private Logger logger;
+    private final Logger logger;
 
     Producer(IDataStore dataStore, int maxWorkerLatencyMs, Class<?> dataElementClass) {
         super(dataStore, maxWorkerLatencyMs, dataElementClass);

@@ -11,9 +11,9 @@ public class SharedResourceAccess {
     private static final String PROP_FILE_NAME = "app.properties";
 
     private List<WorkerPool> workerPools;
-    private SynchronizedData dataStore;
+    private final SynchronizedData dataStore;
 
-    private Logger logger;
+    private final Logger logger;
 
     static boolean running = true;
     static long statCnt = 0;

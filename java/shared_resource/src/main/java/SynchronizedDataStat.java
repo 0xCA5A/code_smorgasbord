@@ -8,9 +8,9 @@ import java.util.logging.Logger;
 public class SynchronizedDataStat {
 
     private static long statObjCnt = 0;
-    private long timeDiffMs;
-    private SynchronizedData dataStore;
-    private Logger logger;
+    private final long timeDiffMs;
+    private final SynchronizedData dataStore;
+    private final Logger logger;
 
     SynchronizedDataStat(Date startTimestamp, SynchronizedData dataStore) {
         this.dataStore = dataStore;
@@ -48,9 +48,9 @@ public class SynchronizedDataStat {
                         dataStore.getWriteAccessCnt(), dataStore.getWriteAccessPercent());
         hashMap.put("data store write access count", writeCntValue);
 
-        float readsPerSecond = (float) dataStore.getReadAccessCnt() / (timeDiffMs / 1000);
+        float readsPerSecond = (float) dataStore.getReadAccessCnt() / (timeDiffMs / 1000f);
         hashMap.put("data store reads per second", String.format("%.2f", readsPerSecond));
-        float writesPerSecond = (float) dataStore.getWriteAccessCnt() / (timeDiffMs / 1000);
+        float writesPerSecond = (float) dataStore.getWriteAccessCnt() / (timeDiffMs / 1000f);
         hashMap.put("data store writes per second", String.format("%.2f", writesPerSecond));
 
         new InfoBanner(logger, header, hashMap);

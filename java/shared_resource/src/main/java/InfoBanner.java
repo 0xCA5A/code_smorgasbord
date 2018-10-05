@@ -25,7 +25,7 @@ class InfoBanner {
                 value = 0;
                 clientLogger.warning("");
             }
-            hashMap.put(parts.length != 0 ? parts[parts.length - 1] : fieldName, value.toString());
+            hashMap.put(parts.length == 0 ? fieldName : parts[parts.length - 1], value.toString());
         }
 
         return hashMap;

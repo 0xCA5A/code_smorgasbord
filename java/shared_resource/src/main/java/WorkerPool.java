@@ -32,8 +32,8 @@ class ProducerWorkerPool extends WorkerPool {
 
 public abstract class WorkerPool {
 
-    private Logger logger;
-    private List<Thread> workers;
+    protected final Logger logger;
+    private final List<Thread> workers;
     protected int poolSize;
     protected IDataStore dataStore;
     protected int maxWorkerLatencyMs;

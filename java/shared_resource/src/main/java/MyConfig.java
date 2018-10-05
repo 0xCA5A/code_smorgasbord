@@ -56,7 +56,7 @@ public class MyConfig {
             prototype = Class.forName(className);
         } catch (ClassNotFoundException ex) {
             // Cheap loop prevention
-            assert (className != DEFAULT_DATA_ELEMENT_TYPE);
+            assert !className.equals(DEFAULT_DATA_ELEMENT_TYPE);
             // FIXME: how to log from static context?
             System.out.println(
                     String.format(
@@ -64,7 +64,7 @@ public class MyConfig {
                             className, DEFAULT_DATA_ELEMENT_TYPE));
             prototype = getClassByName(DEFAULT_DATA_ELEMENT_TYPE);
         }
-        assert (prototype != null);
+        assert prototype != null;
         return prototype;
     }
 

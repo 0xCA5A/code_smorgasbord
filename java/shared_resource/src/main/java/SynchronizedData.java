@@ -1,12 +1,13 @@
 package src.main.java;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
 public class SynchronizedData implements IDataStore {
 
-    private ArrayList<byte[]> storage;
+    private List<byte[]> storage;
     private long readAccessCnt;
     private long readMissCnt;
     private long writeAccessCnt;
@@ -76,10 +77,7 @@ public class SynchronizedData implements IDataStore {
 
     public boolean canGetData() {
         synchronized (storage) {
-            if (storage.isEmpty()) {
-                return false;
-            }
-            return true;
+            return !storage.isEmpty();
         }
     }
 

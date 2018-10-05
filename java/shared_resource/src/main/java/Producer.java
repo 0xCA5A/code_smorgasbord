@@ -52,7 +52,7 @@ public class Producer extends Worker {
         } catch (NoSuchMethodException constEx) {
             logException(constEx.toString());
         } finally {
-            assert (constructor != null);
+            assert constructor != null;
         }
 
         IDataElement dataElement = null;
@@ -63,7 +63,7 @@ public class Producer extends Worker {
                 | InvocationTargetException multiEx) {
             logException(multiEx.toString());
         } finally {
-            assert (dataElement != null);
+            assert dataElement != null;
         }
         return dataElement;
     }

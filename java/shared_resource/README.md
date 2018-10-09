@@ -15,6 +15,6 @@ Source: JDK
 Howto jconsole: https://docs.oracle.com/javase/7/docs/technotes/guides/management/jconsole.html
 
 ```
-sam@host$ jvisualvm
+sam@host$ visualvm
 ```
 Source: https://visualvm.github.io/

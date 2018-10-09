@@ -1,6 +1,5 @@
 package src.main.java;
 
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class AbstractWorker implements IWorker {
@@ -26,13 +25,8 @@ public abstract class AbstractWorker implements IWorker {
         objCount++;
     }
 
-    protected int getRandomInt() {
-        Random rand = new Random();
-        return rand.nextInt(maxWorkerLatencyMs) + 1;
-    }
-
     protected int getRandProcessTimeMs() {
-        return getRandomInt();
+        return RandomHelper.getUnsignedInRange(maxWorkerLatencyMs);
     }
 
     protected void incJobsCompleted() {

@@ -27,7 +27,7 @@ public class Consumer extends AbstractWorker {
             try {
                 processTimeMs = consumeData();
             } catch (NoSuchElementException noElemEx) {
-                int delayTimeMs = getRandomInt();
+                int delayTimeMs = getRandProcessTimeMs();
                 String msg =
                         String.format(
                                 "'%s' reported by thread %s - " + "interrupt work for %dms",

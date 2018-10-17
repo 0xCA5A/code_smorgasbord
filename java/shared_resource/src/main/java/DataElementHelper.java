@@ -7,10 +7,17 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.util.logging.Logger;
 
 public final class DataElementHelper {
 
+    private static final Logger logger;
+
     private DataElementHelper() {}
+
+    static {
+        logger = MyLogHelper.getLogger(DataElementHelper.class.getName());
+    }
 
     public static IDataElement fromByteArray(byte[] serializedData) {
         ByteArrayInputStream bais = new ByteArrayInputStream(serializedData);
@@ -20,14 +27,14 @@ public final class DataElementHelper {
             in = new ObjectInputStream(bais);
             object = in.readObject();
         } catch (IOException | ClassNotFoundException ex) {
-            // ignore close exception
+            logger.warning(String.format("Ignore close exception: %s", ex));
         } finally {
             try {
                 if (in != null) {
                     in.close();
                 }
             } catch (IOException ex) {
-                // ignore close exception
+                logger.warning(String.format("Ignore close exception: %s", ex));
             }
         }
         return (IDataElement) object;
@@ -35,22 +42,22 @@ public final class DataElementHelper {
 
     public static byte[] toByteArray(IDataElement dataElement) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutput out = null;
+        ObjectOutput objOutput = null;
         byte[] objBytes = null;
 
         try {
-            out = new ObjectOutputStream(baos);
-            out.writeObject(dataElement);
-            out.flush();
+            objOutput = new ObjectOutputStream(baos);
+            objOutput.writeObject(dataElement);
+            objOutput.flush();
             objBytes = baos.toByteArray();
 
-        } catch (IOException ex) {
-            // ignore close exception
+        } catch (IOException objOutIoEx) {
+            logger.warning(String.format("Ignore close exception: %s", objOutIoEx));
         } finally {
             try {
                 baos.close();
-            } catch (IOException ioEx) {
-                // ignore close exception
+            } catch (IOException baosIoEx) {
+                logger.warning(String.format("Ignore close exception: %s", baosIoEx));
             }
         }
         return objBytes;

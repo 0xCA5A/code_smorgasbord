@@ -44,12 +44,21 @@ public class SystemCall {
             e.printStackTrace();
         }
 
+        // Open data input file
+        File dataFile = new File(dataFileName);
+        InputStream data = null;
+        try {
+            data = new FileInputStream(dataFile);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
         // Spawn subprocess
-        List<String> command = Arrays.asList("cat", dataFileName);
-        doSystemCall(timeout, command);
+        List<String> command = Arrays.asList("grep", "9");
+        doSystemCall(timeout, command, data);
     }
 
-    private static void doSystemCall(Duration timeout, List<String> command) {
+    private static void doSystemCall(Duration timeout, List<String> command, InputStream data) {
         logger.info("Spawn process");
         ProcessBuilder builder = new ProcessBuilder(command);
         Process process = null;
@@ -57,6 +66,13 @@ public class SystemCall {
             process = builder.start();
         } catch (IOException e) {
             throw new RuntimeException("Could not spawn process", e);
+        }
+
+        logger.info("Write to process stdin");
+        try (OutputStream processStdin = process.getOutputStream()) {
+            ByteStreams.copy(data, processStdin);
+        } catch (IOException e) {
+            throw new RuntimeException("Could not write to process stdin", e);
         }
 
         logger.info("Wait until process has terminated");

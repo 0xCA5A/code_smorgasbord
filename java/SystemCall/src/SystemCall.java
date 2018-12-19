@@ -4,26 +4,22 @@ package src.main.java;
 import com.google.common.io.ByteStreams;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
-
-import java.util.List;
-
-import java.util.concurrent.TimeUnit;
-import java.lang.ProcessBuilder;
-
-
-import java.util.logging.Logger;
-
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 
 public class SystemCall {
@@ -68,6 +64,19 @@ public class SystemCall {
             throw new RuntimeException("Could not spawn process", e);
         }
 
+        final InputStream processStdout = process.getInputStream();
+        final ByteArrayOutputStream processStdoutBuffer = new ByteArrayOutputStream();
+
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    ByteStreams.copy(processStdout, processStdoutBuffer);
+                } catch (IOException e) {
+                    throw new RuntimeException("Could not read from process stdout", e);
+                }
+            }
+        }).start();
+
         logger.info("Write to process stdin");
         try (OutputStream processStdin = process.getOutputStream()) {
             ByteStreams.copy(data, processStdin);
@@ -82,21 +91,24 @@ public class SystemCall {
             throw new RuntimeException("Run into timeout while waiting for process termination", e);
         }
 
-        logger.info("Read from process stdout");
-        InputStream processStdout = process.getInputStream();
-        InputStreamReader isr = new InputStreamReader(processStdout);
-        BufferedReader br = new BufferedReader(isr);
-        String line;
-        long lineCount = 0;
+        logger.info("Read from process stdout (buffer)");
+        String processStdoutBufferString = null;
         try {
-            while ((line = br.readLine()) != null) {
-                lineCount++;
-                logger.fine(line);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Could not read from process stdout", e);
+            processStdoutBufferString = processStdoutBuffer.toString(StandardCharsets.UTF_8.name());
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("Could not convert process stdout buffer to string", e);
         }
 
+        long lineCount = 0;
+        try (BufferedReader reader = new BufferedReader(new StringReader(processStdoutBufferString))) {
+            String line = reader.readLine();
+            while (line != null) {
+                lineCount++;
+                line = reader.readLine();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Could not read from process stdout string", e);
+        }
         logger.info(String.format("Successfully read %d lines from process stdout", lineCount));
     }
 }

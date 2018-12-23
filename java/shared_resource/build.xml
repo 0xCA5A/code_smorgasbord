@@ -22,18 +22,18 @@
     </target>
 
     <target name="run" depends="compile" description="Run java application">
-        <java classname="src.main.java.SharedResourceAccess" classpath="target" fork="true" failonerror="true">
+        <java classname="main.java.SharedResourceAccess" classpath="target" fork="true" failonerror="true">
             <jvmarg value="-ea"/>
             <!--<jvmarg value="-verbose"/>-->
 
             <!--<assertions enablesystemassertions="true">-->
-                <!--<enable package="src.main.java"/>-->
+                <!--<enable package="main.java"/>-->
             <!--</assertions>-->
         </java>
     </target>
 
     <target name="monitor" depends="compile" description="Run java application with JMX">
-        <java classname="src.main.java.SharedResourceAccess" classpath="target" fork="true" failonerror="true">
+        <java classname="main.java.SharedResourceAccess" classpath="target" fork="true" failonerror="true">
             <jvmarg value="-Djava.rmi.server.hostname=${app.monitor_hostname}"/>
             <!--BUG: if this line is active, my logger does not work anymore... ??-->
             <!--<jvmarg value="-Dcom.sun.management.jmxremote.port=${app.monitor_port}"/>-->

@@ -1,4 +1,4 @@
-package src.main.java;
+package main.java;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

@@ -1,6 +1,6 @@
-package src.main.java;
+package main.java;
 
-public class StringDataElement extends AbstractDataElement<String> {
+class StringDataElement extends AbstractDataElement<String> {
 
     private static final int MAX_STRING_LEN = 1000;
     private static final String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

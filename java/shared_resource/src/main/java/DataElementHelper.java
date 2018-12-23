@@ -1,4 +1,4 @@
-package src.main.java;
+package main.java;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -9,7 +9,7 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.util.logging.Logger;
 
-public final class DataElementHelper {
+final class DataElementHelper {
 
     private static final Logger logger;
 
@@ -42,7 +42,7 @@ public final class DataElementHelper {
 
     public static byte[] toByteArray(IDataElement dataElement) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutput objOutput = null;
+        ObjectOutput objOutput;
         byte[] objBytes = null;
 
         try {

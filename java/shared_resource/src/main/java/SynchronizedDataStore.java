@@ -1,4 +1,4 @@
-package src.main.java;
+package main.java;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +20,49 @@ public class SynchronizedDataStore implements IDataStore {
         this.readAccessCnt = 0;
         this.readMissCnt = 0;
         this.writeAccessCnt = 0;
+    }
+
+    @Override
+    public void storeData(IDataElement dataElement) {
+        synchronized (storage) {
+            logger.fine(String.format("Add new data element %s", dataElement));
+
+            byte[] serializedData = DataElementHelper.toByteArray(dataElement);
+
+            storage.add(serializedData);
+
+            logger.finer(
+                    String.format(
+                            "New data store size after storing data: %d elements",
+                            getNrOfDataElements()));
+            writeAccessCnt++;
+        }
+    }
+
+    @Override
+    public void consumeData() throws NoSuchElementException {
+        synchronized (storage) {
+            if (!canConsumeData()) {
+                readMissCnt++;
+                throw new NoSuchElementException("No data available");
+            }
+
+            byte[] serializedData = storage.remove(0);
+            IDataElement dataElement = DataElementHelper.fromByteArray(serializedData);
+            logger.fine(String.format("Consume data element %s", dataElement.toString()));
+            logger.finer(
+                    String.format(
+                            "New data store size after consuming data: %d elements",
+                            getNrOfDataElements()));
+            readAccessCnt++;
+        }
+    }
+
+    @Override
+    public long getNrOfDataElements() {
+        synchronized (storage) {
+            return storage.size();
+        }
     }
 
     long getReadAccessCnt() {
@@ -59,50 +102,9 @@ public class SynchronizedDataStore implements IDataStore {
         return readAccessCnt + writeAccessCnt;
     }
 
-    public void storeData(IDataElement dataElement) {
-        synchronized (storage) {
-            logger.fine(String.format("Add new data element %s", dataElement));
-
-            byte[] serializedData = DataElementHelper.toByteArray(dataElement);
-
-            storage.add(serializedData);
-
-            logger.finer(
-                    String.format(
-                            "New data store size after storing data: %d elements",
-                            getNrOfDataElements()));
-            writeAccessCnt++;
-        }
-    }
-
-    public boolean canGetData() {
+    private boolean canConsumeData() {
         synchronized (storage) {
             return !storage.isEmpty();
-        }
-    }
-
-    public IDataElement consumeData() throws NoSuchElementException {
-        synchronized (storage) {
-            if (!canGetData()) {
-                readMissCnt++;
-                throw new NoSuchElementException("No data available");
-            }
-
-            byte[] serializedData = storage.remove(0);
-            IDataElement dataElement = DataElementHelper.fromByteArray(serializedData);
-            logger.fine(String.format("Consume data element %s", dataElement.toString()));
-            logger.finer(
-                    String.format(
-                            "New data store size after consuming data: %d elements",
-                            getNrOfDataElements()));
-            readAccessCnt++;
-            return (IDataElement) dataElement;
-        }
-    }
-
-    public long getNrOfDataElements() {
-        synchronized (storage) {
-            return storage.size();
         }
     }
 }

@@ -1,6 +1,6 @@
-package src.main.java;
+package main.java;
 
-public interface IWorkerPool {
+interface IWorkerPool {
     void start();
 
     void terminate();

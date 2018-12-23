@@ -1,4 +1,4 @@
-package src.main.java;
+package main.java;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -11,7 +11,7 @@ class InfoBanner {
 
     private Map<String, String> getPublicFields(Logger clientLogger, Object object) {
 
-        Map<String, String> hashMap = new TreeMap<String, String>();
+        Map<String, String> hashMap = new TreeMap<>();
         Class myClass = object.getClass();
         Field[] fields = myClass.getFields();
 

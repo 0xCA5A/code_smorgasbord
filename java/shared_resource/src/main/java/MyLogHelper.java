@@ -1,14 +1,14 @@
-package src.main.java;
+package main.java;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-public final class MyLogHelper {
-    private static String loggingProps = "logging.properties";
+final class MyLogHelper {
+    private static final String loggingProps = "logging.properties";
 
-    private MyLogHelper() {};
+    private MyLogHelper() {}
 
     static {
         InputStream stream = MyLogHelper.class.getClassLoader().getResourceAsStream(loggingProps);

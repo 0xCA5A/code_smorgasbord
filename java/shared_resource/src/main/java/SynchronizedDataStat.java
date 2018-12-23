@@ -1,11 +1,11 @@
-package src.main.java;
+package main.java;
 
 import java.util.Date;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-public class SynchronizedDataStat {
+class SynchronizedDataStat {
 
     private static long statObjCnt = 0;
     private final long timeDiffMs;
@@ -20,13 +20,13 @@ public class SynchronizedDataStat {
         timeDiffMs = getDateDiff(startTimestamp, new Date(), TimeUnit.MILLISECONDS);
     }
 
-    public static void incStatObjCnt() {
+    private static void incStatObjCnt() {
         statObjCnt++;
     }
 
     public void show() {
         String header = String.format("STATUS REPORT #%d (%s) ", statObjCnt, this);
-        TreeMap<String, String> hashMap = new TreeMap<String, String>();
+        TreeMap<String, String> hashMap = new TreeMap<>();
         hashMap.put("total data process time", String.format("%dms", timeDiffMs));
         hashMap.put("total data store access count", String.format("%d", dataStore.getAccessCnt()));
         hashMap.put(

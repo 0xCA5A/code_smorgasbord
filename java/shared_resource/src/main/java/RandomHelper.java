@@ -1,9 +1,9 @@
-package src.main.java;
+package main.java;
 
 import java.util.Random;
 
-public final class RandomHelper {
-    private RandomHelper() {};
+final class RandomHelper {
+    private RandomHelper() {}
 
     public static int getUnsignedInRange(int max) {
         Random rand = new Random();

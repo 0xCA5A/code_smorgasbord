@@ -1,4 +1,4 @@
-package src.main.java;
+package main.java;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,7 +7,7 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-public class MyConfig {
+class MyConfig {
 
     private final Logger logger;
 
@@ -15,7 +15,7 @@ public class MyConfig {
     private static final int NR_OF_CONSUMER_THREADS = 7;
     private static final int MAX_WORKER_LATENCY_MS = 42;
     private static final int REPORT_INTERVAL_S = 3;
-    private static final String DEFAULT_DATA_ELEMENT_TYPE = "src.main.java.IntDataElement";
+    private static final String DEFAULT_DATA_ELEMENT_TYPE = "main.java.IntDataElement";
 
     public final int nrOfConsumerThreads;
     public final int nrOfProducerThreads;
@@ -51,7 +51,7 @@ public class MyConfig {
     }
 
     private static Class<?> getClassByName(String className) {
-        Class<?> prototype = null;
+        Class<?> prototype;
         try {
             prototype = Class.forName(className);
         } catch (ClassNotFoundException ex) {

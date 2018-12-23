@@ -1,6 +1,6 @@
-package src.main.java;
+package main.java;
 
-public class IntDataElement extends AbstractDataElement<Integer> {
+class IntDataElement extends AbstractDataElement<Integer> {
     private static final int MAX_INT_VALUE = Integer.MAX_VALUE;
 
     public IntDataElement() {

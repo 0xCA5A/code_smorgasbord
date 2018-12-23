@@ -1,4 +1,4 @@
-package src.main.java;
+package main.java;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,12 +6,12 @@ import java.util.logging.Logger;
 
 public abstract class AbstractWorkerPool implements IWorkerPool {
 
-    protected final Logger logger;
+    private final Logger logger;
     private final List<Thread> workers;
-    protected int poolSize;
-    protected IDataStore dataStore;
-    protected int maxWorkerLatencyMs;
-    protected Class<?> dataElementClass;
+    private final int poolSize;
+    final IDataStore dataStore;
+    final int maxWorkerLatencyMs;
+    final Class<?> dataElementClass;
 
     AbstractWorkerPool(
             int poolSize, IDataStore dataStore, int maxWorkerLatencyMs, Class<?> dataElementClass) {

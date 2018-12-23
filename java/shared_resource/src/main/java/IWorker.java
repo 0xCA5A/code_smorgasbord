@@ -1,4 +1,4 @@
-package src.main.java;
+package main.java;
 
 public interface IWorker extends Runnable {
     String getUniqueIdentifier();

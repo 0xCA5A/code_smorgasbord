@@ -1,22 +1,23 @@
-package src.main.java;
+package main.java;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
-public class SharedResourceAccess {
+class SharedResourceAccess {
 
     private static final String PROP_FILE_NAME = "app.properties";
 
     private List<IWorkerPool> workerPools;
     private final SynchronizedDataStore dataStore;
     private final Logger logger;
-    static boolean running = true;
-    MyConfig config;
+    private static boolean running = true;
+    private MyConfig config;
 
-    SharedResourceAccess() {
+    private SharedResourceAccess() {
         logger = MyLogHelper.getLogger(this.toString());
         dataStore = new SynchronizedDataStore();
 
@@ -33,12 +34,12 @@ public class SharedResourceAccess {
     private void initConfigFromPropFile() {
         ClassLoader loader = SharedResourceAccess.class.getClassLoader();
         URL url = loader.getResource(PROP_FILE_NAME);
-        String absFileName = url.getFile();
+        String absFileName = Objects.requireNonNull(url).getFile();
         config = new MyConfig(absFileName);
         new InfoBanner(logger, config);
     }
 
-    public void waitToBeShutDown() {
+    private void waitToBeShutDown() {
         Date startTimestamp = new Date();
         while (running) {
 

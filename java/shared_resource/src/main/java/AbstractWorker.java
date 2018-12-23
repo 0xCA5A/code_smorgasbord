@@ -1,4 +1,4 @@
-package src.main.java;
+package main.java;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -7,9 +7,9 @@ public abstract class AbstractWorker implements IWorker {
     private static long objCount;
     private long jobsCompleted;
     private final int maxWorkerLatencyMs;
-    protected final AtomicBoolean running;
-    protected IDataStore dataStore;
-    protected Class<?> dataElementClass;
+    private final AtomicBoolean running;
+    IDataStore dataStore;
+    Class<?> dataElementClass;
 
     AbstractWorker(IDataStore dataStore, int maxWorkerLatencyMs, Class<?> dataElementClass) {
         this.dataStore = dataStore;
@@ -21,23 +21,23 @@ public abstract class AbstractWorker implements IWorker {
         incWorkerObjCnt();
     }
 
-    public static void incWorkerObjCnt() {
+    private static void incWorkerObjCnt() {
         objCount++;
     }
 
-    protected int getRandProcessTimeMs() {
+    int getRandProcessTimeMs() {
         return RandomHelper.getUnsignedInRange(maxWorkerLatencyMs);
     }
 
-    protected void incJobsCompleted() {
+    void incJobsCompleted() {
         jobsCompleted++;
     }
 
-    protected long getJobsCompleted() {
+    long getJobsCompleted() {
         return jobsCompleted;
     }
 
-    protected long getObjCount() {
+    long getObjCount() {
         return objCount;
     }
 
@@ -45,7 +45,7 @@ public abstract class AbstractWorker implements IWorker {
         return this.toString();
     }
 
-    protected int delayWork() {
+    int delayWork() {
         int processTimeMs = -1;
         try {
             processTimeMs = getRandProcessTimeMs();

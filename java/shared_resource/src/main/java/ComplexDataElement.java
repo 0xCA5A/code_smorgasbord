@@ -1,4 +1,4 @@
-package src.main.java;
+package main.java;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ public class ComplexDataElement extends AbstractDataElement<List> {
     }
 
     private static List<Object> getObjectList() {
-        ArrayList<Object> objList = new ArrayList<Object>();
+        ArrayList<Object> objList = new ArrayList<>();
 
         int nrOfObjects = RandomHelper.getUnsignedInRange(MAX_NR_OF_OBJECTS);
         for (int i = 0; i < nrOfObjects; i++) {

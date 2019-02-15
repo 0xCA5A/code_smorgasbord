@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="guice-4.2.2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/dependency_injection/lib/guice-4.2.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

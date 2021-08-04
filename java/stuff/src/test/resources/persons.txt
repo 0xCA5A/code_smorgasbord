@@ -1,0 +1,20 @@
+Harry Styles
+MALE
+42
+USA
+Marvin Harris
+MALE
+20
+UK
+Harry Hasler
+MALE
+75
+CH
+Vreni Schneider
+FEMALE
+65
+CH
+Ruedi Rauch
+MALE
+87
+CH
